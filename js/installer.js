@@ -14,7 +14,7 @@
 
   function getSelectedVersion() {
     var sel = document.getElementById('versionSelect');
-    if (!sel) return { file: 'releases/RPC-Nebula-b81-Beta.rpc', label: 'RPCortex Nebula v0.8.1-beta2' };
+    if (!sel) return { file: 'https://github.com/dash1101/RPCortex/releases/download/RPC-%CE%B281/RPC-Nebula-b81-Beta2.rpc', label: 'RPCortex Nebula v0.8.1-beta2' };
     var opt = sel.options[sel.selectedIndex];
     var label = opt ? opt.text.replace(/\s+\u2014.*$/, '').trim() : 'unknown';
     return { file: sel.value, label: label };

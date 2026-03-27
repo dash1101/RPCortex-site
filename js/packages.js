@@ -114,100 +114,109 @@
 
   xferCloseBtn.addEventListener('click', hideOverlay);
 
-  /* ── Package install via _xfer ────────────────────────────────── */
+  /* ── _xfer protocol (shared by remote + local installs) ──────── */
+  async function _doXfer(data, destPath, pkgName) {
+    /* Send _xfer command and wait for device ready */
+    xferLogLine('[:] Sending transfer command\u2026', 'xfer-log-info');
+    activeDevice.clearBuffer();
+    await activeDevice.write('_xfer ' + destPath + '\r');
+    await activeDevice.waitFor('XFER_READY', 8000);
+    xferLogLine('[@] Device ready. Sending data\u2026', 'xfer-log-ok');
+    xferProgress.style.width = '15%';
+
+    /* Send base64 chunks */
+    var CHUNK       = 128;
+    var totalChunks = Math.ceil(data.length / CHUNK);
+    for (var i = 0; i < data.length; i += CHUNK) {
+      var chunk   = data.slice(i, i + CHUNK);
+      var b64Line = toBase64(chunk) + '\n';
+      await activeDevice.write(b64Line);
+      var chunkIdx = Math.floor(i / CHUNK) + 1;
+      xferProgress.style.width = (15 + Math.round((chunkIdx / totalChunks) * 57)) + '%';
+      await sleep(12);
+    }
+
+    xferLogLine('[:] All data sent (' + data.length + ' bytes). Finalizing\u2026', 'xfer-log-info');
+    xferProgress.style.width = '74%';
+
+    await activeDevice.write('XFER_END\n');
+    await activeDevice.waitFor('XFER_OK', 10000);
+    xferLogLine('[@] File written to device.', 'xfer-log-ok');
+    xferProgress.style.width = '80%';
+
+    xferLogLine('[:] Installing package on device\u2026', 'xfer-log-info');
+    xferSub.textContent = 'Installing on device\u2026';
+
+    var completeOut = await activeDevice.waitFor('XFER_COMPLETE', 30000);
+    xferProgress.style.width = '100%';
+
+    if (completeOut.indexOf('XFER_INSTALLED') !== -1) {
+      xferLogLine('[@] Package \'' + pkgName + '\' installed successfully!', 'xfer-log-ok');
+      xferTitle.textContent = pkgName + ' installed!';
+      xferSub.textContent   = 'The package is now available on the device.';
+    } else if (completeOut.indexOf('XFER_INSTALL_FAILED') !== -1) {
+      xferLogLine('[?] Package install reported failure. It may already be installed.', 'xfer-log-warn');
+      xferTitle.textContent = 'Install issue';
+      xferSub.textContent   = 'The package may already be installed. Check the device shell.';
+    } else if (completeOut.indexOf('XFER_INSTALL_ERR') !== -1) {
+      var errMatch = completeOut.match(/XFER_INSTALL_ERR:(.*)/);
+      var errMsg = errMatch ? errMatch[1].trim() : 'unknown error';
+      xferLogLine('[-] Install error: ' + errMsg, 'xfer-log-err');
+      xferTitle.textContent = 'Install failed';
+      xferSub.textContent   = errMsg;
+    } else {
+      xferLogLine('[@] Transfer complete.', 'xfer-log-ok');
+      xferTitle.textContent = 'Transfer complete';
+      xferSub.textContent   = 'File written to ' + destPath;
+    }
+
+    var rawLines = completeOut.split('\n');
+    for (var li = 0; li < rawLines.length; li++) {
+      var rl = rawLines[li].trim();
+      if (rl && rl.indexOf('XFER_') === -1 && rl.length > 1) {
+        xferLogLine('  ' + rl, 'xfer-log-dim');
+      }
+    }
+  }
+
+  /* ── Install from repo URL ─────────────────────────────────────── */
   async function installToDevice(pkg) {
     if (!activeDevice) { alert('Connect a device first.'); return; }
-
     var pkgName = pkg.name;
-    var pkgUrl  = ensureHttps(pkg.url);
     showOverlay(pkgName);
-
     try {
-      /* Step 1: Download the .pkg from the repo */
       xferLogLine('[:] Downloading ' + pkgName + '.pkg\u2026', 'xfer-log-info');
-      var resp = await fetch(pkgUrl);
+      var resp = await fetch(ensureHttps(pkg.url));
       if (!resp.ok) throw new Error('HTTP ' + resp.status + ' downloading package');
       var data = new Uint8Array(await resp.arrayBuffer());
       xferLogLine('[@] Downloaded ' + data.length + ' bytes.', 'xfer-log-ok');
       xferProgress.style.width = '10%';
-
-      /* Step 2: Send _xfer command */
       var destPath = '/Nebula/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
-      xferLogLine('[:] Sending transfer command\u2026', 'xfer-log-info');
-      activeDevice.clearBuffer();
-      await activeDevice.write('_xfer ' + destPath + '\r');
-
-      await activeDevice.waitFor('XFER_READY', 8000);
-      xferLogLine('[@] Device ready. Sending data\u2026', 'xfer-log-ok');
-      xferProgress.style.width = '15%';
-
-      /* Step 3: Send base64 chunks */
-      var CHUNK       = 128;
-      var totalChunks = Math.ceil(data.length / CHUNK);
-      for (var i = 0; i < data.length; i += CHUNK) {
-        var chunk   = data.slice(i, i + CHUNK);
-        var b64Line = toBase64(chunk) + '\n';
-        await activeDevice.write(b64Line);
-
-        var chunkIdx = Math.floor(i / CHUNK) + 1;
-        var pct = 15 + Math.round((chunkIdx / totalChunks) * 55);
-        xferProgress.style.width = pct + '%';
-        await sleep(12);
-      }
-
-      xferLogLine('[:] All data sent (' + data.length + ' bytes). Finalizing\u2026', 'xfer-log-info');
-      xferProgress.style.width = '72%';
-
-      /* Step 4: Send XFER_END */
-      await activeDevice.write('XFER_END\n');
-
-      /* Step 5: Wait for XFER_OK */
-      await activeDevice.waitFor('XFER_OK', 10000);
-      xferLogLine('[@] File written to device.', 'xfer-log-ok');
-      xferProgress.style.width = '80%';
-
-      /* Step 6: Wait for install result */
-      xferLogLine('[:] Installing package on device\u2026', 'xfer-log-info');
-      xferSub.textContent = 'Installing on device\u2026';
-
-      var completeOut = await activeDevice.waitFor('XFER_COMPLETE', 30000);
-      xferProgress.style.width = '100%';
-
-      if (completeOut.indexOf('XFER_INSTALLED') !== -1) {
-        xferLogLine('[@] Package \'' + pkgName + '\' installed successfully!', 'xfer-log-ok');
-        xferTitle.textContent = pkgName + ' installed!';
-        xferSub.textContent   = 'The package is now available on the device.';
-      } else if (completeOut.indexOf('XFER_INSTALL_FAILED') !== -1) {
-        xferLogLine('[?] Package install reported failure. It may already be installed.', 'xfer-log-warn');
-        xferTitle.textContent = 'Install issue';
-        xferSub.textContent   = 'The package may already be installed. Check the device shell.';
-      } else if (completeOut.indexOf('XFER_INSTALL_ERR') !== -1) {
-        var errMatch = completeOut.match(/XFER_INSTALL_ERR:(.*)/);
-        var errMsg = errMatch ? errMatch[1].trim() : 'unknown error';
-        xferLogLine('[-] Install error: ' + errMsg, 'xfer-log-err');
-        xferTitle.textContent = 'Install failed';
-        xferSub.textContent   = errMsg;
-      } else {
-        xferLogLine('[@] Transfer complete.', 'xfer-log-ok');
-        xferTitle.textContent = 'Transfer complete';
-        xferSub.textContent   = 'File written to ' + destPath;
-      }
-
-      /* Show interesting device output lines */
-      var rawLines = completeOut.split('\n');
-      for (var li = 0; li < rawLines.length; li++) {
-        var rl = rawLines[li].trim();
-        if (rl && rl.indexOf('XFER_') === -1 && rl.length > 1) {
-          xferLogLine('  ' + rl, 'xfer-log-dim');
-        }
-      }
-
+      await _doXfer(data, destPath, pkgName);
     } catch (e) {
       xferLogLine('[-] Error: ' + (e.message || String(e)), 'xfer-log-err');
       xferTitle.textContent = 'Transfer failed';
       xferSub.textContent   = e.message || String(e);
     }
+    xferCloseBtn.style.display = '';
+  }
 
+  /* ── Install from local file ───────────────────────────────────── */
+  async function installLocalToDevice(fileData, pkgName) {
+    if (!activeDevice) { alert('Connect a device first.'); return; }
+    showOverlay(pkgName);
+    try {
+      var data = new Uint8Array(fileData);
+      xferLogLine('[@] Loaded ' + data.length + ' bytes from local file.', 'xfer-log-ok');
+      xferProgress.style.width = '10%';
+      var safeName = pkgName.toLowerCase().replace(/[^a-z0-9_]/g, '_').replace(/\.pkg$/, '');
+      var destPath = '/Nebula/pkg/tmp_' + safeName + '.pkg';
+      await _doXfer(data, destPath, pkgName);
+    } catch (e) {
+      xferLogLine('[-] Error: ' + (e.message || String(e)), 'xfer-log-err');
+      xferTitle.textContent = 'Transfer failed';
+      xferSub.textContent   = e.message || String(e);
+    }
     xferCloseBtn.style.display = '';
   }
 
@@ -282,6 +291,63 @@
       'Use Chrome 89+ or Edge 89+ to install packages directly to a device. ' +
       'You can still use <code>pkg install</code> from the shell.';
   }
+
+  /* ── Local .pkg drag-and-drop ─────────────────────────────────── */
+  var dropZone       = document.getElementById('pkgDropZone');
+  var dropFileInfo   = document.getElementById('dropFileInfo');
+  var dropFileName   = document.getElementById('dropFileName');
+  var dropInstallBtn = document.getElementById('dropInstallBtn');
+  var dropFileInput  = document.getElementById('pkgLocalFileInput');
+  var _dropFile      = null;
+
+  function setDropFile(file) {
+    if (!file || !file.name.endsWith('.pkg')) {
+      alert('Please select a .pkg file.');
+      return;
+    }
+    _dropFile = file;
+    dropFileName.textContent = file.name;
+    dropFileInfo.style.display = '';
+    dropInstallBtn.disabled = !activeDevice;
+    dropZone.classList.add('has-file');
+  }
+
+  if (dropZone) {
+    dropZone.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', function () {
+      dropZone.classList.remove('drag-over');
+    });
+    dropZone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      var file = e.dataTransfer.files[0];
+      if (file) setDropFile(file);
+    });
+  }
+
+  if (dropFileInput) {
+    dropFileInput.addEventListener('change', function () {
+      if (dropFileInput.files[0]) setDropFile(dropFileInput.files[0]);
+    });
+  }
+
+  if (dropInstallBtn) {
+    dropInstallBtn.addEventListener('click', async function () {
+      if (!_dropFile || !activeDevice) return;
+      var buf = await _dropFile.arrayBuffer();
+      installLocalToDevice(buf, _dropFile.name.replace(/\.pkg$/, ''));
+    });
+  }
+
+  /* Keep drop install button enabled/disabled in sync with connection */
+  var _origSetConnected = setConnected;
+  setConnected = function (connected) {
+    _origSetConnected(connected);
+    if (dropInstallBtn && _dropFile) dropInstallBtn.disabled = !connected;
+  };
 
   /* ── Init ─────────────────────────────────────────────────────── */
   loadPackages();

@@ -1149,6 +1149,47 @@ footer {
 .serial-note { font-size: 0.82rem; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
 
 /* ══════════════════════════════════════════════════════════════
+   LOCAL PKG DROP ZONE
+   ══════════════════════════════════════════════════════════════ */
+.local-pkg-section { margin-top: 40px; }
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 32px 24px;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--bg-alt);
+}
+.drop-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(88,166,255,0.06);
+}
+.drop-zone.has-file { border-style: solid; border-color: var(--green); }
+.drop-zone-inner { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.drop-zone-icon { font-size: 2rem; line-height: 1; }
+.drop-zone-inner p { margin: 0; color: var(--text-muted); font-size: 0.92rem; }
+.drop-zone-or { color: var(--text-muted); font-size: 0.82rem; }
+.drop-pick-label { cursor: pointer; display: inline-block; }
+.drop-pick-label input[type="file"] { display: none; }
+.drop-file-info {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.drop-file-name {
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--accent);
+  background: var(--bg);
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+}
+
+/* ══════════════════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════════════════ */
 @media (max-width: 680px) {

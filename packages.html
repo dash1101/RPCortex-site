@@ -57,6 +57,26 @@
         <div class="pkg-loading" id="pkgLoading">Loading packages&hellip;</div>
       </div>
 
+      <!-- LOCAL PKG DROP ZONE -->
+      <div class="local-pkg-section">
+        <h3 style="margin:0 0 10px;font-size:1rem;color:var(--text-muted);font-weight:500;">Install a local <code>.pkg</code> file</h3>
+        <div class="drop-zone" id="pkgDropZone">
+          <div class="drop-zone-inner">
+            <span class="drop-zone-icon">&#x1F4E6;</span>
+            <p>Drag &amp; drop a <code>.pkg</code> file here</p>
+            <span class="drop-zone-or">or</span>
+            <label class="btn-secondary drop-pick-label">
+              Browse&hellip;
+              <input type="file" id="pkgLocalFileInput" accept=".pkg">
+            </label>
+          </div>
+          <div class="drop-file-info" id="dropFileInfo">
+            <span class="drop-file-name" id="dropFileName"></span>
+            <button class="btn-primary" id="dropInstallBtn" disabled>Install to Device</button>
+          </div>
+        </div>
+      </div>
+
       <!-- CLI REFERENCE -->
       <div style="margin-top:40px;">
         <div class="codeblock">

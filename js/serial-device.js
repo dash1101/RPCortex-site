@@ -41,6 +41,9 @@
 
   Device.prototype.open = async function () {
     await this.port.open({ baudRate: 115200 });
+    // Suppress DTR/RTS immediately — prevents ESP32 auto-reset circuit and
+    // Pico DTR-triggered soft-reset from firing when the browser opens the port.
+    try { await this.port.setSignals({ dataTerminalReady: false, requestToSend: false }); } catch (e) {}
     this._active = true;
     this._startReadLoop();
   };
