@@ -69,17 +69,14 @@
     [
       { cmd: 'pkg update', outputs: [
         { t: '' },
-        { t: '[:] [1/1] Fetching: http://rpc.novalabs.app/repo/index.json', w: 280 },
+        { t: '[:] [1/1] Fetching: raw.githubusercontent.com...', w: 280 },
         { t: '[@] \u00a0 Cached 292 bytes from repo 0.', w: 520 },
         { t: '[@] Update complete. 1/1 repo(s) refreshed.', w: 140 },
       ]},
       { cmd: 'pkg install HelloWorld', pre: 700, outputs: [
         { t: '' },
         { t: "[:] Found 'HelloWorld'. Downloading...", w: 180 },
-        { t: '[:] Connecting to rpc.novalabs.app:80...', w: 380 },
-        { t: '[:] HTTP 301', w: 220 },
-        { t: '[:] Redirect -> https://rpc.novalabs.app/repo/packages/helloworld.pkg', w: 160 },
-        { t: '[:] Connecting to rpc.novalabs.app:443...', w: 480 },
+        { t: '[:] Connecting to raw.githubusercontent.com:443...', w: 480 },
         { t: '[:] HTTP 200', w: 200 },
         { t: '[@] Downloaded 907 bytes. Installing...', w: 340 },
         { t: "[@] Package 'HelloWorld' v1.0.1 installed.", w: 180 },

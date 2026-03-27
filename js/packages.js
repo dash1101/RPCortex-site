@@ -258,9 +258,11 @@
   }
 
   /* ── Fetch packages from repo ─────────────────────────────────── */
+  var REPO_INDEX = 'https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json';
+
   async function loadPackages() {
     try {
-      var resp = await fetch('repo/index.json');
+      var resp = await fetch(REPO_INDEX);
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       var data = await resp.json();
       packages = data.packages || [];

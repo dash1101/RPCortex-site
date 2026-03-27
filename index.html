@@ -225,7 +225,7 @@ logout          <span class="dim"># back to login</span></pre>
       <div class="codeblock">
         <div class="codeblock-label">Quick start after first login</div>
         <pre>wifi connect
-pkg repo add http://rpc.novalabs.app/repo/index.json
+pkg repo add https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json
 pkg update
 pkg available
 pkg install HelloWorld
@@ -241,7 +241,7 @@ hello</pre>
       <p style="color: var(--text-muted); margin-bottom: 0;">The official RPCortex package repo is hosted here. Add it once and use <code>pkg update</code> to stay current. Installed commands are live immediately after install. No reboot needed.</p>
       <div class="codeblock">
         <div class="codeblock-label">Add the official repo and browse packages</div>
-        <pre>pkg repo add http://rpc.novalabs.app/repo/index.json
+        <pre>pkg repo add https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json
 pkg update
 pkg available            # list everything in the repo
 pkg search &lt;query&gt;      # filter by name or description
