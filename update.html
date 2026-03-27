@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; OS Update</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="https://rpc.novalabs.app">Home</a>
+        <a href="NebulaDocs.html">Docs</a>
+        <a href="PackageDev.html">Build</a>
+        <a href="packages.html">Packages</a>
+        <a href="install.html">Web Installer</a>
+        <a href="update.html">Update</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>OS Update</h1>
+      <p>Update RPCortex from the browser while your device is running &mdash; no WiFi required on the device, no raw REPL, no full reflash.</p>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <section class="section">
+    <div class="inner">
+
+      <!-- Browser compat banner -->
+      <div class="compat-banner" id="compatBanner">
+        <strong>Web Serial API not supported.</strong>
+        Use Chrome 89+, Edge 89+, or Opera. Firefox and Safari are not supported.
+      </div>
+
+      <!-- PREREQUISITES -->
+      <div class="prereq-grid" style="margin-bottom:36px;">
+        <div class="prereq-card">
+          <div class="prereq-num">1</div>
+          <h3>Device running RPCortex v0.8.0+</h3>
+          <p>Your device must be powered on, booted, and logged in to the Launchpad shell. Requires <strong>v0.8.0-rc4 or later</strong>. <strong>Not</strong> a fresh MicroPython REPL &mdash; use the <a href="install.html">Web Installer</a> for that.</p>
+        </div>
+        <div class="prereq-card">
+          <div class="prereq-num">2</div>
+          <h3>Shell at a prompt</h3>
+          <p>Make sure the shell is idle at a <code>user@nebula:~&gt;</code> prompt. Close PuTTY or any other serial program before connecting here.</p>
+        </div>
+        <div class="prereq-card">
+          <div class="prereq-num">3</div>
+          <h3>Open in Chrome</h3>
+          <p>Web Serial requires Chrome 89+, Edge 89+, or any Chromium-based browser. Firefox and Safari are not supported.</p>
+        </div>
+      </div>
+
+      <!-- CONNECT BAR -->
+      <div class="connect-bar" id="connectBar">
+        <div class="connect-bar-left">
+          <span class="connect-dot off" id="connectDot"></span>
+          <span class="connect-status" id="connectLabel">No device connected</span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-primary" id="connectBtn" style="padding:10px 24px;font-size:0.88rem;">Connect Device</button>
+          <button class="btn-secondary" id="disconnectBtn" style="padding:10px 24px;font-size:0.88rem;display:none;">Disconnect</button>
+        </div>
+      </div>
+      <p class="serial-note" id="serialNote">
+        Requires Chrome 89+ or Edge 89+. Close PuTTY / Thonny before connecting. The device must be logged in to the Launchpad shell.
+      </p>
+
+      <!-- UPDATE PANEL -->
+      <div class="installer-panel" style="margin-top:32px;">
+
+        <!-- Source picker -->
+        <div id="sourcePanel">
+          <p class="panel-h">Select an update source</p>
+
+          <div class="source-options">
+            <label class="source-option selected" id="optServer">
+              <input type="radio" name="source" value="server" checked>
+              <div class="source-option-body">
+                <strong>Download from server</strong>
+                <span>Fetches the latest release from rpc.novalabs.app automatically.</span>
+                <div style="margin-top:10px;">
+                  <select id="versionSelect" class="version-select">
+                    <optgroup label="Nebula &beta;81 (current)">
+                      <option value="releases/RPC-Nebula-b81-Beta.rpc" selected>RPCortex Nebula v0.8.1-beta2 &mdash; latest</option>
+                    </optgroup>
+                    <optgroup label="Nebula &beta;8X">
+                      <option value="releases/RPC-Nebula-b8X-RC4.rpc">RPCortex Nebula v0.8.0-rc4 &mdash; stable</option>
+                      <option value="releases/RPCortex-Nebula-b8X-RC3.rpc">RPCortex Nebula v0.8.0-rc3</option>
+                      <option value="releases/RPCortex-Nebula-b8X-RC2.rpc">RPCortex Nebula v0.8.0-rc2</option>
+                      <option value="releases/RPCortex-Nebula-b8X-RC1.rpc">RPCortex Nebula v0.8.0-rc1</option>
+                      <option value="releases/RPCortex-Nebula-b8X-Beta.rpc">RPCortex Nebula v0.8.0-beta</option>
+                    </optgroup>
+                    <optgroup label="Legacy">
+                      <option value="releases/RPC-FUSION-OS-RC1.rpc">RPC Fusion v0.7.0-rc1</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+            </label>
+
+            <label class="source-option" id="optLocal">
+              <input type="radio" name="source" value="local">
+              <div class="source-option-body">
+                <strong>Select local .rpc file</strong>
+                <span>Use a locally saved or pre-built release file.</span>
+                <div id="localLabel" style="margin-top:10px;display:none;">
+                  <label class="transfer-file-label" style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;font-size:0.83rem;color:var(--text-muted);">
+                    <input type="file" id="localInput" accept=".rpc,.zip" style="display:none;">
+                    <span id="localName">Choose .rpc file&hellip;</span>
+                  </label>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <div class="warn-box" style="margin:20px 0 24px;">
+            <strong>What gets updated:</strong> All OS files in <code>/Core/</code>, <code>/Packages/</code> (built-in stubs), and <code>main.py</code>.<br>
+            <strong>What is preserved:</strong> <code>/Users/</code> (home dirs), <code>/Nebula/</code> (registry, WiFi credentials, package cache, logs). Your accounts and settings are not touched.
+          </div>
+
+          <button class="btn-primary" id="startBtn" disabled style="width:100%;padding:14px;">
+            Start Update
+          </button>
+        </div>
+
+        <!-- Progress panel (hidden until update starts) -->
+        <div id="progressPanel">
+          <p class="panel-h" id="progressTitle">Updating&hellip;</p>
+          <div class="progress-wrap" style="margin-bottom:14px;">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p class="install-status-text" id="statusText">Preparing&hellip;</p>
+
+          <div class="log-term">
+            <div class="term-bar">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="term-title">update log</span>
+            </div>
+            <div class="log-body" id="logBody"></div>
+          </div>
+
+          <!-- Done / retry -->
+          <div id="donePanel" style="display:none;margin-top:20px;">
+            <div class="done-icon">&#10003;</div>
+            <p class="panel-h" style="margin-bottom:8px;">Update complete!</p>
+            <p style="color:var(--text-muted);font-size:0.87rem;">All files have been transferred and the device is rebooting.</p>
+            <ol class="done-next" style="margin-top:12px;">
+              <li>Wait for the device to finish rebooting (a few seconds).</li>
+              <li>Reconnect with PuTTY at <strong>115200 baud</strong>.</li>
+              <li>Log in &mdash; the update is live immediately.</li>
+            </ol>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+            <button class="btn-secondary" id="cancelBtn" style="display:none;">Cancel</button>
+            <button class="btn-secondary" id="retryBtn" style="display:none;">Try Again</button>
+          </div>
+        </div>
+
+      </div><!-- /.installer-panel -->
+
+      <!-- SHELL ALTERNATIVE -->
+      <div style="margin-top:40px;">
+        <div class="codeblock">
+          <div class="codeblock-label">Or update from the shell (device needs WiFi or a staged .rpc file)</div>
+          <pre><span style="color:var(--text-muted)"># Option A — download and apply directly (WiFi required)</span>
+wget http://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta.rpc /update.rpc
+update from-file /update.rpc
+
+<span style="color:var(--text-muted)"># Option B — full wipe and reinstall from a staged .rpc</span>
+reinstall /path/to/os.rpc</pre>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="how-box" style="margin-top:40px;">
+        <h2>How it works</h2>
+        <p>
+          This tool connects to your device&rsquo;s Launchpad shell over USB serial.
+          It loads the selected <code>.rpc</code> release archive in-browser using JSZip,
+          filters out user data paths, then sends each OS file to the device one at a time
+          using RPCortex&rsquo;s built-in <code>_xfer</code> serial transfer command.
+        </p>
+        <p>
+          No raw REPL, no WiFi, no Thonny required. Because files are sent to the
+          running OS rather than flashed at the firmware level, your user accounts,
+          WiFi credentials, and package configuration are untouched.
+          After all files are written, a <code>reboot</code> command is sent automatically.
+        </p>
+        <p>
+          For a <strong>fresh install</strong> on a board running bare MicroPython,
+          use the <a href="install.html">Web Installer</a> instead &mdash; it uses raw
+          REPL mode which does not require RPCortex to be running.
+        </p>
+      </div>
+
+    </div><!-- /.inner -->
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Nebula</span>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank" rel="noopener">Releases</a>
+          <a href="NebulaDocs.html">Docs</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a>
+        </div>
+      </div>
+      <p class="footer-note">Open source by <a href="https://github.com/dash1101" target="_blank" rel="noopener">dash1101</a>. MIT License.</p>
+    </div>
+  </footer>
+
+  <script src="js/serial-device.js"></script>
+  <script src="js/update.js"></script>
+
+  <script>
+    if (!('serial' in navigator)) {
+      document.getElementById('compatBanner').classList.add('visible');
+    }
+  </script>
+
+</body>
+</html>

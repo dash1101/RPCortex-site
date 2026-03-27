@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; Web Installer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- Styles in style.css -->
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="https://rpc.novalabs.app">Home</a>
+        <a href="NebulaDocs.html">Docs</a>
+        <a href="PackageDev.html">Build</a>
+        <a href="packages.html">Packages</a>
+        <a href="install.html">Web Installer</a>
+        <a href="update.html">Update</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Web Installer</h1>
+      <p>Flash RPCortex v0.8.1-beta2 directly from your browser. No desktop software, no drivers, no Thonny required.</p>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <section class="section">
+    <div class="inner">
+
+      <!-- Browser compatibility banner -->
+      <div class="compat-banner" id="compatBanner">
+        <strong>Web Serial API not supported.</strong>
+        Use Chrome 89+, Edge 89+, or Opera. Firefox and Safari are not supported. Switch to a Chromium-based browser to use this installer.
+      </div>
+
+      <!-- PREREQUISITES -->
+      <div id="installerContent">
+        <div class="prereq-grid">
+          <div class="prereq-card">
+            <div class="prereq-num">1</div>
+            <h3>Flash MicroPython</h3>
+            <p>Flash MicroPython firmware v1.25+ to your board first (v1.28 recommended). <a href="https://micropython.org/download/" target="_blank" rel="noopener">Download from micropython.org &rarr;</a></p>
+          </div>
+          <div class="prereq-card">
+            <div class="prereq-num">2</div>
+            <h3>Connect via USB</h3>
+            <p>Plug your board into USB. Make sure no other serial program (PuTTY, Thonny) is connected to the same port.</p>
+          </div>
+          <div class="prereq-card">
+            <div class="prereq-num">3</div>
+            <h3>Open in Chrome</h3>
+            <p>This installer requires Chrome 89+, Edge 89+, or any Chromium-based browser. The Web Serial API is not available in Firefox or Safari.</p>
+          </div>
+        </div>
+
+        <!-- ── VERSION PICKER ────────────────────────────────────── -->
+        <div class="version-picker-wrap">
+          <span class="version-label">Version:</span>
+          <select id="versionSelect" class="version-select">
+            <optgroup label="Nebula &beta;81 (current)">
+              <option value="releases/RPC-Nebula-b81-Beta.rpc" selected>RPCortex Nebula v0.8.1-beta2 &mdash; latest</option>
+            </optgroup>
+            <optgroup label="Nebula &beta;8X">
+              <option value="releases/RPC-Nebula-b8X-RC4.rpc">RPCortex Nebula v0.8.0-rc4 &mdash; stable</option>
+              <option value="releases/RPCortex-Nebula-b8X-RC3.rpc">RPCortex Nebula v0.8.0-rc3</option>
+              <option value="releases/RPCortex-Nebula-b8X-RC2.rpc">RPCortex Nebula v0.8.0-rc2</option>
+              <option value="releases/RPCortex-Nebula-b8X-RC1.rpc">RPCortex Nebula v0.8.0-rc1</option>
+              <option value="releases/RPCortex-Nebula-b8X-Beta.rpc">RPCortex Nebula v0.8.0-beta</option>
+              <option value="releases/RPCortex-Nebula-b8X-PoC.rpc">RPCortex Nebula v0.8.0-PoC</option>
+            </optgroup>
+            <optgroup label="Legacy">
+              <option value="releases/RPC-FUSION-OS-RC1.rpc">RPC Fusion v0.7.0-rc1</option>
+              <option value="releases/RPC.Hyperion.rpc">RPC Hyperion v0.5.0-alpha</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- ── INSTALLER PANEL ────────────────────────────────────── -->
+        <div class="installer-panel">
+
+          <!-- STATE: idle -->
+          <div class="inst-state active" id="stateIdle">
+            <p class="panel-h">Ready to install</p>
+            <p class="panel-sub">Select a version above, connect your board, and click the button below.</p>
+            <button class="btn-primary" id="connectBtn">Connect Device</button>
+            <p class="panel-hint">Chrome will open a port picker dialog.</p>
+          </div>
+
+          <!-- STATE: connected -->
+          <div class="inst-state" id="stateConnected">
+            <div class="conn-status">
+              <span class="conn-dot"></span>
+              <span id="portLabel">Connected</span>
+            </div>
+
+            <div class="source-options" id="sourceOptions">
+              <label class="source-option selected" id="optGithub">
+                <input type="radio" name="source" value="github" checked>
+                <div class="source-option-body">
+                  <strong>Download from server</strong>
+                  <span>Fetches the latest release from rpc.novalabs.app automatically.</span>
+                </div>
+              </label>
+              <label class="source-option" id="optLocal">
+                <input type="radio" name="source" value="local">
+                <div class="source-option-body">
+                  <strong>Select local .rpc file</strong>
+                  <span>Use a locally saved release file.</span>
+                  <div id="fileInputWrap">
+                    <input type="file" id="localFileInput" accept=".rpc,.zip">
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <div class="install-warning-box">
+              <strong>&#9888; This will wipe your device.</strong>
+              <p>All files on the device will be permanently deleted before installation. User accounts, WiFi settings, and installed packages will be lost. This cannot be undone.</p>
+              <label class="wipe-confirm-label">
+                <input type="checkbox" id="wipeConfirmCheck">
+                I understand this will erase everything on the device.
+              </label>
+            </div>
+
+            <div class="gap-btn">
+              <button class="btn-primary" id="installBtn" disabled>Install Now</button>
+            </div>
+            <button class="disconnect-link" id="disconnectLink">Disconnect</button>
+          </div>
+
+          <!-- STATE: installing -->
+          <div class="inst-state" id="stateInstalling">
+            <p class="panel-h">Installing&hellip;</p>
+            <div class="progress-wrap" style="margin-bottom:20px;">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="install-status-text" id="installStatusText">Preparing&hellip;</p>
+            <div class="log-term">
+              <div class="term-bar">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="term-title">installer log</span>
+              </div>
+              <div class="log-body" id="logBody"></div>
+            </div>
+            <button class="btn-secondary" id="cancelBtn">Cancel</button>
+          </div>
+
+          <!-- STATE: done -->
+          <div class="inst-state" id="stateDone">
+            <div class="done-icon">&#10003;</div>
+            <p class="panel-h">Installation complete!</p>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin:0 0 4px;">All files have been written to the device.</p>
+            <ol class="done-next">
+              <li><strong>Disconnect and reconnect</strong> your device from USB.</li>
+              <li>Open <strong>PuTTY</strong> (or any serial terminal) at <strong>115200 baud</strong>.</li>
+              <li>Complete the <strong>first-run setup wizard</strong> &mdash; you'll set the root password and optionally add the package repo.</li>
+            </ol>
+            <div style="margin-top:28px;">
+              <button class="btn-secondary" id="installAgainBtn">Install Again</button>
+            </div>
+          </div>
+
+          <!-- STATE: error -->
+          <div class="inst-state" id="stateError">
+            <div class="error-icon">&#10007;</div>
+            <p class="panel-h">Installation failed</p>
+            <div id="errorMsg"></div>
+            <button class="btn-primary" id="retryBtn">Try Again</button>
+          </div>
+
+        </div><!-- /.installer-panel -->
+
+        <!-- FILE TRANSFER PANEL -->
+        <div class="transfer-panel" id="transferPanel">
+          <p class="panel-h">Transfer a File</p>
+          <p class="panel-sub" style="margin-bottom:18px;">Copy any file to your device over USB &mdash; ideal for dropping <code>.pkg</code> files onto an offline Pico. Pick a file, set the destination path, and hit Send.</p>
+          <div class="transfer-row">
+            <label class="transfer-file-label" id="transferFileLabel">
+              <input type="file" id="transferFileInput">
+              <span id="transferFileName">Choose file&hellip;</span>
+            </label>
+            <input type="text" id="transferPath" placeholder="/Packages/file.pkg" value="/">
+          </div>
+          <button class="btn-secondary" id="transferBtn">Send to Device</button>
+          <div class="transfer-log" id="transferLog"></div>
+          <p style="font-size:0.80rem;color:var(--text-muted);margin:0;">
+            After transfer: use <code>pkg install /path/to/file.pkg</code> in the shell to install.
+            &nbsp;&bull;&nbsp; No WiFi required.
+          </p>
+        </div>
+
+        <!-- HOW IT WORKS -->
+        <div class="how-box" style="margin-top:40px;">
+          <h2>How it works</h2>
+          <p>
+            The installer establishes a serial connection to your device's MicroPython REPL,
+            fetches the RPCortex <code>.rpc</code> release archive, extracts it in-browser,
+            and transfers each file using MicroPython's raw REPL mode &mdash; the same protocol
+            used by tools like <code>mpremote</code> and Thonny.
+          </p>
+          <p>
+            A <code>.rpc</code> file is a standard ZIP archive with a custom extension.
+            You can also select a local one if you've downloaded it manually.
+          </p>
+          <p>
+            The <strong>File Transfer</strong> tool above works with any board variant &mdash; including
+            offline Pico 2 (non-W). No desktop software or WiFi required.
+            Web Serial requires Chrome 89+ or Edge 89+.
+          </p>
+        </div>
+
+      </div><!-- /#installerContent -->
+
+    </div><!-- /.inner -->
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Nebula</span>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank" rel="noopener">Releases</a>
+          <a href="NebulaDocs.html">Docs</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a>
+        </div>
+      </div>
+      <p class="footer-note">Open source by <a href="https://github.com/dash1101" target="_blank" rel="noopener">dash1101</a>. MIT License.</p>
+    </div>
+  </footer>
+
+  <script src="js/serial-device.js"></script>
+  <script src="js/installer.js"></script>
+
+</body>
+</html>

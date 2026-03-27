@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; v0.8.1-beta2 Release Notes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="https://rpc.novalabs.app">Home</a>
+        <a href="NebulaDocs.html">Docs</a>
+        <a href="PackageDev.html">Build</a>
+        <a href="packages.html">Packages</a>
+        <a href="install.html">Web Installer</a>
+        <a href="update.html">Update</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Release Notes</h1>
+      <p>v0.8.1-beta2 &nbsp;&bull;&nbsp; Codenamed <strong>Nebula</strong> &nbsp;&bull;&nbsp; β81 &nbsp;&bull;&nbsp; Changes since v0.8.0-rc4</p>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="docs-page-layout">
+    <nav class="docs-toc">
+      <h4>Contents</h4>
+      <a href="#status">Status</a>
+      <a href="#whats-new">What's new since rc4</a>
+      <a href="#installation">Installation</a>
+      <a href="#limitations">Known Limitations</a>
+      <a href="#whats-next">What's Next</a>
+    </nav>
+
+    <article class="docs-article">
+
+      <h2 id="status">Status</h2>
+      <p><strong>Stable.</strong> Ships in a clean factory-default state. Confirmed working on RP2040, RP2350, and ESP32-S3.</p>
+      <div class="note-box">
+        Release notes for <strong>v0.8.1-beta2</strong> &mdash; covers what changed since <strong>v0.8.0-rc4</strong>. For the full feature reference see the <a href="NebulaDocs.html">docs</a>.
+      </div>
+
+      <h2 id="whats-new">What's new since v0.8.0-rc4</h2>
+
+      <h3>Bug fixes</h3>
+      <ul>
+        <li><strong><code>ls</code> no longer changes your working directory.</strong> Running <code>ls /Core</code> previously left you inside <code>/Core</code> after it finished. Fixed by using <code>uos.listdir(target)</code> directly.</li>
+        <li><strong>POST beeper crash fixed.</strong> If beeper was enabled in settings but <code>beeper_pin</code> was still <code>None</code>, <code>post.py</code> crashed with a <code>NameError</code>. <code>beeper</code> is now initialized to <code>False</code> at module level.</li>
+        <li><strong>POST registry creation handles missing <code>/Nebula/</code> parent.</strong> On a completely fresh filesystem, <code>check_registry()</code> now creates <code>/Nebula/</code> before creating <code>/Nebula/Registry/</code>.</li>
+        <li><strong>Boot-clock crash sentinel now shows a login message.</strong> Startup mode <code>7</code> (device crashed while applying boot clock) now has an entry in <code>_STARTUP_MSGS</code> and displays a warning at login. Previously the sentinel was cleared by POST but no notification reached the user.</li>
+      </ul>
+
+      <h3>Registry overhaul</h3>
+      <ul>
+        <li><strong>Config caching:</strong> <code>regedit.py</code> now caches the parsed config in memory. Repeated <code>read()</code> calls no longer re-parse the file from disk.</li>
+        <li><strong>Removed dead code:</strong> The unused XOR-encrypted user store (<code>user.dat</code>) removed from <code>regedit.py</code>. Only <code>usrmgmt.py</code> / <code>user.cfg</code> handles users now.</li>
+        <li><strong>f-strings removed:</strong> All f-strings in <code>regedit.py</code> replaced with <code>.format()</code> for broader firmware compatibility.</li>
+      </ul>
+
+      <h3>Stability fixes</h3>
+      <ul>
+        <li><strong>Fixed <code>recovery_mode()</code> crash:</strong> <code>initialization.py</code> was calling an undefined <code>recovery()</code> function &mdash; now dispatches correctly.</li>
+        <li><strong>GC optimization:</strong> Redundant double/triple <code>gc.collect()</code> calls removed across the codebase. Faster and just as effective.</li>
+        <li><strong>Removed unused <code>import random</code></strong> from <code>main.py</code> &mdash; small free RAM at boot.</li>
+      </ul>
+
+      <h3>Serial file transfer (<code>_xfer</code>)</h3>
+      <p>New critical inline command added to the <code>_CRITICAL</code> dict alongside <code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, <code>gc</code>. Receives files over serial using base64 &mdash; used by the web package browser and browser update page to push files to a running device without touching the raw REPL or requiring WiFi.</p>
+
+      <h3>Web package browser</h3>
+      <p><a href="packages.html">packages.html</a> now uses the <code>_xfer</code> serial protocol instead of raw REPL. The browser package browser was available in rc4 but required the device to be in REPL mode. It now installs to a running Launchpad shell &mdash; no mode switch, no reboot. HTTPS auto-translation added for Chromium mixed-content compliance. All website JS moved to <code>js/</code>; CSS unified into <code>style.css</code>.</p>
+
+      <h3>Log directory auto-creation</h3>
+      <p>POST now creates <code>/Nebula/Logs/</code> automatically. Was listed as &ldquo;what&rsquo;s next&rdquo; in rc4 &mdash; done.</p>
+
+      <h3>OS management commands</h3>
+      <p>Three new shell commands for managing the OS lifecycle. All require an explicit typed confirmation.</p>
+      <ul>
+        <li><strong><code>update from-file &lt;path&gt;</code></strong> &mdash; applies a <code>.rpc</code> archive to the running OS. Skips <code>/Users/</code> and <code>/Nebula/</code> entirely so accounts, WiFi credentials, and config are preserved. Sets a crash sentinel before writing. Reboots when done.</li>
+        <li><strong><code>factoryreset</code></strong> &mdash; soft reset: wipes user accounts, home dirs, non-builtin packages, and logs. OS files untouched. Type <code>CONFIRM</code>. Reboots into first-run setup.</li>
+        <li><strong><code>reinstall</code></strong> &mdash; full OS wipe: deletes <code>/Core/</code>, <code>/Packages/</code>, <code>/Nebula/</code>, <code>/Users/</code>, writes a reinstall stub as <code>main.py</code>, reboots. Type <code>WIPE</code>. Optionally stage a <code>.rpc</code> for auto-install: <code>reinstall /path/to/os.rpc</code>.</li>
+      </ul>
+      <p>Supporting infrastructure: <code>Core/rpc_install.py</code> (streaming two-pass ZIP extractor, peak RAM = largest single file not archive size) and <code>Core/rpc_stub.py</code> (self-contained boot stub, no <code>Core/</code> imports needed).</p>
+
+      <h3>Browser OS update page</h3>
+      <p>New <a href="update.html">update.html</a>: update from a browser tab while the device is running. Loads a <code>.rpc</code> with JSZip, skips user data, pushes files via <code>_xfer</code>, sends <code>reboot</code> at the end. No raw REPL, no WiFi. Source: server version picker or a local file.</p>
+
+      <h3>First-run setup improvements</h3>
+      <ul>
+        <li>Official package repo added automatically &mdash; no prompt, no opt-in needed.</li>
+        <li><code>guest</code> account created silently.</li>
+        <li>New setup question: <strong>verbose boot</strong> preference (on/off). Was previously only settable after login.</li>
+        <li>Post-update notification: on first login after a successful <code>update from-file</code>, the shell shows a one-time confirmation banner and clears itself.</li>
+      </ul>
+
+      <h2 id="installation">Installation</h2>
+      <p><strong>Fresh install:</strong> Use the <a href="install.html">Web Installer</a> &mdash; flash from your browser, no software needed.</p>
+      <p><strong>Updating from rc4:</strong> Use the <a href="update.html">OS Update</a> page or run <code>update from-file /path/to/os.rpc</code> from the shell. User data is preserved.</p>
+      <p><strong>Manual:</strong> Flash MicroPython v1.25+ (v1.28 recommended), copy release files to the board, connect at 115200 baud, reboot.</p>
+
+      <h2 id="limitations">Known Limitations</h2>
+      <p>Same as v0.8.0-rc4 except <code>/Nebula/Logs/</code> manual creation is no longer needed &mdash; POST handles it.</p>
+      <ul>
+        <li>MemoryError may occur in the shell after heavy use due to heap fragmentation. <code>freeup</code> compacts; <code>reboot</code> clears.</li>
+        <li>ESP32-S3 temperature sensor reports unrealistic values (~300&ndash;450&nbsp;&deg;C). Hardware calibration difference, not an RPCortex bug.</li>
+        <li>No real-time clock on base Pico: <code>date</code> shows time since boot epoch until RTC is set.</li>
+        <li>HTTPS on Pico 1 W needs ~9.5&nbsp;KB contiguous heap. Run <code>freeup</code> first if fragmented.</li>
+        <li>WiFi passwords stored plaintext in the registry. No secure enclave on this hardware.</li>
+        <li>The editor requires a real terminal emulator &mdash; Thonny REPL won&rsquo;t render it.</li>
+      </ul>
+
+      <h2 id="whats-next">What's Next</h2>
+      <ul>
+        <li>SD card support</li>
+        <li><code>update check</code> &mdash; online update check (reserved, not yet implemented)</li>
+      </ul>
+
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.1-beta2 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
+
+    </article>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Nebula</span>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="NebulaDocs.html">Docs</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+        </div>
+      </div>
+      <p class="footer-note">Open source by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. MIT License.</p>
+    </div>
+  </footer>
+
+  <script>
+    const sections = document.querySelectorAll('.docs-article h2[id]');
+    const tocLinks = document.querySelectorAll('.docs-toc a');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const link = document.querySelector('.docs-toc a[href="#' + e.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => obs.observe(s));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+# Caddyfile for rpc.novalabs.app
+# Place this at /etc/caddy/Caddyfile (or wherever your Caddy config lives)
+# and set WEB_ROOT to the directory where your website files live.
+#
+# Web root structure expected:
+#   /srv/rpc/
+#     index.html
+#     style.css
+#     repo/
+#       index.json
+#     packages/
+#       helloworld.pkg
+#       ...
+
+# ── HTTPS (browsers, modern clients) ────────────────────────────────────────
+rpc.novalabs.app {
+    root * /srv/rpc
+    file_server
+    encode gzip
+
+    # Security headers
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+    }
+
+    # CORS for repo endpoint so Pico can reach it from HTTP contexts
+    @repo path /repo/*
+    header @repo Access-Control-Allow-Origin *
+}
+
+# ── HTTP (Pico W compatibility) ──────────────────────────────────────────────
+# Pico 1 W cannot complete a TLS handshake due to RAM constraints (264 KB).
+# This block serves the site over plain HTTP so the package manager works.
+# Browsers are redirected to HTTPS; Pico W uses the RPCortex-Nebula user-agent.
+#
+# Repo URL for the OS:  http://rpc.novalabs.app/repo/index.json
+
+http://rpc.novalabs.app {
+    root * /srv/rpc
+    file_server
+
+    # Redirect standard browsers to HTTPS, let Pico through
+    @browser {
+        header User-Agent *Mozilla*
+    }
+    redir @browser https://rpc.novalabs.app{uri} 301
+}

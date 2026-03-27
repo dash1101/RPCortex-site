@@ -1,0 +1,3 @@
+Place RPCortex release files here.
+Expected filename: RPCortex-Nebula-b8X-RC3.rpc
+(A .rpc file is a standard ZIP archive renamed — build with make_pkg.py or zip and rename.)

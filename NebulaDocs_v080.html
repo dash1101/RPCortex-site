@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; Documentation v0.8.0-rc4</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="https://rpc.novalabs.app">Home</a>
+        <a href="NebulaDocs_v081.html">Docs</a>
+        <a href="PackageDev.html">Build</a>
+        <a href="packages.html">Packages</a>
+        <a href="install.html">Web Installer</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- DOCS HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Documentation</h1>
+      <p>RPCortex Nebula v0.8.0-rc4 &nbsp;&bull;&nbsp; Full reference for the shell, commands, registry, and hardware</p>
+      <div class="version-switcher">
+        <span>Version:</span>
+        <a href="NebulaDocs_v080.html" class="version-active">v0.8.0-rc4</a>
+        <a href="NebulaDocs_v081.html">v0.8.1-beta2</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- DOCS LAYOUT -->
+  <div class="docs-page-layout">
+
+    <!-- SIDEBAR TOC -->
+    <nav class="docs-toc">
+      <h4>Contents</h4>
+      <a href="#getting-started">Getting Started</a>
+      <a href="#boot-sequence">Boot Sequence</a>
+      <a href="#the-shell">The Shell</a>
+      <a href="#filesystem">Filesystem Commands</a>
+      <a href="#system-commands">System Commands</a>
+      <a href="#user-management">User Management</a>
+      <a href="#networking">Networking</a>
+      <a href="#package-manager">Package Manager</a>
+      <a href="#web-tools">Web Tools</a>
+      <a href="#editor">Editor</a>
+      <a href="#settings-panel">Settings Panel</a>
+      <a href="#registry">Registry</a>
+      <a href="#post">POST</a>
+      <a href="#session-logging">Session Logging</a>
+      <a href="#hardware-performance">Hardware &amp; Performance</a>
+      <a href="#supported-hardware">Supported Hardware</a>
+      <a href="#security">Security</a>
+      <a href="#known-limitations">Known Limitations</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <article class="docs-article">
+
+      <!-- GETTING STARTED -->
+      <h2 id="getting-started">Getting Started</h2>
+      <p><strong>What you need:</strong></p>
+      <ul>
+        <li>Raspberry Pi Pico, Pico W, Pico 2, or a compatible ESP32 board</li>
+        <li>MicroPython firmware v1.25 or newer (v1.28 recommended)</li>
+        <li>A serial terminal at <strong>115200 baud</strong> &mdash; PuTTY on Windows, minicom or screen on Linux/macOS</li>
+      </ul>
+      <div class="note-box">
+        <strong>Thonny note:</strong> Thonny's built-in REPL works for basic use, but arrow key navigation, history, and the editor all require a proper terminal emulator. Use PuTTY for the full experience.
+      </div>
+
+      <h3>Installation</h3>
+      <ol>
+        <li>Flash MicroPython to your board</li>
+        <li>Copy all files from the repo to the root of the board's filesystem</li>
+        <li>Connect your serial terminal at 115200 baud</li>
+        <li>Reboot &mdash; <code>main.py</code> starts automatically on power-up</li>
+      </ol>
+
+      <h3>First boot</h3>
+      <p>A setup wizard runs on first boot:</p>
+      <ol>
+        <li>You set the <code>root</code> password (the administrator account)</li>
+        <li>A <code>guest</code> account is created automatically &mdash; it accepts any password including blank</li>
+        <li>You're offered the option to add the official package repo</li>
+      </ol>
+      <p>After that, log in and you're at the shell prompt. The wizard only runs once.</p>
+
+      <!-- BOOT SEQUENCE -->
+      <h2 id="boot-sequence">Boot Sequence</h2>
+      <pre><code>main.py
+  └── Core/post.py              POST: hardware checks, registry, WiFi
+       └── Core/initialization.py   reads startup mode, runs login loop
+            └── Core/launchpad.py   launchpad_init -- the interactive shell</code></pre>
+      <p>If initialization fails, <code>recovery_init()</code> starts an unauthenticated shell so you can diagnose the problem. The recovery shell has access to all the same commands.</p>
+
+      <!-- THE SHELL -->
+      <h2 id="the-shell">The Shell</h2>
+      <p>The shell prompt format is:</p>
+      <pre><code>username@nebula:~&gt;
+username@nebula:~/docs&gt;
+username@nebula:/Core&gt;</code></pre>
+      <p><code>~</code> is shorthand for the user's home directory (<code>/Users/&lt;username&gt;/</code>). The shell starts there on login. <code>cd ~</code> and bare <code>cd</code> both return home.</p>
+
+      <h3>Keyboard shortcuts</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Up / Down</td><td>Scroll command history (last 50)</td></tr>
+          <tr><td>Left / Right</td><td>Move cursor within the line</td></tr>
+          <tr><td>Home / Ctrl+A</td><td>Jump to beginning of line</td></tr>
+          <tr><td>End / Ctrl+E</td><td>Jump to end of line</td></tr>
+          <tr><td>Delete</td><td>Delete character under cursor</td></tr>
+          <tr><td>Backspace</td><td>Delete character before cursor</td></tr>
+          <tr><td>Ctrl+C</td><td>Cancel current input</td></tr>
+        </tbody>
+      </table>
+      <p>Characters are inserted at the cursor position &mdash; you can edit anywhere in the line, not just at the end.</p>
+
+      <h3>Command loading</h3>
+      <p>Built-in commands (<code>sys_fs</code>, <code>sys_sys</code>, <code>sys_net</code>, <code>sys_user</code>, <code>wifi</code>, <code>settings</code>) are loaded via <code>__import__()</code> and live in <code>sys.modules</code> permanently. After a cache clear they reload for free &mdash; no re-reading or recompiling. Package-installed commands use a separate exec-based path.</p>
+
+      <h3>Critical commands</h3>
+      <p><code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, and <code>gc</code> are implemented as inline functions that bypass the loader entirely. They always work regardless of heap state.</p>
+
+      <h3>Heap management</h3>
+      <p>The RP2040 has 264 KB of RAM. After loading several commands or running HTTPS requests, the heap may become fragmented &mdash; <code>gc.mem_free()</code> can show 90 KB free while a <code>MemoryError</code> still occurs, because no single contiguous block is large enough for a new allocation. Run <code>freeup</code> to compact the heap. The shell also automatically retries after a cache clear on <code>MemoryError</code>.</p>
+
+      <!-- FILESYSTEM COMMANDS -->
+      <h2 id="filesystem">Filesystem Commands</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>ls [path]</td><td>List directory &mdash; type, size, modification time, name</td></tr>
+          <tr><td>cd &lt;path&gt;</td><td>Change directory. <code>cd</code>, <code>cd ~</code>, and <code>cd ~/sub</code> all work</td></tr>
+          <tr><td>pwd</td><td>Print working directory</td></tr>
+          <tr><td>mkdir &lt;path&gt;</td><td>Create directory</td></tr>
+          <tr><td>rm &lt;path&gt;</td><td>Remove file or directory (recursive for directories)</td></tr>
+          <tr><td>touch &lt;file&gt;</td><td>Create an empty file</td></tr>
+          <tr><td>read &lt;file&gt;</td><td>Print file contents</td></tr>
+          <tr><td>head &lt;file&gt; [n]</td><td>First n lines (default 10)</td></tr>
+          <tr><td>tail &lt;file&gt; [n]</td><td>Last n lines (default 10)</td></tr>
+          <tr><td>mv &lt;src&gt; &lt;dst&gt;</td><td>Move or rename</td></tr>
+          <tr><td>cp &lt;src&gt; &lt;dst&gt;</td><td>Copy file</td></tr>
+          <tr><td>rename &lt;old&gt; &lt;new&gt;</td><td>Rename in place</td></tr>
+          <tr><td>df</td><td>Flash usage: total, used, free</td></tr>
+          <tr><td>tree [path]</td><td>Recursive directory listing</td></tr>
+          <tr><td>exec &lt;file&gt;</td><td>Run a Python file directly</td></tr>
+        </tbody>
+      </table>
+
+      <!-- SYSTEM COMMANDS -->
+      <h2 id="system-commands">System Commands</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>sysinfo</td><td>OS version, user, CPU, RAM, flash summary</td></tr>
+          <tr><td>meminfo</td><td>Detailed RAM breakdown</td></tr>
+          <tr><td>uptime</td><td>Time since last boot</td></tr>
+          <tr><td>date</td><td>Current date/time from RTC</td></tr>
+          <tr><td>ver</td><td>OS version string</td></tr>
+          <tr><td>clear / cls</td><td>Clear the terminal</td></tr>
+          <tr><td>fetch / neofetch</td><td>System info display with ASCII logo</td></tr>
+          <tr><td>reboot</td><td>Hard reset</td></tr>
+          <tr><td>sreboot / softreset</td><td>Soft reset (faster, keeps filesystem)</td></tr>
+          <tr><td>freeup / gc</td><td>Clear command cache, run GC, report RAM freed</td></tr>
+          <tr><td>echo &lt;text&gt;</td><td>Print text</td></tr>
+          <tr><td>history</td><td>Show command history</td></tr>
+          <tr><td>env [section]</td><td>Dump registry contents</td></tr>
+          <tr><td>reg get &lt;key&gt;</td><td>Read a registry key</td></tr>
+          <tr><td>reg set &lt;key&gt; &lt;val&gt;</td><td>Write a registry key</td></tr>
+          <tr><td>settings</td><td>Open the settings panel</td></tr>
+          <tr><td>edit [file]</td><td>Open the built-in editor</td></tr>
+          <tr><td>bench</td><td>Run the NebulaMark benchmark</td></tr>
+        </tbody>
+      </table>
+
+      <h3>pulse subcommands</h3>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>pulse status</td><td>Current CPU frequency and boot OC state</td></tr>
+          <tr><td>pulse oc [MHz]</td><td>Overclock to the specified frequency</td></tr>
+          <tr><td>pulse uc [MHz]</td><td>Underclock to the specified frequency (default 80 MHz)</td></tr>
+          <tr><td>pulse boot on</td><td>Enable boot overclocking</td></tr>
+          <tr><td>pulse boot off</td><td>Disable boot overclocking</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        <strong>Overclock note:</strong> POST calibration stores 220 MHz as the safe max for RP2040/RP2350. You can set any value manually with <code>pulse oc &lt;MHz&gt;</code> &mdash; a warning is shown above 220 MHz, but the clock is set regardless. Stability beyond 220 MHz is not guaranteed.
+      </div>
+
+      <!-- USER MANAGEMENT -->
+      <h2 id="user-management">User Management</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>whoami</td><td>Current logged-in user</td></tr>
+          <tr><td>mkacct</td><td>Create a new account (prompts for username and password)</td></tr>
+          <tr><td>rmuser &lt;user&gt;</td><td>Delete an account. Non-root users must verify the target's password first.</td></tr>
+          <tr><td>chpswd &lt;user&gt;</td><td>Change a password</td></tr>
+          <tr><td>logout / exit</td><td>End session, return to login</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Account details</h3>
+      <ul>
+        <li>Profiles stored in <code>/Nebula/Registry/user.cfg</code> as CSV</li>
+        <li>Each account gets <code>/Users/&lt;username&gt;/</code> created on account creation</li>
+        <li>Passwords stored as <strong>salted SHA256</strong> &mdash; unique salt per account</li>
+        <li><code>guest</code> uses the <code>NOPASS</code> marker &mdash; any password, including blank, is accepted</li>
+        <li><code>root</code> is created during first-run setup and is the administrator account</li>
+      </ul>
+
+      <!-- NETWORKING -->
+      <h2 id="networking">Networking</h2>
+      <p>WiFi works on any board with a <code>network</code> module: Pico W, Pico 2 W, and most ESP32 variants.</p>
+
+      <h3>WiFi commands</h3>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>wifi status</td><td>Connection state, SSID, IP</td></tr>
+          <tr><td>wifi scan</td><td>Nearby networks with signal strength</td></tr>
+          <tr><td>wifi connect [ssid]</td><td>Connect (prompts for password; uses saved if available)</td></tr>
+          <tr><td>wifi disconnect</td><td>Drop the current connection</td></tr>
+          <tr><td>wifi list</td><td>Saved networks</td></tr>
+          <tr><td>wifi add &lt;ssid&gt;</td><td>Save a network</td></tr>
+          <tr><td>wifi forget &lt;ssid&gt;</td><td>Remove a saved network</td></tr>
+        </tbody>
+      </table>
+      <p>Up to 2 networks can be saved. Enable autoconnect on boot:</p>
+      <pre><code>reg set Settings.Network_Autoconnect true</code></pre>
+      <p>Or toggle it in <code>settings</code>.</p>
+
+      <h3>Download commands</h3>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>wget &lt;url&gt; [file]</td><td>Download to flash &mdash; streams directly, no full-file RAM load</td></tr>
+          <tr><td>curl &lt;url&gt; [-v]</td><td>Fetch and print response body</td></tr>
+          <tr><td>runurl &lt;url&gt; [--keep]</td><td>Fetch and execute a Python file; deletes after unless <code>--keep</code></td></tr>
+          <tr><td>ping &lt;host&gt; [n]</td><td>TCP connectivity test</td></tr>
+          <tr><td>nslookup &lt;host&gt;</td><td>DNS lookup</td></tr>
+        </tbody>
+      </table>
+      <p>Both HTTP and HTTPS are supported. The client follows redirects iteratively with a 15-second socket timeout.</p>
+      <div class="warn-box">
+        <strong>HTTPS on Pico 1 W:</strong> TLS needs ~9.5 KB contiguous heap. Run <code>freeup</code> before network-heavy work, or use HTTPS from a fresh boot. If your host uses Cloudflare's "Always Use HTTPS" redirect, HTTP requests will be 301'd and may hit this limit. Use <code>https://</code> URLs directly or disable that Cloudflare setting for your repo host.
+      </div>
+
+      <!-- PACKAGE MANAGER -->
+      <h2 id="package-manager">Package Manager</h2>
+      <p>Packages are <code>.pkg</code> files: standard ZIP archives with a <code>package.cfg</code> metadata file inside.</p>
+
+      <h3>Package metadata (<code>package.cfg</code>)</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>pkg.name</td><td>Display name</td></tr>
+          <tr><td>pkg.dev</td><td>Author</td></tr>
+          <tr><td>pkg.ver</td><td>Version string</td></tr>
+          <tr><td>pkg.dir</td><td>Install path (e.g. <code>/Packages/HelloWorld</code>)</td></tr>
+          <tr><td>pkg.desc</td><td>Short description</td></tr>
+          <tr><td>pkg.cmd</td><td>Shell command: <code>name:/path/handler.py:function</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Commands</h3>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>pkg available</td><td>List all packages in the repo cache</td></tr>
+          <tr><td>pkg search &lt;query&gt;</td><td>Search cache by name or description</td></tr>
+          <tr><td>pkg install &lt;name&gt;</td><td>Install from repo cache</td></tr>
+          <tr><td>pkg install &lt;file.pkg&gt;</td><td>Install a local archive</td></tr>
+          <tr><td>pkg remove &lt;name&gt;</td><td>Uninstall</td></tr>
+          <tr><td>pkg list</td><td>Installed packages</td></tr>
+          <tr><td>pkg info &lt;name&gt;</td><td>Details for an installed package</td></tr>
+          <tr><td>pkg update</td><td>Refresh repo indexes from the network</td></tr>
+          <tr><td>pkg upgrade</td><td>Upgrade installed packages that have newer versions in cache</td></tr>
+          <tr><td>pkg repo list</td><td>Configured repo URLs</td></tr>
+          <tr><td>pkg repo add &lt;url&gt;</td><td>Add a repo</td></tr>
+          <tr><td>pkg repo remove &lt;url&gt;</td><td>Remove a repo</td></tr>
+        </tbody>
+      </table>
+      <p>Commands installed by packages are available immediately after install. They vanish immediately after removal. No reboot required either way.</p>
+
+      <h3>Quick start</h3>
+      <pre><code>pkg repo add http://rpc.novalabs.app/repo/index.json
+pkg update
+pkg available
+pkg install HelloWorld</code></pre>
+
+      <h3>Repo index format</h3>
+      <p>Repos are JSON files hosted anywhere (GitHub raw URLs work):</p>
+      <pre><code>{
+  "name": "My Repo",
+  "packages": [
+    {
+      "name": "HelloWorld",
+      "ver": "1.0.0",
+      "author": "dash1101",
+      "desc": "Sample package",
+      "url": "https://..."
+    }
+  ]
+}</code></pre>
+
+      <h3>Building packages</h3>
+      <p><code>repo/make_pkg.py</code> is a PC-side script that builds a <code>.pkg</code> from a source directory:</p>
+      <pre><code>python make_pkg.py MyPackage/</code></pre>
+      <p>Packages must use <code>ZIP_STORED</code> (no compression) &mdash; <code>make_pkg.py</code> handles this automatically. If you build with a standard ZIP tool using deflate, install will fail unless the target firmware has <code>zlib</code>.</p>
+      <p><a href="PackageDev.html">Full package development guide &rarr;</a></p>
+
+      <!-- WEB TOOLS -->
+      <h2 id="web-tools">Web Tools</h2>
+      <p>Two browser-based tools for interacting with a connected device over USB. Both use the Web Serial API (Chrome/Edge 89+).</p>
+
+      <h3><a href="install.html">Web Installer</a></h3>
+      <p>Flash MicroPython and copy RPCortex to a board directly from your browser using raw REPL mode. No software to install. Requires a bare MicroPython device (not a running RPCortex shell).</p>
+
+      <h3><a href="packages.html">Package Browser</a></h3>
+      <p>Browse the package repo and install packages to a connected board via raw REPL. No WiFi required on the device.</p>
+      <div class="note-box">In v0.8.1-beta2 the package browser was updated to use the <code>_xfer</code> serial protocol instead of raw REPL, and no longer requires the device to be in REPL mode &mdash; the shell can stay running.</div>
+
+      <!-- EDITOR -->
+      <h2 id="editor">Editor</h2>
+      <p>The built-in terminal editor is invoked with:</p>
+      <pre><code>edit myfile.py
+nano /Core/somefile.py
+vi                         # scratch buffer, no file</code></pre>
+
+      <h3>Controls</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Arrow keys</td><td>Move cursor</td></tr>
+          <tr><td>Ctrl+S</td><td>Save</td></tr>
+          <tr><td>Ctrl+Q</td><td>Quit</td></tr>
+          <tr><td>Ctrl+X</td><td>Save and quit</td></tr>
+          <tr><td>Ctrl+K</td><td>Cut line</td></tr>
+          <tr><td>Ctrl+U</td><td>Paste line</td></tr>
+          <tr><td>Ctrl+F</td><td>Find</td></tr>
+          <tr><td>Ctrl+G</td><td>Go to line number</td></tr>
+        </tbody>
+      </table>
+      <div class="warn-box">Requires a real terminal emulator. Thonny's REPL doesn't render ANSI escape sequences correctly.</div>
+
+      <!-- SETTINGS PANEL -->
+      <h2 id="settings-panel">Settings Panel</h2>
+      <p>Run <code>settings</code> to open an interactive panel:</p>
+      <pre><code>&#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;
+&#x2502;  RPCortex Settings               125 MHz  27.4C  92 KB      &#x2502;
+&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;
+&#x2502;                                                              &#x2502;
+&#x2502;  SYSTEM                                                      &#x2502;
+&#x2502;  [1] Verbose Boot         : OFF                              &#x2502;
+&#x2502;  [2] Program Execution    : ON                               &#x2502;
+&#x2502;                                                              &#x2502;
+&#x2502;  HARDWARE                                                    &#x2502;
+&#x2502;  [3] Boot Overclock       : OFF                              &#x2502;
+&#x2502;  [4] Beeper               : OFF                              &#x2502;
+&#x2502;  [5] SD Card Support      : OFF                              &#x2502;
+&#x2502;                                                              &#x2502;
+&#x2502;  NETWORK                                                     &#x2502;
+&#x2502;  [6] WiFi Autoconnect     : ON                               &#x2502;
+&#x2502;                                                              &#x2502;
+&#x2502;  [1-6] toggle   [r] refresh   [q] quit                       &#x2502;
+&#x2502;                                                              &#x2502;
+&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</code></pre>
+      <p><code>[1&ndash;6]</code> toggle the setting. <code>[r]</code> refreshes the display. <code>[q]</code> exits.</p>
+
+      <h3>Settings reference</h3>
+      <table>
+        <thead><tr><th>#</th><th>Setting</th><th>Registry key</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Verbose Boot</td><td><code>Settings.Verbose_Boot</code></td></tr>
+          <tr><td>2</td><td>Program Execution</td><td><code>Features.Program_Execution</code></td></tr>
+          <tr><td>3</td><td>Boot Overclock</td><td><code>Settings.OC_On_Boot</code></td></tr>
+          <tr><td>4</td><td>Beeper</td><td><code>Features.beeper</code></td></tr>
+          <tr><td>5</td><td>SD Card Support</td><td><code>Features.SD_Support</code></td></tr>
+          <tr><td>6</td><td>WiFi Autoconnect</td><td><code>Settings.Network_Autoconnect</code></td></tr>
+        </tbody>
+      </table>
+
+      <!-- REGISTRY -->
+      <h2 id="registry">Registry</h2>
+      <p>The registry lives at <code>/Nebula/Registry/registry.cfg</code> as a plain INI file. It's created from an embedded template on first boot if missing.</p>
+
+      <h3>[Settings]</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Values</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Setup</td><td>true/false</td><td>First-run wizard completed</td></tr>
+          <tr><td>OC_On_Boot</td><td>true/false</td><td>Apply max clock on every boot</td></tr>
+          <tr><td>Verbose_Boot</td><td>true/false</td><td>Show POST info messages</td></tr>
+          <tr><td>Network_Autoconnect</td><td>true/false</td><td>WiFi autoconnect on boot</td></tr>
+          <tr><td>Active_User</td><td>string</td><td>Current session user</td></tr>
+          <tr><td>Startup</td><td>0 / 6</td><td>Crash sentinel for clock calibration</td></tr>
+          <tr><td>Version</td><td>string</td><td>OS version</td></tr>
+        </tbody>
+      </table>
+
+      <h3>[Hardware]</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Clockable</td><td><code>true</code> after clock calibration completes</td></tr>
+          <tr><td>Min_Clock</td><td>Minimum safe CPU clock (e.g. <code>30.0MHz</code>)</td></tr>
+          <tr><td>Max_Clock</td><td>Maximum safe CPU clock (e.g. <code>220.0MHz</code>)</td></tr>
+          <tr><td>beeper_pin</td><td>GPIO pin for beeper, or <code>None</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>[Networks]</h3>
+      <p>WiFi credentials for up to 2 saved networks. Keys are created dynamically when you save a network.</p>
+
+      <h3>[Features]</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Program_Execution</td><td>true</td><td>Allow running scripts with <code>exec</code></td></tr>
+          <tr><td>Serial</td><td>true</td><td>Serial interface active</td></tr>
+          <tr><td>SD_Support</td><td>false</td><td>SD card (not yet implemented)</td></tr>
+          <tr><td>Nova</td><td>false</td><td>Nova GUI (future)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Shell access</h3>
+      <pre><code>reg get Settings.OC_On_Boot        # read a key
+reg set Settings.OC_On_Boot true   # write a key
+env                                 # dump all sections
+env Settings                        # dump one section</code></pre>
+
+      <!-- POST -->
+      <h2 id="post">POST</h2>
+      <p>POST runs on every boot before the login prompt. It prints status for each check and stops if a critical check fails.</p>
+      <table>
+        <thead><tr><th>Check</th><th>Critical</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Registry</td><td>Yes</td><td>Creates registry from template if missing</td></tr>
+          <tr><td>CPU arithmetic</td><td>Yes</td><td>Float, int, comparison, bitwise</td></tr>
+          <tr><td>RAM</td><td>Yes</td><td>Allocates a buffer and verifies a write pattern</td></tr>
+          <tr><td>Clock calibration</td><td>No</td><td>Runs once; RP2 gets 220 MHz max without probing</td></tr>
+          <tr><td>WLAN</td><td>No</td><td>Checks for WiFi hardware; autoconnects if configured</td></tr>
+          <tr><td>Beeper</td><td>No</td><td>Initializes GPIO beeper if configured</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><strong>Boot overclock:</strong> if <code>Settings.OC_On_Boot = true</code>, POST applies <code>Hardware.Max_Clock</code> via <code>machine.freq()</code> on every boot.</li>
+        <li><strong>Verbose boot:</strong> <code>Settings.Verbose_Boot = false</code> by default. POST only prints warnings and errors. Enable it to see all informational messages.</li>
+        <li><strong>Crash sentinel:</strong> POST writes <code>6</code> to <code>Settings.Startup</code> before clock calibration and clears it on success. If the device crashes mid-calibration, the next boot detects the <code>6</code> and disables clocking.</li>
+      </ul>
+
+      <!-- SESSION LOGGING -->
+      <h2 id="session-logging">Session Logging</h2>
+      <p>Every session is logged to <code>/Nebula/Logs/latest.log</code>. The log captures everything printed through the OS output functions (<code>ok</code>, <code>info</code>, <code>warn</code>, <code>error</code>, <code>fatal</code>).</p>
+      <p>Log rotation on each boot:</p>
+      <pre><code>latest.log -&gt; log_1.log -&gt; log_2.log -&gt; ... -&gt; log_9.log (dropped)</code></pre>
+      <p>Up to 10 logs are kept. The <code>/Nebula/Logs/</code> directory must exist. Create it manually if log writes fail:</p>
+      <pre><code>mkdir /Nebula/Logs</code></pre>
+
+      <!-- HARDWARE & PERFORMANCE -->
+      <h2 id="hardware-performance">Hardware &amp; Performance</h2>
+
+      <h3>Overclocking</h3>
+      <p>RPCortex detects the CPU's safe clock range on first boot. For RP2040/RP2350 the stored max is 220 MHz.</p>
+      <pre><code>pulse oc 220       # overclock to 220 MHz for this session
+pulse oc 240       # overclock beyond safe default (warning shown)
+pulse boot on      # apply on every boot
+settings           # toggle via settings panel</code></pre>
+      <p>Manual overclock beyond 220 MHz is allowed. A warning is shown but the clock is set to whatever you specify. The RP2040 is generally stable up to around 240&ndash;250 MHz with the right flash timing.</p>
+
+      <h3>NebulaMark</h3>
+      <p><code>bench</code> runs the NebulaMark suite: integer ops, floating-point ops, Mandelbrot iteration, and Pi approximation. Results are printed as calculation times in milliseconds.</p>
+
+      <h3>Heap and fragmentation</h3>
+      <p><code>freeup</code> clears the command cache and runs garbage collection. Use it before heavy network operations or when you get a <code>MemoryError</code> despite apparent free RAM. <code>meminfo</code> shows the current heap state.</p>
+
+      <!-- SUPPORTED HARDWARE -->
+      <h2 id="supported-hardware">Supported Hardware</h2>
+      <table>
+        <thead><tr><th>Board</th><th>Status</th><th>RAM</th></tr></thead>
+        <tbody>
+          <tr><td>Raspberry Pi Pico 2 W (RP2350 + WiFi)</td><td><span class="tag cyan-tag">Recommended</span></td><td>520 KB</td></tr>
+          <tr><td>ESP32-S3</td><td><span class="tag cyan-tag">Recommended</span></td><td>Varies</td></tr>
+          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">Supported</span></td><td>264 KB</td></tr>
+          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">Supported</span></td><td>264 KB</td></tr>
+          <tr><td>Raspberry Pi Pico 2 (RP2350)</td><td><span class="tag green">Supported</span></td><td>520 KB</td></tr>
+          <tr><td>ESP32 / ESP32-S2</td><td><span class="tag green">Supported</span></td><td>Varies</td></tr>
+        </tbody>
+      </table>
+      <p class="note">MicroPython v1.25+ &nbsp;&bull;&nbsp; 4 MB flash recommended &nbsp;&bull;&nbsp; 256 KB+ RAM &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
+
+      <!-- SECURITY -->
+      <h2 id="security">Security</h2>
+      <ul>
+        <li><strong>Passwords</strong> use salted SHA256. Each account has a unique random salt, so rainbow tables don't apply. Accounts created before v0.8.0-rc used unsalted SHA256 and upgrade on the next password change.</li>
+        <li><strong>WiFi credentials</strong> are stored in plaintext in <code>registry.cfg</code>. There is no secure storage mechanism on this hardware.</li>
+        <li><strong>Home directories</strong> provide logical separation at <code>/Users/&lt;username&gt;/</code>. There is no kernel-enforced permission model.</li>
+      </ul>
+
+      <!-- KNOWN LIMITATIONS -->
+      <h2 id="known-limitations">Known Limitations</h2>
+      <ul>
+        <li><strong>MemoryError in the shell</strong> &mdash; may occur after heavy use due to heap fragmentation. Run <code>freeup</code> to compact the heap. If it persists, <code>reboot</code> clears it. Being actively worked on.</li>
+        <li><strong>ESP32-S3 temperature sensor</strong> &mdash; the onboard temperature sensor on ESP32-S3 is not calibrated in the same way as the RP2040. <code>fetch</code> will show unrealistic values (typically 300&ndash;450 &deg;C). This is a hardware/firmware limitation, not a bug in RPCortex. RP2040/RP2350 temperature is accurate.</li>
+        <li><strong>No real-time clock on base Pico</strong> &mdash; <code>date</code> shows time since boot epoch until the RTC is set manually</li>
+        <li><strong>HTTPS on Pico 1 W</strong> &mdash; TLS needs ~9.5 KB contiguous heap; run <code>freeup</code> first if the heap is fragmented</li>
+        <li><strong>Editor requires a real terminal</strong> &mdash; Thonny REPL won't render it</li>
+        <li><strong>Log directory</strong> &mdash; <code>/Nebula/Logs/</code> is not created automatically; log writes silently fail if it's missing</li>
+        <li><strong>Dual user store</strong> &mdash; <code>usrmgmt.py</code> (active) and <code>regedit.py</code> (unused legacy XOR store) are separate; unification is planned</li>
+        <li><strong>No tab completion</strong> &mdash; planned</li>
+        <li><strong>SD card support</strong> &mdash; registry key exists, implementation pending</li>
+      </ul>
+
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.0-rc4 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
+
+    </article>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Nebula</span>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="NebulaDocs_v081.html">Docs</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+        </div>
+      </div>
+      <p class="footer-note">Open source by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. MIT License.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Highlight active TOC link on scroll
+    const sections = document.querySelectorAll('.docs-article h2[id]');
+    const tocLinks = document.querySelectorAll('.docs-toc a');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const link = document.querySelector('.docs-toc a[href="#' + e.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => obs.observe(s));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex — Nebula OS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="packages.html">Packages</a>
+        <a href="NebulaDocs.html">Docs</a>
+        <a href="PackageDev.html">Build</a>
+        <a href="install.html">Web Installer</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="badge">v0.8.1-beta2 &mdash; Nebula β81</div>
+      <h1>Login. Shell. Packages. WiFi. On a Pico.</h1>
+      <p class="hero-sub">
+        RPCortex is a CLI operating system for the Raspberry Pi Pico 2 W, ESP32-S3,
+        and compatible boards, written entirely in MicroPython. User accounts, WiFi,
+        a package manager, a built-in editor, and a full boot sequence.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="install.html">Web Installer</a>
+        <a class="btn-secondary" href="NebulaDocs.html">Documentation</a>
+        <a class="btn-secondary" href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+      </div>
+      <div class="hero-term">
+        <div class="term-bar">
+          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          <span class="term-title">launchpad &mdash; 115200 baud</span>
+        </div>
+        <div class="term-body" id="term-body"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FEATURES -->
+  <section id="features" class="section">
+    <div class="inner">
+      <h2>What's inside</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⌨</div>
+          <h3>Interactive Shell</h3>
+          <p>Colored prompt, full cursor navigation, command history, home directory shorthand, and session logging. Commands load once and stay cached.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h3>Filesystem</h3>
+          <p><code>ls</code>, <code>cd</code>, <code>mv</code>, <code>cp</code>, <code>rm</code>, <code>tree</code>, <code>df</code>, <code>head</code>, <code>tail</code>. Everything you'd expect from a real shell, including colored output and file metadata.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>User Accounts</h3>
+          <p>Salted SHA256 passwords, multi-user support, per-user home directories. Accounts are created and managed entirely from the shell.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📡</div>
+          <h3>WiFi &amp; Networking</h3>
+          <p>Scan, connect, and save networks. Autoconnect on boot. Includes <code>wget</code>, <code>curl</code>, <code>runurl</code>, <code>ping</code>, and <code>nslookup</code>. HTTP and HTTPS supported.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📦</div>
+          <h3>Package Manager</h3>
+          <p>Install packages by name from a repo, manage repos, search and browse the index, upgrade installed packages. No reboot needed after install or remove.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✏</div>
+          <h3>Built-in Editor</h3>
+          <p>A full terminal text editor accessible via <code>edit</code>, <code>nano</code>, or <code>vi</code>. Supports find, go-to-line, cut/paste, and save. Works over any serial connection.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3>Boot &amp; POST</h3>
+          <p>Every boot runs a self-test: registry check, CPU arithmetic, RAM verification, clock calibration, and optional WiFi autoconnect. Recovery shell if anything fails.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎛</div>
+          <h3>Settings Panel</h3>
+          <p>An ANSI box-drawing settings panel accessible via <code>settings</code>. Toggle boot overclock, WiFi autoconnect, verbose boot, the beeper, and more. No registry editing needed.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Performance Tools</h3>
+          <p>Overclock and underclock via <code>pulse</code>. Benchmark with <code>bench</code> (NebulaMark). System info via <code>fetch</code>. Heap management with <code>freeup</code>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARDWARE -->
+  <section class="section alt">
+    <div class="inner">
+      <h2>Supported Hardware</h2>
+      <table class="hw-table">
+        <thead>
+          <tr><th>Board</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Raspberry Pi Pico 2 W (RP2350 + WiFi)</td><td><span class="tag cyan-tag">Recommended</span></td></tr>
+          <tr><td>ESP32-S3</td><td><span class="tag cyan-tag">Recommended</span></td></tr>
+          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">Supported</span></td></tr>
+          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">Supported</span></td></tr>
+          <tr><td>Raspberry Pi Pico 2 (RP2350)</td><td><span class="tag green">Supported</span></td></tr>
+          <tr><td>ESP32 / ESP32-S2</td><td><span class="tag green">Supported</span></td></tr>
+        </tbody>
+      </table>
+      <p class="note">MicroPython v1.25+ &nbsp;&bull;&nbsp; 4 MB flash recommended &nbsp;&bull;&nbsp; 256 KB+ RAM &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
+    </div>
+  </section>
+
+  <!-- SCREENSHOTS -->
+  <section class="section">
+    <div class="inner">
+      <h2>In action</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 28px;">Running on an ESP32-S3 over serial.</p>
+      <div class="screenshot-grid">
+        <div class="screenshot-wrap">
+          <div class="screenshot-label">fetch — system info</div>
+          <img src="img/esp32s3_fetch_rpcb8x.png" alt="RPCortex fetch on ESP32-S3" loading="lazy">
+        </div>
+        <div class="screenshot-wrap">
+          <div class="screenshot-label">pkg — package manager</div>
+          <img src="img/esp32s3_fetch_pkg_rpcb8x.png" alt="RPCortex pkg on ESP32-S3" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMANDS -->
+  <section id="commands" class="section alt">
+    <div class="inner">
+      <h2>Commands at a glance</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 4px;">A sampling of what the shell gives you out of the box. Full reference in the <a href="NebulaDocs.html">docs</a>.</p>
+      <div class="cmd-grid">
+        <div class="cmd-block">
+          <div class="cmd-block-label">Filesystem</div>
+          <pre>ls              <span class="dim"># list with size + timestamp</span>
+cd ~/projects   <span class="dim"># ~ is your home dir</span>
+cp file.py bak/
+tree            <span class="dim"># recursive directory tree</span>
+df              <span class="dim"># flash usage</span>
+edit notes.txt  <span class="dim"># open the built-in editor</span></pre>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-block-label">Networking</div>
+          <pre>wifi connect          <span class="dim"># interactive connect</span>
+wget http://...       <span class="dim"># stream to flash</span>
+curl http://...       <span class="dim"># print response</span>
+runurl http://a.py    <span class="dim"># fetch and run</span>
+ping 8.8.8.8
+nslookup example.com</pre>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-block-label">System</div>
+          <pre>fetch           <span class="dim"># system info display</span>
+sysinfo         <span class="dim"># OS + hardware overview</span>
+pulse oc 220    <span class="dim"># overclock to 220 MHz</span>
+bench           <span class="dim"># run NebulaMark</span>
+freeup          <span class="dim"># compact heap, report RAM</span>
+settings        <span class="dim"># open settings panel</span></pre>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-block-label">Users</div>
+          <pre>whoami
+mkacct          <span class="dim"># create account</span>
+chpswd root     <span class="dim"># change password</span>
+rmuser guest
+logout          <span class="dim"># back to login</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section id="install" class="section">
+    <div class="inner">
+      <h2>Installation</h2>
+      <p style="margin-bottom: 1.5rem;">Prefer a one-click option? The <a href="install.html" style="color: var(--cyan-dim); font-weight: 500;">Web Installer</a> connects to your device over USB and flashes RPCortex directly from your browser &mdash; no software required (Chrome/Edge only).</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>Flash MicroPython</strong>
+            <p>Download the latest MicroPython firmware for your board from <a href="https://micropython.org/download/" target="_blank">micropython.org</a> and flash it using Thonny or <code>picotool</code>. v1.25+ required, v1.28 recommended.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>Copy files</strong>
+            <p>Download the latest <code>.zip</code> release from <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">GitHub</a> and copy all files to the root of the board's filesystem using Thonny or <code>mpremote</code>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <strong>Open a serial terminal</strong>
+            <p>Connect with <strong>PuTTY</strong> (Windows) or <strong>minicom / screen</strong> (Linux/macOS) at <strong>115200 baud</strong>. Thonny's REPL works in a pinch but arrow keys and the editor won't function correctly.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <strong>First boot</strong>
+            <p>POST runs automatically. You'll be prompted to set a <code>root</code> password and given a <code>guest</code> account. Log in and you're in the shell.</p>
+          </div>
+        </div>
+      </div>
+      <div class="codeblock">
+        <div class="codeblock-label">Quick start after first login</div>
+        <pre>wifi connect
+pkg repo add http://rpc.novalabs.app/repo/index.json
+pkg update
+pkg available
+pkg install HelloWorld
+hello</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PACKAGES -->
+  <section id="packages" class="section alt">
+    <div class="inner">
+      <h2>Package Manager</h2>
+      <p style="color: var(--text-muted); margin-bottom: 0;">The official RPCortex package repo is hosted here. Add it once and use <code>pkg update</code> to stay current. Installed commands are live immediately after install. No reboot needed.</p>
+      <div class="codeblock">
+        <div class="codeblock-label">Add the official repo and browse packages</div>
+        <pre>pkg repo add http://rpc.novalabs.app/repo/index.json
+pkg update
+pkg available            # list everything in the repo
+pkg search &lt;query&gt;      # filter by name or description
+pkg install &lt;name&gt;
+pkg info    &lt;name&gt;      # show package details
+pkg list                 # what's installed
+pkg upgrade              # update outdated packages
+pkg remove  &lt;name&gt;</pre>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 20px;">
+        Packages are standard ZIP archives renamed to <code>.pkg</code>. Build your own with the included <code>make_pkg.py</code> script and submit a PR to get listed in the repo.
+        <a href="PackageDev.html" style="color: var(--cyan-dim); font-weight: 500;">Full package development guide &rarr;</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- DOCS -->
+  <section class="section">
+    <div class="inner">
+      <h2>Documentation</h2>
+      <div class="docs-grid">
+        <div class="docs-card">
+          <h3>Full Reference</h3>
+          <p>Complete command tables, shell controls, registry keys, POST details, security model, and known limitations.</p>
+          <a href="NebulaDocs.html">NebulaDocs.html &rarr;</a>
+        </div>
+        <div class="docs-card">
+          <h3>Release Notes</h3>
+          <p>Everything in v0.8.1-beta2 &mdash; shell, networking, package manager, web installer, settings panel, and more.</p>
+          <a href="release.html">Release Notes &rarr;</a>
+        </div>
+        <div class="docs-card">
+          <h3>Issue Tracker</h3>
+          <p>Found a bug or have a feature request? Open an issue on GitHub.</p>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">GitHub Issues &rarr;</a>
+        </div>
+        <div class="docs-card">
+          <h3>Build a Package</h3>
+          <p>Step-by-step guide: write a command, create a <code>package.cfg</code>, build a <code>.pkg</code> with <code>make_pkg.py</code>, host a repo, and get listed.</p>
+          <a href="PackageDev.html">Package Dev Guide &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Nebula</span>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="NebulaDocs.html">Docs</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+        </div>
+      </div>
+      <p class="footer-note">Open source by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. MIT License.</p>
+    </div>
+  </footer>
+
+  <script src="js/terminal-demo.js"></script>
+
+</body>
+</html>

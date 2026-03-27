@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; Package Repository</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Styles in style.css -->
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="https://rpc.novalabs.app">Home</a>
+        <a href="NebulaDocs.html">Docs</a>
+        <a href="PackageDev.html">Build</a>
+        <a href="packages.html">Packages</a>
+        <a href="install.html">Web Installer</a>
+        <a href="update.html">Update</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Package Repository</h1>
+      <p>Browse available packages for RPCortex. Install directly to a connected device over USB &mdash; no WiFi, no REPL, no reboot required.</p>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <section class="section">
+    <div class="inner">
+
+      <!-- CONNECT BAR -->
+      <div class="connect-bar" id="connectBar">
+        <div class="connect-bar-left">
+          <span class="connect-dot off" id="connectDot"></span>
+          <span class="connect-status" id="connectLabel">No device connected</span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-primary" id="connectBtn" style="padding:10px 24px;font-size:0.88rem;">Connect Device</button>
+          <button class="btn-secondary" id="disconnectBtn" style="padding:10px 24px;font-size:0.88rem;display:none;">Disconnect</button>
+        </div>
+      </div>
+      <p class="serial-note" id="serialNote">
+        Requires Chrome 89+ or Edge 89+. Close PuTTY/Thonny before connecting. The device must be logged in to the Launchpad shell.
+      </p>
+
+      <!-- PACKAGE GRID -->
+      <div id="pkgContainer">
+        <div class="pkg-loading" id="pkgLoading">Loading packages&hellip;</div>
+      </div>
+
+      <!-- CLI REFERENCE -->
+      <div style="margin-top:40px;">
+        <div class="codeblock">
+          <div class="codeblock-label">Or install from the shell (WiFi required)</div>
+          <pre>pkg repo add http://rpc.novalabs.app/repo/index.json
+pkg update
+pkg available
+pkg install &lt;name&gt;</pre>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TRANSFER OVERLAY -->
+  <div class="xfer-overlay" id="xferOverlay">
+    <div class="xfer-panel">
+      <h3 id="xferTitle">Installing package&hellip;</h3>
+      <p class="xfer-panel-sub" id="xferSub">Transferring to device over serial.</p>
+      <div class="xfer-progress-wrap">
+        <div class="xfer-progress-fill" id="xferProgress"></div>
+      </div>
+      <div class="xfer-log" id="xferLog"></div>
+      <button class="xfer-close-btn" id="xferCloseBtn" style="display:none;">Close</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Nebula</span>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="NebulaDocs.html">Docs</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+        </div>
+      </div>
+      <p class="footer-note">Open source by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. MIT License.</p>
+    </div>
+  </footer>
+
+  <script src="js/serial-device.js"></script>
+  <script src="js/packages.js"></script>
+
+</body>
+</html>
