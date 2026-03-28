@@ -7,8 +7,8 @@
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
         "subversion": "beta3",
-        "file": "https://github.com/dash1101/RPCortex/releases/download/RPC-%CE%B281/RPC-Nebula-b81-Beta3.rpc",
-        "tag": "beta - latest",
+        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta3.rpc",
+        "tag": "latest (beta)",
         "default": true
       }
     ]
@@ -20,7 +20,7 @@
         "name": "RPCortex Nebula",
         "version": "v0.8.0",
         "subversion": "rc4",
-        "file": "https://github.com/dash1101/RPCortex/releases/download/RPC-%CE%B28X/RPC-Nebula-b8X-RC4.rpc",
+        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b8X-RC4.rpc",
         "tag": "stable"
       }
     ]
