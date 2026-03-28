@@ -107,6 +107,46 @@
     statusText.textContent = msg;
   }
 
+  /* ── Version picker — populated from releases/updates.json ──── */
+  async function loadUpdates() {
+    if (!versionSelect) return;
+    try {
+      var resp = await fetch('releases/updates.json');
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var groups = await resp.json();
+
+      versionSelect.innerHTML = '';
+      var defaultSet = false;
+
+      for (var gi = 0; gi < groups.length; gi++) {
+        var g     = groups[gi];
+        var label = g.group + (g.groupLabel ? ' (' + g.groupLabel + ')' : '');
+        var og    = document.createElement('optgroup');
+        og.label  = label;
+
+        var rels = g.releases || [];
+        for (var ri = 0; ri < rels.length; ri++) {
+          var r   = rels[ri];
+          var opt = document.createElement('option');
+          opt.value       = r.file;
+          opt.textContent = r.name + ' ' + r.version + '-' + r.subversion +
+                            (r.tag ? ' \u2014 ' + r.tag : '');
+          if (r.default && !defaultSet) {
+            opt.selected = true;
+            defaultSet   = true;
+          }
+          og.appendChild(opt);
+        }
+        versionSelect.appendChild(og);
+      }
+
+      versionSelect.disabled = false;
+    } catch (e) {
+      versionSelect.innerHTML = '<option value="releases/RPC-Nebula-b81-Beta.rpc">RPCortex Nebula v0.8.1-beta3 \u2014 latest</option>';
+      versionSelect.disabled  = false;
+    }
+  }
+
   /* ── Source radio toggle ──────────────────────────────────────── */
   var radios = document.querySelectorAll('input[name="source"]');
   radios.forEach(function (r) {
@@ -356,5 +396,6 @@
   /* ── Init ─────────────────────────────────────────────────────── */
   setConnected(false);
   progressPanel.style.display = 'none';
+  loadUpdates();
 
 })();
