@@ -150,7 +150,9 @@
     var completeOut = await activeDevice.waitFor('XFER_COMPLETE', 30000);
     xferProgress.style.width = '100%';
 
+    var installOk = false;
     if (completeOut.indexOf('XFER_INSTALLED') !== -1) {
+      installOk = true;
       xferLogLine('[@] Package \'' + pkgName + '\' installed successfully!', 'xfer-log-ok');
       xferTitle.textContent = pkgName + ' installed!';
       xferSub.textContent   = 'The package is now available on the device.';
@@ -177,6 +179,17 @@
         xferLogLine('  ' + rl, 'xfer-log-dim');
       }
     }
+
+    if (installOk) {
+      if (activeDevice) {
+        try { await activeDevice.close(); } catch (e) {}
+        activeDevice = null;
+      }
+      setConnected(false);
+      xferLogLine('[@] Device disconnected.', 'xfer-log-ok');
+    }
+
+    return installOk;
   }
 
   /* ── Install from repo URL ─────────────────────────────────────── */

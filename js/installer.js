@@ -14,10 +14,51 @@
 
   function getSelectedVersion() {
     var sel = document.getElementById('versionSelect');
-    if (!sel) return { file: 'releases/RPC-Nebula-b81-Beta.rpc', label: 'RPCortex Nebula v0.8.1-beta2' };
+    if (!sel || !sel.value) return { file: 'releases/RPC-Nebula-b81-Beta.rpc', label: 'RPCortex Nebula v0.8.1-beta3' };
     var opt = sel.options[sel.selectedIndex];
     var label = opt ? opt.text.replace(/\s+\u2014.*$/, '').trim() : 'unknown';
     return { file: sel.value, label: label };
+  }
+
+  /* ── Version picker — populated from releases/releases.json ──── */
+  async function loadReleases() {
+    var sel = document.getElementById('versionSelect');
+    if (!sel) return;
+    try {
+      var resp = await fetch('releases/releases.json');
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var groups = await resp.json();
+
+      sel.innerHTML = '';
+      var defaultSet = false;
+
+      for (var gi = 0; gi < groups.length; gi++) {
+        var g     = groups[gi];
+        var label = g.group + (g.groupLabel ? ' (' + g.groupLabel + ')' : '');
+        var og    = document.createElement('optgroup');
+        og.label  = label;
+
+        var rels = g.releases || [];
+        for (var ri = 0; ri < rels.length; ri++) {
+          var r   = rels[ri];
+          var opt = document.createElement('option');
+          opt.value       = r.file;
+          opt.textContent = r.name + ' ' + r.version + '-' + r.subversion +
+                            (r.tag ? ' \u2014 ' + r.tag : '');
+          if (r.default && !defaultSet) {
+            opt.selected = true;
+            defaultSet   = true;
+          }
+          og.appendChild(opt);
+        }
+        sel.appendChild(og);
+      }
+
+      sel.disabled = false;
+    } catch (e) {
+      sel.innerHTML = '<option value="releases/RPC-Nebula-b81-Beta.rpc">RPCortex Nebula v0.8.1-beta3 \u2014 latest</option>';
+      sel.disabled  = false;
+    }
   }
 
   /* ── File filter ──────────────────────────────────────────────── */
@@ -399,5 +440,8 @@
     document.getElementById('compatBanner').classList.add('visible');
     document.getElementById('installerContent').style.display = 'none';
   }
+
+  /* ── Populate version picker from JSON ──────────────────────── */
+  loadReleases();
 
 })();
