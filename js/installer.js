@@ -209,18 +209,21 @@
   var transferBtn       = document.getElementById('transferBtn');
   var transferLog       = document.getElementById('transferLog');
 
-  transferFileInput.addEventListener('change', function () {
-    var f = transferFileInput.files[0];
-    if (f) {
-      transferFileName.textContent = f.name;
-      var dest = transferPathInput.value.trim();
-      if (dest === '/' || dest === '') {
-        transferPathInput.value = '/Packages/' + f.name;
+  if (transferFileInput) {
+    transferFileInput.addEventListener('change', function () {
+      var f = transferFileInput.files[0];
+      if (f) {
+        transferFileName.textContent = f.name;
+        var dest = transferPathInput.value.trim();
+        if (dest === '/' || dest === '') {
+          transferPathInput.value = '/Packages/' + f.name;
+        }
       }
-    }
-  });
+    });
+  }
 
   function appendTransferLog(text) {
+    if (!transferLog) return;
     var line = document.createElement('div');
     if (text.startsWith('[@]'))      line.style.color = 'var(--green)';
     else if (text.startsWith('[:]')) line.style.color = 'var(--accent)';
@@ -231,32 +234,34 @@
     transferLog.scrollTop = transferLog.scrollHeight;
   }
 
-  transferBtn.addEventListener('click', async function () {
-    if (!activeDevice) { appendTransferLog('[-] Not connected.'); return; }
-    var file = transferFileInput.files[0];
-    if (!file) { appendTransferLog('[-] No file selected.'); return; }
-    var dest = transferPathInput.value.trim();
-    if (!dest || dest === '/') { appendTransferLog('[-] Enter a destination path.'); return; }
+  if (transferBtn) {
+    transferBtn.addEventListener('click', async function () {
+      if (!activeDevice) { appendTransferLog('[-] Not connected.'); return; }
+      var file = transferFileInput.files[0];
+      if (!file) { appendTransferLog('[-] No file selected.'); return; }
+      var dest = transferPathInput.value.trim();
+      if (!dest || dest === '/') { appendTransferLog('[-] Enter a destination path.'); return; }
 
-    transferBtn.disabled = true;
-    transferLog.innerHTML = '';
-    appendTransferLog('[:] Entering raw REPL...');
-    try {
-      await activeDevice.enterRawREPL();
-      appendTransferLog('[@] REPL ready.');
-      var content = new Uint8Array(await file.arrayBuffer());
-      appendTransferLog('[:] Sending ' + file.name + ' (' + content.length + ' B) \u2192 ' + dest);
-      await ensureDirs(activeDevice, dest);
-      await writeFile(activeDevice, dest, content);
-      await activeDevice.exitRawREPL();
-      appendTransferLog('[@] Done!  ' + dest + ' written successfully.');
-      appendTransferLog('    Install: pkg install ' + dest);
-    } catch (e) {
-      try { await activeDevice.exitRawREPL(); } catch (_) {}
-      appendTransferLog('[-] Transfer failed: ' + (e.message || String(e)));
-    }
-    transferBtn.disabled = false;
-  });
+      transferBtn.disabled = true;
+      transferLog.innerHTML = '';
+      appendTransferLog('[:] Entering raw REPL...');
+      try {
+        await activeDevice.enterRawREPL();
+        appendTransferLog('[@] REPL ready.');
+        var content = new Uint8Array(await file.arrayBuffer());
+        appendTransferLog('[:] Sending ' + file.name + ' (' + content.length + ' B) \u2192 ' + dest);
+        await ensureDirs(activeDevice, dest);
+        await writeFile(activeDevice, dest, content);
+        await activeDevice.exitRawREPL();
+        appendTransferLog('[@] Done!  ' + dest + ' written successfully.');
+        appendTransferLog('    Install: pkg install ' + dest);
+      } catch (e) {
+        try { await activeDevice.exitRawREPL(); } catch (_) {}
+        appendTransferLog('[-] Transfer failed: ' + (e.message || String(e)));
+      }
+      transferBtn.disabled = false;
+    });
+  }
 
   /* ── Wipe confirmation checkbox ───────────────────────────────── */
   var wipeConfirmCheck = document.getElementById('wipeConfirmCheck');

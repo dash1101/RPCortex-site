@@ -30,9 +30,9 @@
       <div class="badge">v0.8.1-beta2 &mdash; Nebula β81</div>
       <h1>Login. Shell. Packages. WiFi. On a Pico.</h1>
       <p class="hero-sub">
-        RPCortex is a CLI operating system for the Raspberry Pi Pico 2 W, ESP32-S3,
-        and compatible boards, written entirely in MicroPython. User accounts, WiFi,
-        a package manager, a built-in editor, and a full boot sequence.
+        A full CLI operating system written in MicroPython. User accounts, WiFi,
+        a package manager, a built-in editor, and a complete boot sequence &mdash;
+        running on microcontrollers.
       </p>
       <div class="hero-actions">
         <a class="btn-primary" href="install.html">Web Installer</a>
@@ -103,8 +103,37 @@
     </div>
   </section>
 
-  <!-- HARDWARE -->
+  <!-- DOCS -->
   <section class="section alt">
+    <div class="inner">
+      <h2>Documentation</h2>
+      <div class="docs-grid">
+        <div class="docs-card">
+          <h3>Full Reference</h3>
+          <p>Complete command tables, shell controls, registry keys, POST details, security model, and known limitations.</p>
+          <a href="NebulaDocs.html">NebulaDocs.html &rarr;</a>
+        </div>
+        <div class="docs-card">
+          <h3>Release Notes</h3>
+          <p>Everything in v0.8.1-beta2 &mdash; shell, networking, package manager, web installer, settings panel, and more.</p>
+          <a href="release.html">Release Notes &rarr;</a>
+        </div>
+        <div class="docs-card">
+          <h3>Issue Tracker</h3>
+          <p>Found a bug or have a feature request? Open an issue on GitHub.</p>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">GitHub Issues &rarr;</a>
+        </div>
+        <div class="docs-card">
+          <h3>Build a Package</h3>
+          <p>Step-by-step guide: write a command, create a <code>package.cfg</code>, build a <code>.pkg</code> with <code>make_pkg.py</code>, host a repo, and get listed.</p>
+          <a href="PackageDev.html">Package Dev Guide &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARDWARE -->
+  <section class="section">
     <div class="inner">
       <h2>Supported Hardware</h2>
       <table class="hw-table">
@@ -255,35 +284,6 @@ pkg remove  &lt;name&gt;</pre>
         Packages are standard ZIP archives renamed to <code>.pkg</code>. Build your own with the included <code>make_pkg.py</code> script and submit a PR to get listed in the repo.
         <a href="PackageDev.html" style="color: var(--cyan-dim); font-weight: 500;">Full package development guide &rarr;</a>
       </p>
-    </div>
-  </section>
-
-  <!-- DOCS -->
-  <section class="section">
-    <div class="inner">
-      <h2>Documentation</h2>
-      <div class="docs-grid">
-        <div class="docs-card">
-          <h3>Full Reference</h3>
-          <p>Complete command tables, shell controls, registry keys, POST details, security model, and known limitations.</p>
-          <a href="NebulaDocs.html">NebulaDocs.html &rarr;</a>
-        </div>
-        <div class="docs-card">
-          <h3>Release Notes</h3>
-          <p>Everything in v0.8.1-beta2 &mdash; shell, networking, package manager, web installer, settings panel, and more.</p>
-          <a href="release.html">Release Notes &rarr;</a>
-        </div>
-        <div class="docs-card">
-          <h3>Issue Tracker</h3>
-          <p>Found a bug or have a feature request? Open an issue on GitHub.</p>
-          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">GitHub Issues &rarr;</a>
-        </div>
-        <div class="docs-card">
-          <h3>Build a Package</h3>
-          <p>Step-by-step guide: write a command, create a <code>package.cfg</code>, build a <code>.pkg</code> with <code>make_pkg.py</code>, host a repo, and get listed.</p>
-          <a href="PackageDev.html">Package Dev Guide &rarr;</a>
-        </div>
-      </div>
     </div>
   </section>
 
