@@ -1,27 +1,39 @@
 [
   {
-    "group": "Nebula \u03b281",
+    "group": "RPCortex Nebula \u03b281",
     "groupLabel": "current",
     "releases": [
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
         "subversion": "beta3",
-        "file": "releases/RPC-Nebula-b81-Beta.rpc",
+        "file": "https://github.com/dash1101/RPCortex/releases/download/RPC-%CE%B281/RPC-Nebula-b81-Beta3.rpc",
         "tag": "latest",
         "default": true
       }
     ]
   },
   {
-    "group": "Nebula \u03b28X",
+    "group": "RPCortex Nebula \u03b28X",
     "releases": [
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.0",
         "subversion": "rc4",
-        "file": "releases/RPC-Nebula-b8X-RC4.rpc",
+        "file": "https://github.com/dash1101/RPCortex/releases/download/RPC-%CE%B28X/RPC-Nebula-b8X-RC4.rpc",
         "tag": "stable"
+      }
+    ]
+  },
+  {
+    "group": "RPCortex Fusion",
+    "releases": [
+      {
+        "name": "RPCortex Fusion",
+        "version": "v0.7.0",
+        "subversion": "rc2",
+        "file": "https://github.com/dash1101/RPCortex/releases/download/v0.7.0-alpha/RPC-FUSION-OS-AP2.zip",
+        "tag": "unstable"
       }
     ]
   }
