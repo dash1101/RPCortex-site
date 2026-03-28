@@ -27,11 +27,11 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Documentation</h1>
-      <p>RPCortex Nebula v0.8.1-beta2 &nbsp;&bull;&nbsp; Full reference for the shell, commands, registry, and hardware</p>
+      <p>RPCortex Nebula v0.8.1-beta3 &nbsp;&bull;&nbsp; Full reference for the shell, commands, registry, and hardware</p>
       <div class="version-switcher">
         <span>Version:</span>
         <a href="NebulaDocs_v080.html">v0.8.0-rc4</a>
-        <a href="NebulaDocs_v081.html" class="version-active">v0.8.1-beta2</a>
+        <a href="NebulaDocs_v081.html" class="version-active">v0.8.1-beta3</a>
       </div>
     </div>
   </header>
@@ -132,6 +132,12 @@ username@nebula:/Core&gt;</code></pre>
 
       <h3>Critical commands</h3>
       <p><code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, and <code>gc</code> are implemented as inline functions that bypass the loader entirely. They always work regardless of heap state.</p>
+
+      <h3>Multi-command lines</h3>
+      <p>Multiple commands can be run on a single line separated by <code>;</code>. Commands execute left-to-right; if the shell exits (<code>logout</code>) mid-line the remaining commands are skipped.</p>
+      <pre><code>mkdir /data; cd /data; touch notes.txt
+ls; pwd; whoami</code></pre>
+      <p>Single and double quotes protect <code>;</code> inside arguments (e.g., <code>echo "a;b"</code> prints <code>a;b</code>, not two commands).</p>
 
       <h3>Heap management</h3>
       <p>The RP2040 has 264 KB of RAM. After loading several commands or running HTTPS requests, the heap may become fragmented &mdash; <code>gc.mem_free()</code> can show 90 KB free while a <code>MemoryError</code> still occurs, because no single contiguous block is large enough for a new allocation. Run <code>freeup</code> to compact the heap. The shell also automatically retries after a cache clear on <code>MemoryError</code>.</p>
@@ -566,7 +572,7 @@ settings           # toggle via settings panel</code></pre>
         <li><strong>SD card support</strong> &mdash; registry key exists, implementation pending</li>
       </ul>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.1-beta2 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.1-beta3 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
 
     </article>
   </div>

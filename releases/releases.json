@@ -1,0 +1,28 @@
+[
+  {
+    "group": "Nebula \u03b281",
+    "groupLabel": "current",
+    "releases": [
+      {
+        "name": "RPCortex Nebula",
+        "version": "v0.8.1",
+        "subversion": "beta3",
+        "file": "releases/RPC-Nebula-b81-Beta.rpc",
+        "tag": "latest",
+        "default": true
+      }
+    ]
+  },
+  {
+    "group": "Nebula \u03b28X",
+    "releases": [
+      {
+        "name": "RPCortex Nebula",
+        "version": "v0.8.0",
+        "subversion": "rc4",
+        "file": "releases/RPC-Nebula-b8X-RC4.rpc",
+        "tag": "stable"
+      }
+    ]
+  }
+]

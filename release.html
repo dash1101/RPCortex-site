@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPCortex &mdash; v0.8.1-beta2 Release Notes</title>
+  <title>RPCortex &mdash; v0.8.1-beta3 Release Notes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Release Notes</h1>
-      <p>v0.8.1-beta2 &nbsp;&bull;&nbsp; Codenamed <strong>Nebula</strong> &nbsp;&bull;&nbsp; β81 &nbsp;&bull;&nbsp; Changes since v0.8.0-rc4</p>
+      <p>v0.8.1-beta3 &nbsp;&bull;&nbsp; Codenamed <strong>Nebula</strong> &nbsp;&bull;&nbsp; β81 &nbsp;&bull;&nbsp; Changes since v0.8.0-rc4</p>
     </div>
   </header>
 
@@ -48,7 +48,7 @@
       <h2 id="status">Status</h2>
       <p><strong>Stable.</strong> Ships in a clean factory-default state. Confirmed working on RP2040, RP2350, and ESP32-S3.</p>
       <div class="note-box">
-        Release notes for <strong>v0.8.1-beta2</strong> &mdash; covers what changed since <strong>v0.8.0-rc4</strong>. For the full feature reference see the <a href="NebulaDocs.html">docs</a>.
+        Release notes for <strong>v0.8.1-beta3</strong> &mdash; covers what changed since <strong>v0.8.0-rc4</strong>. For the full feature reference see the <a href="NebulaDocs.html">docs</a>.
       </div>
 
       <h2 id="whats-new">What's new since v0.8.0-rc4</h2>
@@ -120,13 +120,39 @@
         <li>The editor requires a real terminal emulator &mdash; Thonny REPL won&rsquo;t render it.</li>
       </ul>
 
+      <h2 id="beta3">What's new in beta3</h2>
+
+      <h3>Shell improvements</h3>
+      <ul>
+        <li><strong>Multi-command lines:</strong> Commands can now be chained with <code>;</code> on a single line: <code>mkdir /data; cd /data; ls</code>. Quote-aware &mdash; semicolons inside single or double quotes are not treated as separators.</li>
+        <li><strong>Faster command dispatch:</strong> Removed redundant state re-injection on every cached command call. Cached commands no longer re-set six module attributes per invocation.</li>
+        <li><strong>CTRL+C at login no longer reboots:</strong> Fixed a restart loop in <code>main.py</code> that intercepted <code>KeyboardInterrupt</code> at the outer level and silently rebooted.</li>
+        <li><strong>Tab completion fixed for directories:</strong> Path completion now uses <code>uos.stat()</code> to detect directories instead of <code>uos.listdir()</code> (which raised on files).</li>
+      </ul>
+
+      <h3>File deletion fix</h3>
+      <p><code>rm</code> y/n/a/c prompt now works correctly: <strong>a</strong> deletes all subsequent files without prompting, <strong>c</strong> cancels all remaining deletions, <strong>n</strong> skips and prevents parent directory removal. Previously <code>n</code> and <code>c</code> behaved identically and <code>a</code> only affected the current file.</p>
+
+      <h3>Web package browser</h3>
+      <p>The browser package installer (<a href="packages.html">packages.html</a>) now automatically disconnects from the device after a successful package install. No manual disconnect step needed.</p>
+
+      <h3>Modular release JSON</h3>
+      <p>The <a href="install.html">Web Installer</a> version picker is now driven by <code>releases/releases.json</code>. Add new releases by editing the JSON &mdash; no HTML changes needed.</p>
+
+      <h3>Minor fixes</h3>
+      <ul>
+        <li><code>logout()</code> dead fallback branch removed (imported from wrong module).</li>
+        <li><code>echo</code> / <code>say</code> usage message corrected: <code>Usage: echo &lt;text&gt;  (aliases: print)</code>.</li>
+        <li>Duplicate <code>gc.collect()</code> removed from <code>pkg update</code> handler.</li>
+      </ul>
+
       <h2 id="whats-next">What's Next</h2>
       <ul>
         <li>SD card support</li>
         <li><code>update check</code> &mdash; online update check (reserved, not yet implemented)</li>
       </ul>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.1-beta2 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.1-beta3 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
 
     </article>
   </div>
