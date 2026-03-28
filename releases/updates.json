@@ -1,62 +1,27 @@
 [
   {
-    "group": "Nebula \u03b281",
+    "group": "RPCortex Nebula \u03b281",
     "groupLabel": "current",
     "releases": [
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
         "subversion": "beta3",
-        "file": "releases/RPC-Nebula-b81-Beta.rpc",
-        "tag": "latest",
+        "file": "https://github.com/dash1101/RPCortex/releases/download/RPC-%CE%B281/RPC-Nebula-b81-Beta3.rpc",
+        "tag": "beta - latest",
         "default": true
       }
     ]
   },
   {
-    "group": "Nebula \u03b28X",
+    "group": "RPCortex Nebula \u03b28X",
     "releases": [
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.0",
         "subversion": "rc4",
-        "file": "releases/RPC-Nebula-b8X-RC4.rpc",
+        "file": "https://github.com/dash1101/RPCortex/releases/download/RPC-%CE%B28X/RPC-Nebula-b8X-RC4.rpc",
         "tag": "stable"
-      },
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.0",
-        "subversion": "rc3",
-        "file": "releases/RPCortex-Nebula-b8X-RC3.rpc"
-      },
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.0",
-        "subversion": "rc2",
-        "file": "releases/RPCortex-Nebula-b8X-RC2.rpc"
-      },
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.0",
-        "subversion": "rc1",
-        "file": "releases/RPCortex-Nebula-b8X-RC1.rpc"
-      },
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.0",
-        "subversion": "beta",
-        "file": "releases/RPCortex-Nebula-b8X-Beta.rpc"
-      }
-    ]
-  },
-  {
-    "group": "Legacy",
-    "releases": [
-      {
-        "name": "RPC Fusion",
-        "version": "v0.7.0",
-        "subversion": "rc1",
-        "file": "releases/RPC-FUSION-OS-RC1.rpc"
       }
     ]
   }

@@ -8,7 +8,7 @@
         "version": "v0.8.1",
         "subversion": "beta3",
         "file": "https://github.com/dash1101/RPCortex/releases/download/RPC-%CE%B281/RPC-Nebula-b81-Beta3.rpc",
-        "tag": "latest",
+        "tag": "beta - latest",
         "default": true
       }
     ]
