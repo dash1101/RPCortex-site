@@ -263,6 +263,9 @@
             (activeDevice ? '' : ' disabled') +
             ' title="' + (activeDevice ? 'Install to connected device' : 'Connect a device first') + '">' +
             'Install to Device</button>' +
+          '<button class="pkg-dl-btn" data-pkg-url="' + esc(ensureHttps(p.url)) + '"' +
+            ' data-pkg-name="' + esc(p.name) + '" data-pkg-ver="' + esc(p.ver) + '"' +
+            ' title="Download .pkg file to your computer">Download .pkg</button>' +
           '<span class="pkg-cli-hint">pkg install ' + esc(p.name) + '</span>' +
         '</div>' +
       '</div>';
@@ -270,12 +273,38 @@
     html += '</div>';
     pkgContainer.innerHTML = html;
 
-    /* Bind click handlers */
+    /* Bind install handlers */
     var btns = pkgContainer.querySelectorAll('.pkg-install-btn');
     for (var j = 0; j < btns.length; j++) {
       btns[j].addEventListener('click', (function (idx) {
         return function () { installToDevice(packages[idx]); };
       })(parseInt(btns[j].getAttribute('data-pkg-idx'), 10)));
+    }
+
+    /* Bind download handlers */
+    var dlBtns = pkgContainer.querySelectorAll('.pkg-dl-btn');
+    for (var k = 0; k < dlBtns.length; k++) {
+      dlBtns[k].addEventListener('click', (function (btn) {
+        return async function () {
+          btn.disabled = true;
+          btn.textContent = 'Downloading\u2026';
+          try {
+            var dlResp = await fetch(btn.getAttribute('data-pkg-url'));
+            if (!dlResp.ok) throw new Error('HTTP ' + dlResp.status);
+            var blob = await dlResp.blob();
+            var dlA  = document.createElement('a');
+            dlA.href = URL.createObjectURL(blob);
+            dlA.download = btn.getAttribute('data-pkg-name') + '-v' +
+                           btn.getAttribute('data-pkg-ver') + '.pkg';
+            dlA.click();
+            setTimeout(function () { URL.revokeObjectURL(dlA.href); }, 1500);
+          } catch (e) {
+            alert('Download failed: ' + (e.message || String(e)));
+          }
+          btn.disabled = false;
+          btn.textContent = 'Download .pkg';
+        };
+      })(dlBtns[k]));
     }
   }
 

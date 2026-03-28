@@ -46,6 +46,7 @@
       <a href="#boot-sequence">Boot Sequence</a>
       <a href="#the-shell">The Shell</a>
       <a href="#filesystem">Filesystem Commands</a>
+      <a href="#text-commands">Text Processing</a>
       <a href="#system-commands">System Commands</a>
       <a href="#os-management">OS Management</a>
       <a href="#user-management">User Management</a>
@@ -131,7 +132,13 @@ username@nebula:/Core&gt;</code></pre>
       <p>Built-in commands (<code>sys_fs</code>, <code>sys_sys</code>, <code>sys_net</code>, <code>sys_user</code>, <code>wifi</code>, <code>settings</code>) are loaded via <code>__import__()</code> and live in <code>sys.modules</code> permanently. After a cache clear they reload for free &mdash; no re-reading or recompiling. Package-installed commands use a separate exec-based path.</p>
 
       <h3>Critical commands</h3>
-      <p><code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, and <code>gc</code> are implemented as inline functions that bypass the loader entirely. They always work regardless of heap state.</p>
+      <p><code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, <code>gc</code>, <code>alias</code>, <code>unalias</code>, and <code>rawrepl</code> are implemented as inline functions that bypass the loader entirely. They always work regardless of heap state.</p>
+      <h3>Aliases</h3>
+      <p>Session aliases let you define shorthand for any command. They last until logout.</p>
+      <pre><code>alias ll=ls
+alias cls=clear
+alias              # list all aliases
+unalias ll</code></pre>
 
       <h3>Multi-command lines</h3>
       <p>Multiple commands can be run on a single line separated by <code>;</code>. Commands execute left-to-right; if the shell exits (<code>logout</code>) mid-line the remaining commands are skipped.</p>
@@ -165,6 +172,30 @@ ls; pwd; whoami</code></pre>
         </tbody>
       </table>
 
+      <!-- TEXT PROCESSING COMMANDS -->
+      <h2 id="text-commands">Text Processing Commands</h2>
+      <p>Line-by-line text utilities tuned for low RAM usage. All I/O is streamed where possible &mdash; files are not loaded in full unless the command requires it (<code>sort</code> being the exception).</p>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>grep &lt;pattern&gt; &lt;file&gt;</td><td>Search file for pattern (substring); shows line numbers in gray and a match count</td></tr>
+          <tr><td>wc &lt;file&gt;</td><td>Count lines, words, and bytes</td></tr>
+          <tr><td>find [dir] [pattern]</td><td>Recursive file search by name substring; max depth 8; omit pattern to list all files</td></tr>
+          <tr><td>sort &lt;file&gt;</td><td>Print lines sorted alphabetically; warns if the file is larger than 8 KB before loading</td></tr>
+          <tr><td>uniq &lt;file&gt;</td><td>Filter consecutive duplicate lines (pair with <code>sort</code> for full dedup)</td></tr>
+          <tr><td>hex &lt;file&gt; [n]</td><td>Hexdump first n bytes (default 256) &mdash; address, hex, and ASCII columns</td></tr>
+          <tr><td>basename &lt;path&gt;</td><td>File name portion of a path</td></tr>
+          <tr><td>dirname &lt;path&gt;</td><td>Directory portion of a path</td></tr>
+        </tbody>
+      </table>
+      <pre><code>grep error /Nebula/Logs/session.log
+wc /Users/root/notes.txt
+find /Core .py
+sort /Users/root/list.txt | uniq
+hex /Core/launchpad.py 64
+basename /Core/Launchpad/sys_sys.py
+dirname /Core/Launchpad/sys_sys.py</code></pre>
+
       <!-- SYSTEM COMMANDS -->
       <h2 id="system-commands">System Commands</h2>
       <table>
@@ -180,6 +211,11 @@ ls; pwd; whoami</code></pre>
           <tr><td>reboot</td><td>Hard reset</td></tr>
           <tr><td>sreboot / softreset</td><td>Soft reset (faster, keeps filesystem)</td></tr>
           <tr><td>freeup / gc</td><td>Clear command cache, run GC, report RAM freed</td></tr>
+          <tr><td>sleep &lt;secs&gt;</td><td>Pause the shell for the given number of seconds (e.g. <code>sleep 2.5</code>)</td></tr>
+          <tr><td>which &lt;cmd&gt;</td><td>Show where a command is defined: built-in, .lp registry path, or alias</td></tr>
+          <tr><td>rawrepl</td><td>Exit the OS and return to MicroPython REPL &mdash; use to re-flash via Web Installer</td></tr>
+          <tr><td>alias [name=cmd]</td><td>Define a session alias or list all aliases</td></tr>
+          <tr><td>unalias &lt;name&gt;</td><td>Remove a session alias</td></tr>
           <tr><td>echo &lt;text&gt;</td><td>Print text</td></tr>
           <tr><td>history</td><td>Show command history</td></tr>
           <tr><td>env [section]</td><td>Dump registry contents</td></tr>
@@ -245,6 +281,30 @@ reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</c
         <li>Prompts <code>WIPE</code> before proceeding</li>
         <li>If a <code>.rpc</code> path is given, it is staged as <code>/update.rpc</code> and extracted automatically on the next boot</li>
       </ul>
+
+      <h3>rawrepl</h3>
+      <p>Cleanly exit the OS and return to the MicroPython <code>&gt;&gt;&gt;</code> REPL without rebooting:</p>
+      <pre><code>rawrepl</code></pre>
+      <p>Use this when RPCortex is already installed but you want a <strong>completely fresh flash</strong> via the Web Installer &mdash; no full wipe required. After running <code>rawrepl</code>:</p>
+      <ol>
+        <li>The shell exits and the MicroPython REPL becomes active (<code>&gt;&gt;&gt;</code> prompt visible in your terminal).</li>
+        <li>Open <a href="install.html">rpc.novalabs.app/install.html</a> in Chrome or Edge.</li>
+        <li>Click <strong>Connect Device</strong> and flash normally.</li>
+      </ol>
+      <div class="note-box">
+        <strong>How it works:</strong> <code>rawrepl</code> raises <code>SystemExit(0)</code> — a <code>BaseException</code>, not caught by any <code>except Exception</code> block. It propagates through all OS layers (<code>launchpad.py</code>, <code>initialization.py</code>, <code>main.py</code>) and MicroPython drops to the REPL after <code>main.py</code> returns.
+      </div>
+
+      <h3>OS update workflow overview</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th>Command / Tool</th></tr></thead>
+        <tbody>
+          <tr><td>Update OS, keep all user data</td><td><code>update from-file /path/to/os.rpc</code> or <a href="update.html">browser update page</a></td></tr>
+          <tr><td>Reset to clean factory state</td><td><code>factoryreset</code></td></tr>
+          <tr><td>Use Web Installer without rebooting</td><td><code>rawrepl</code></td></tr>
+          <tr><td>Full wipe + re-flash</td><td><code>reinstall</code> or <code>rawrepl</code> + Web Installer</td></tr>
+        </tbody>
+      </table>
 
       <!-- USER MANAGEMENT -->
       <h2 id="user-management">User Management</h2>
@@ -377,7 +437,7 @@ pkg install HelloWorld</code></pre>
       <p>Flash MicroPython and copy RPCortex to the board directly from your browser. No software to install.</p>
 
       <h3><a href="packages.html">Package Browser</a></h3>
-      <p>Browse and install packages while the device is running the shell. Files are pushed via the <code>_xfer</code> serial protocol. One-click install, no reboot needed, no WiFi required on the device.</p>
+      <p>Browse and install packages while the device is running the shell. Files are pushed via the <code>_xfer</code> serial protocol. One-click install, no reboot needed, no WiFi required on the device. Each package card also has a <strong>Download .pkg</strong> button to save the package file to your computer.</p>
 
       <h3><a href="update.html">OS Update</a></h3>
       <p>Update RPCortex from a browser tab while the shell is running. Load a <code>.rpc</code> archive from your computer or pick a version from the server. The page reads the archive with JSZip, skips user data paths, pushes each file via <code>_xfer</code>, and sends <code>reboot</code> when done.</p>

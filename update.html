@@ -48,7 +48,7 @@
         <div class="prereq-card">
           <div class="prereq-num">1</div>
           <h3>Device running RPCortex v0.8.0+</h3>
-          <p>Your device must be powered on, booted, and logged in to the Launchpad shell. Requires <strong>v0.8.0-rc4 or later</strong>. <strong>Not</strong> a fresh MicroPython REPL &mdash; use the <a href="install.html">Web Installer</a> for that.</p>
+          <p>Your device must be powered on, booted, and logged in to the Launchpad shell. Requires <strong>v0.8.0-rc4 or later</strong>. For a <strong>fresh install</strong>, run <code>rawrepl</code> in the shell first, then use the <a href="install.html">Web Installer</a>.</p>
         </div>
         <div class="prereq-card">
           <div class="prereq-num">2</div>
@@ -91,20 +91,8 @@
                 <strong>Download from server</strong>
                 <span>Fetches the latest release from rpc.novalabs.app automatically.</span>
                 <div style="margin-top:10px;">
-                  <select id="versionSelect" class="version-select">
-                    <optgroup label="Nebula &beta;81 (current)">
-                      <option value="releases/RPC-Nebula-b81-Beta.rpc" selected>RPCortex Nebula v0.8.1-beta3 &mdash; latest</option>
-                    </optgroup>
-                    <optgroup label="Nebula &beta;8X">
-                      <option value="releases/RPC-Nebula-b8X-RC4.rpc">RPCortex Nebula v0.8.0-rc4 &mdash; stable</option>
-                      <option value="releases/RPCortex-Nebula-b8X-RC3.rpc">RPCortex Nebula v0.8.0-rc3</option>
-                      <option value="releases/RPCortex-Nebula-b8X-RC2.rpc">RPCortex Nebula v0.8.0-rc2</option>
-                      <option value="releases/RPCortex-Nebula-b8X-RC1.rpc">RPCortex Nebula v0.8.0-rc1</option>
-                      <option value="releases/RPCortex-Nebula-b8X-Beta.rpc">RPCortex Nebula v0.8.0-beta</option>
-                    </optgroup>
-                    <optgroup label="Legacy">
-                      <option value="releases/RPC-FUSION-OS-RC1.rpc">RPC Fusion v0.7.0-rc1</option>
-                    </optgroup>
+                  <select id="versionSelect" class="version-select" disabled>
+                    <option>Loading versions&hellip;</option>
                   </select>
                 </div>
               </div>
