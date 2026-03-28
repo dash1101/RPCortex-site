@@ -174,25 +174,6 @@
 
         </div><!-- /.installer-panel -->
 
-        <!-- FILE TRANSFER PANEL -->
-        <div class="transfer-panel" id="transferPanel">
-          <p class="panel-h">Transfer a File</p>
-          <p class="panel-sub" style="margin-bottom:18px;">Copy any file to your device over USB &mdash; ideal for dropping <code>.pkg</code> files onto an offline Pico. Pick a file, set the destination path, and hit Send.</p>
-          <div class="transfer-row">
-            <label class="transfer-file-label" id="transferFileLabel">
-              <input type="file" id="transferFileInput">
-              <span id="transferFileName">Choose file&hellip;</span>
-            </label>
-            <input type="text" id="transferPath" placeholder="/Packages/file.pkg" value="/">
-          </div>
-          <button class="btn-secondary" id="transferBtn">Send to Device</button>
-          <div class="transfer-log" id="transferLog"></div>
-          <p style="font-size:0.80rem;color:var(--text-muted);margin:0;">
-            After transfer: use <code>pkg install /path/to/file.pkg</code> in the shell to install.
-            &nbsp;&bull;&nbsp; No WiFi required.
-          </p>
-        </div>
-
         <!-- HOW IT WORKS -->
         <div class="how-box" style="margin-top:40px;">
           <h2>How it works</h2>
@@ -204,12 +185,8 @@
           </p>
           <p>
             A <code>.rpc</code> file is a standard ZIP archive with a custom extension.
-            You can also select a local one if you've downloaded it manually.
-          </p>
-          <p>
-            The <strong>File Transfer</strong> tool above works with any board variant &mdash; including
-            offline Pico 2 (non-W). No desktop software or WiFi required.
-            Web Serial requires Chrome 89+ or Edge 89+.
+            Select a version above or choose a locally-saved release file.
+            No desktop software, drivers, or WiFi required.
           </p>
         </div>
 
