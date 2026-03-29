@@ -10,6 +10,14 @@
         "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta3.rpc",
         "tag": "latest (beta)",
         "default": true
+      },
+      {
+        "name": "RPCortex Nebula",
+        "version": "v0.8.1",
+        "subversion": "beta3_source",
+        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta3_source.rpc",
+        "tag": "latest (beta)",
+        "default": true
       }
     ]
   },
