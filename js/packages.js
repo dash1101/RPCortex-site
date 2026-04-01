@@ -180,15 +180,6 @@
       }
     }
 
-    if (installOk) {
-      if (activeDevice) {
-        try { await activeDevice.close(); } catch (e) {}
-        activeDevice = null;
-      }
-      setConnected(false);
-      xferLogLine('[@] Device disconnected.', 'xfer-log-ok');
-    }
-
     return installOk;
   }
 
