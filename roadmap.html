@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; Roadmap</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Roadmap-specific styles ── */
+    .roadmap-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 12px;
+      position: relative;
+    }
+    .roadmap-timeline::before {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 28px;
+      bottom: 28px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--cyan) 0%, var(--border) 100%);
+      border-radius: 2px;
+    }
+    .roadmap-entry {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      padding: 0 0 48px 0;
+      position: relative;
+    }
+    .roadmap-dot-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      padding-top: 4px;
+      z-index: 1;
+    }
+    .roadmap-dot {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .roadmap-dot.active {
+      border-color: var(--cyan);
+      box-shadow: 0 0 18px rgba(0,200,255,0.35);
+      background: rgba(0,200,255,0.07);
+    }
+    .roadmap-dot.done {
+      border-color: var(--green);
+      background: rgba(0,232,125,0.07);
+    }
+    .roadmap-dot.planned {
+      border-color: var(--border-hi);
+      opacity: 0.75;
+    }
+    .roadmap-body {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      transition: border-color 0.2s;
+    }
+    .roadmap-body:hover { border-color: var(--border-hi); }
+    .roadmap-body.active { border-color: rgba(0,200,255,0.35); }
+    .roadmap-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .roadmap-ver {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+    .roadmap-status {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .roadmap-status.testing  { background: rgba(0,200,255,0.12); color: var(--cyan);   border: 1px solid rgba(0,200,255,0.3); }
+    .roadmap-status.upcoming { background: rgba(0,232,125,0.08); color: var(--green);  border: 1px solid rgba(0,232,125,0.25); }
+    .roadmap-status.planned  { background: rgba(255,208,0,0.08); color: var(--yellow); border: 1px solid rgba(255,208,0,0.25); }
+    .roadmap-status.future   { background: rgba(90,122,152,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+    .roadmap-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+    .roadmap-section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 18px 0 8px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+    .roadmap-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+    }
+    .roadmap-items li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .roadmap-items li::before {
+      content: '–';
+      color: var(--border-hi);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .roadmap-items li.done-item { color: var(--text-muted); opacity: 0.6; }
+    .roadmap-items li.done-item::before { content: '✓'; color: var(--green); opacity: 0.7; }
+    .roadmap-items li strong { color: var(--text); font-weight: 600; }
+    .roadmap-note {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-left: 2px solid var(--border-hi);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.2);
+      border-radius: 0 4px 4px 0;
+    }
+    @media (max-width: 640px) {
+      .roadmap-timeline::before { display: none; }
+      .roadmap-dot-wrap { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="https://rpc.novalabs.app">Home</a>
+        <a href="NebulaDocs.html">Docs</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="PackageDev.html">Build</a>
+        <a href="packages.html">Packages</a>
+        <a href="install.html">Web Installer</a>
+        <a href="update.html">Update</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Roadmap</h1>
+      <p>Where RPCortex is headed. Updated as versions ship and plans solidify.</p>
+    </div>
+  </header>
+
+  <!-- ROADMAP -->
+  <section class="section">
+    <div class="inner">
+
+      <div class="roadmap-timeline">
+
+        <!-- v0.8.1-rc4 — current -->
+        <div class="roadmap-entry">
+          <div class="roadmap-dot-wrap">
+            <div class="roadmap-dot active">🔵</div>
+          </div>
+          <div class="roadmap-body active">
+            <div class="roadmap-header">
+              <span class="roadmap-ver">v0.8.1-rc4</span>
+              <span class="roadmap-status testing">In Testing</span>
+            </div>
+            <p class="roadmap-desc">
+              Release candidate polish. Core systems are stable; this pass focuses on
+              correcting edge-case bugs discovered during RC testing and tightening up
+              quality before the final v0.8.1 release.
+            </p>
+
+            <div class="roadmap-section-label">OS Fixes &amp; Changes</div>
+            <ul class="roadmap-items">
+              <li><strong>Password masking</strong> &mdash; login and account prompts now echo <code>&bull;</code> instead of plaintext</li>
+              <li><strong>Case-insensitive path fallback</strong> &mdash; <code>cd</code> and <code>edit</code> try a case-insensitive match if the exact name isn't found</li>
+              <li><strong>Echo file redirect</strong> &mdash; <code>echo "text" &gt; file</code> and <code>echo "text" &gt;&gt; file</code> now work</li>
+              <li><strong>Low RAM warning</strong> &mdash; shell warns when free memory drops below 70&nbsp;KB</li>
+              <li><strong>POST .mpy fallback</strong> &mdash; if a <code>.py</code> module isn't found, POST checks for a compiled <code>.mpy</code> version before erroring</li>
+              <li><strong>Single-file delete prompt</strong> &mdash; <code>rm</code> on a single file no longer shows the irrelevant <code>(a)</code> option</li>
+              <li><strong>Startup message fix</strong> &mdash; corrected incorrect "recovery mode" banner shown after an unexpected shutdown</li>
+            </ul>
+
+            <div class="roadmap-section-label">Website</div>
+            <ul class="roadmap-items">
+              <li>Download <code>.pkg</code> button now styled correctly on the Packages page</li>
+              <li>Device stays connected after installing a package (no more auto-disconnect)</li>
+              <li>RP2 family language throughout &mdash; removed Pico-only references</li>
+              <li>Roadmap page added</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- v0.8.1 Final -->
+        <div class="roadmap-entry">
+          <div class="roadmap-dot-wrap">
+            <div class="roadmap-dot upcoming">🟢</div>
+          </div>
+          <div class="roadmap-body">
+            <div class="roadmap-header">
+              <span class="roadmap-ver">v0.8.1</span>
+              <span class="roadmap-status upcoming">Upcoming</span>
+            </div>
+            <p class="roadmap-desc">
+              Final stable release of the v0.8.x line. Focuses on packaging the editor and
+              fetch as removable packages, build tags, compiled release artifacts,
+              and shipping quality improvements that didn't fit RC scope.
+            </p>
+
+            <div class="roadmap-section-label">OS</div>
+            <ul class="roadmap-items">
+              <li><strong>Editor as package</strong> &mdash; removable and reinstallable via <code>pkg</code></li>
+              <li><strong>Fetch as package</strong> &mdash; same treatment, enables independent updates</li>
+              <li><strong>Benchmark package</strong> &mdash; remove built-in <code>bench</code>, replace with a richer package (mem, ROM, future SD speed)</li>
+              <li><strong>Build tags</strong> &mdash; auto-tagged per build, aligned with GitHub releases</li>
+              <li><strong>Compiled / source flag</strong> &mdash; registry key + <code>fetch</code> display for compiled vs source installs</li>
+              <li><strong>Check-updates command</strong> &mdash; queries the website for available versions</li>
+              <li><strong><code>--help</code> / <code>-h</code></strong> &mdash; usage flags on most built-in commands</li>
+              <li><strong>WiFi improvements</strong> &mdash; unlimited saved networks, auto-save on connect, DNS/metered settings</li>
+              <li><strong>Device ID</strong> &mdash; configurable + command to change it</li>
+              <li><strong>Low-level serial throughput</strong> &mdash; improve output speed of <code>RPCortex.py</code> write calls</li>
+              <li><strong>Manual recovery mode</strong> &mdash; enter recovery without triggering a boot error</li>
+              <li><strong>RAM warning at 70&nbsp;KB</strong> (already in rc4; confirmed here)</li>
+            </ul>
+
+            <div class="roadmap-section-label">Packages</div>
+            <ul class="roadmap-items">
+              <li><strong>wavey</strong> &mdash; animated gradient display that adapts to terminal size</li>
+              <li><strong>sd</strong> &mdash; SD card support stub (full scheduling integration in v0.9.0)</li>
+              <li>Additional community packages TBD</li>
+            </ul>
+
+            <div class="roadmap-section-label">Compiled Releases</div>
+            <ul class="roadmap-items">
+              <li><strong>.rpc releases ship <code>.mpy</code> by default</strong> &mdash; source .rpc kept as separate developer artifact</li>
+              <li><strong>Web Installer &amp; Update page</strong> &mdash; source vs compiled selector added</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- v0.9.0 -->
+        <div class="roadmap-entry">
+          <div class="roadmap-dot-wrap">
+            <div class="roadmap-dot planned">🟡</div>
+          </div>
+          <div class="roadmap-body">
+            <div class="roadmap-header">
+              <span class="roadmap-ver">v0.9.0</span>
+              <span class="roadmap-status planned">Planned</span>
+            </div>
+            <p class="roadmap-desc">
+              Major release. Introduces the scripting language, shell pipes, scheduled
+              and startup tasks, the first pass at multitasking via <code>uasyncio</code>,
+              and deep memory and performance optimisations.
+            </p>
+
+            <div class="roadmap-section-label">Shell &amp; Scripting</div>
+            <ul class="roadmap-items">
+              <li><strong>Shell pipes</strong> &mdash; <code>cmd1 | cmd2 | cmd3</code></li>
+              <li><strong>Custom scripting language</strong> &mdash; feature-packed, tightly integrated with Launchpad; supports variables, conditionals, loops, and <code>~</code> expansion</li>
+              <li><strong>Tilde expansion everywhere</strong> &mdash; aliases, script args, any path-accepting command</li>
+            </ul>
+
+            <div class="roadmap-section-label">Task Scheduling</div>
+            <ul class="roadmap-items">
+              <li><strong>Startup tasks</strong> &mdash; run commands, scripts, or packages automatically on every boot</li>
+              <li><strong>Scheduled tasks</strong> &mdash; run things at timed intervals post-boot using a software uptime offset (no RTC required)</li>
+              <li><strong>Unattended mode</strong> &mdash; background execution (tail logs, toggle GPIO, pull and apply fixes over WiFi)</li>
+            </ul>
+
+            <div class="roadmap-section-label">Multitasking</div>
+            <ul class="roadmap-items">
+              <li><strong>First <code>uasyncio</code> integration</strong> &mdash; cooperative multitasking for background tasks alongside the shell</li>
+            </ul>
+
+            <div class="roadmap-section-label">Memory &amp; Performance</div>
+            <ul class="roadmap-items">
+              <li>Lazy loading &amp; ephemeral imports &mdash; evict modules after use for non-critical commands</li>
+              <li>Chunked file I/O throughout (512 / 1024-byte buffers)</li>
+              <li>Module eviction on memory pressure + <code>gc.collect()</code></li>
+              <li>Avoid string concatenation in hot paths</li>
+              <li>Further RAM optimisations targeting Pico&nbsp;W (~200&nbsp;KB shown in <code>meminfo</code>)</li>
+              <li>Frozen modules / custom <code>.uf2</code> firmware build (feasibility study)</li>
+            </ul>
+
+            <div class="roadmap-section-label">Features</div>
+            <ul class="roadmap-items">
+              <li><strong>Recovery mode tools</strong> &mdash; expanded diagnostic and repair commands</li>
+              <li><strong>TUI framework</strong> &mdash; developer-facing API for building adaptive box-draw apps (modelled on PowerShell <code>edit</code>)</li>
+              <li><strong>Updated TUI design</strong> &mdash; apply new language to <code>settings</code>, <code>edit</code>, and other panels</li>
+              <li><strong>OS personalisation</strong> &mdash; owner name, device name, timezone</li>
+              <li>WiFi speed test, extended benchmark (mem / ROM / SD)</li>
+              <li>Dev packages: <code>git</code> (clone / fetch), others TBD</li>
+            </ul>
+
+            <div class="roadmap-section-label">Build &amp; Portability</div>
+            <ul class="roadmap-items">
+              <li>Compile OS to <code>.mpy</code> &mdash; build script + thin <code>main.py</code> wrapper</li>
+              <li>Non-absolute internal paths for on-device debugging</li>
+              <li>Windows MicroPython port stubs for local shell testing</li>
+            </ul>
+
+            <div class="roadmap-note">
+              v0.9.0 is a substantial release. The exact feature set may shift as v0.8.1 stabilises.
+              Items listed here represent the current plan, not a firm commitment.
+            </div>
+          </div>
+        </div>
+
+        <!-- v0.9.1+ -->
+        <div class="roadmap-entry">
+          <div class="roadmap-dot-wrap">
+            <div class="roadmap-dot planned" style="opacity:0.5;">⚪</div>
+          </div>
+          <div class="roadmap-body" style="opacity:0.75;">
+            <div class="roadmap-header">
+              <span class="roadmap-ver">v0.9.1 &ndash; v0.9.x</span>
+              <span class="roadmap-status future">Future</span>
+            </div>
+            <p class="roadmap-desc">
+              The v0.9.x series builds toward v1.0. The big milestone is
+              proper multi-threading. Everything here is tentative.
+            </p>
+            <ul class="roadmap-items">
+              <li><strong>Proper multi-threading</strong> &mdash; pre-emptive or deep cooperative; tested before v1.0 release</li>
+              <li><strong>Multiple terminals &amp; tabbing</strong> &mdash; requires multitasking to land first</li>
+              <li><strong>Mouse support in TUI</strong> &mdash; depends on terminal emulator cooperation via serial escapes</li>
+              <li>MicroPython Viper optimisation (deferred: sacrifices non-RP2 support &mdash; decision pending platform strategy)</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /.roadmap-timeline -->
+
+    </div><!-- /.inner -->
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Nebula</span>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="NebulaDocs.html">Docs</a>
+          <a href="roadmap.html">Roadmap</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+        </div>
+      </div>
+      <p class="footer-note">Open source by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. MIT License.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
