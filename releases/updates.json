@@ -6,18 +6,24 @@
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
+        "subversion": "rc1",
+        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-RC1.rpc",
+        "tag": "release candidate",
+        "default": true
+      },
+      {
+        "name": "RPCortex Nebula",
+        "version": "v0.8.1",
         "subversion": "beta3",
         "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta3.rpc",
-        "tag": "latest (beta)",
-        "default": true
+        "tag": "beta"
       },
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
         "subversion": "beta3_source",
         "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta3_source.rpc",
-        "tag": "latest (beta)",
-        "default": true
+        "tag": "beta (source)"
       }
     ]
   },

@@ -188,39 +188,46 @@
 
       <div class="roadmap-timeline">
 
-        <!-- v0.8.1-beta4 — current -->
+        <!-- v0.8.1-rc1 — current -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
             <div class="roadmap-dot active">🔵</div>
           </div>
           <div class="roadmap-body active">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v0.8.1-beta4</span>
-              <span class="roadmap-status testing">In Testing</span>
+              <span class="roadmap-ver">v0.8.1-rc1</span>
+              <span class="roadmap-status testing">Release Candidate</span>
             </div>
             <p class="roadmap-desc">
-              Release candidate polish. Core systems are stable; this pass focuses on
-              correcting edge-case bugs discovered during RC testing and tightening up
-              quality before the final v0.8.1 release.
+              First release candidate for v0.8.1. All core systems are stable. This pass
+              closes the remaining open bugs from the beta cycle and ships the last few
+              quality-of-life features before the final release.
             </p>
 
-            <div class="roadmap-section-label">OS Fixes &amp; Changes</div>
+            <div class="roadmap-section-label">OS Fixes</div>
             <ul class="roadmap-items">
-              <li><strong>Password masking</strong> &mdash; login and account prompts now echo <code>&bull;</code> instead of plaintext</li>
-              <li><strong>Case-insensitive path fallback</strong> &mdash; <code>cd</code> and <code>edit</code> try a case-insensitive match if the exact name isn't found</li>
-              <li><strong>Echo file redirect</strong> &mdash; <code>echo "text" &gt; file</code> and <code>echo "text" &gt;&gt; file</code> now work</li>
-              <li><strong>Low RAM warning</strong> &mdash; shell warns when free memory drops below 70&nbsp;KB</li>
-              <li><strong>POST .mpy fallback</strong> &mdash; if a <code>.py</code> module isn't found, POST checks for a compiled <code>.mpy</code> version before erroring</li>
+              <li><strong>Boot clock disabled after every boot</strong> &mdash; crash sentinel was never cleared on success; fixed so <code>OC_On_Boot</code> persists across reboots correctly</li>
+              <li><strong>NOPASS login left crash sentinel alive</strong> &mdash; guest logins now clear <code>Settings.Startup</code> like normal logins do</li>
+              <li><strong>Password masking</strong> &mdash; login and account prompts echo <code>&bull;</code> instead of plaintext</li>
+              <li><strong>Case-insensitive <code>cd</code></strong> &mdash; tries case-insensitive match if exact name isn't found</li>
               <li><strong>Single-file delete prompt</strong> &mdash; <code>rm</code> on a single file no longer shows the irrelevant <code>(a)</code> option</li>
               <li><strong>Startup message fix</strong> &mdash; corrected incorrect "recovery mode" banner shown after an unexpected shutdown</li>
+            </ul>
+
+            <div class="roadmap-section-label">OS Features</div>
+            <ul class="roadmap-items">
+              <li><strong>Tilde expansion everywhere</strong> &mdash; <code>~</code> and <code>~/path</code> expand to the user home in all command arguments, not just <code>cd</code></li>
+              <li><strong><code>Program_Execution</code> setting is functional</strong> &mdash; disabling it via <code>settings</code> or <code>reg set</code> blocks <code>exec</code> and script fall-through</li>
+              <li><strong>Echo file redirect</strong> &mdash; <code>echo "text" &gt; file</code> and <code>echo "text" &gt;&gt; file</code></li>
+              <li><strong>Low RAM warning</strong> &mdash; shell warns once when free memory drops below 70&nbsp;KB</li>
+              <li><strong>POST .mpy fallback</strong> &mdash; if a <code>.py</code> module isn't found, POST checks for a compiled <code>.mpy</code> version</li>
             </ul>
 
             <div class="roadmap-section-label">Website</div>
             <ul class="roadmap-items">
               <li>Download <code>.pkg</code> button now styled correctly on the Packages page</li>
-              <li>Device stays connected after installing a package (no more auto-disconnect)</li>
               <li>RP2 family language throughout &mdash; removed Pico-only references</li>
-              <li>Roadmap page added</li>
+              <li>Roadmap page added and linked from all nav bars</li>
             </ul>
           </div>
         </div>
