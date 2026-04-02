@@ -188,15 +188,15 @@
 
       <div class="roadmap-timeline">
 
-        <!-- v0.8.1-rc1 — current -->
+        <!-- v0.8.1-rc1 — shipped -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot active">🔵</div>
+            <div class="roadmap-dot done">✓</div>
           </div>
-          <div class="roadmap-body active">
+          <div class="roadmap-body">
             <div class="roadmap-header">
               <span class="roadmap-ver">v0.8.1-rc1</span>
-              <span class="roadmap-status testing">Release Candidate</span>
+              <span class="roadmap-status future">Shipped</span>
             </div>
             <p class="roadmap-desc">
               First release candidate for v0.8.1. All core systems are stable. This pass
@@ -232,46 +232,46 @@
           </div>
         </div>
 
-        <!-- v0.8.1 Final -->
+        <!-- v0.8.1 Final — current -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot upcoming">🟢</div>
+            <div class="roadmap-dot active">🔵</div>
           </div>
-          <div class="roadmap-body">
+          <div class="roadmap-body active">
             <div class="roadmap-header">
               <span class="roadmap-ver">v0.8.1</span>
-              <span class="roadmap-status upcoming">Upcoming</span>
+              <span class="roadmap-status testing">Stable</span>
             </div>
             <p class="roadmap-desc">
-              Final stable release of the v0.8.x line. Focuses on packaging the editor and
-              fetch as removable packages, build tags, compiled release artifacts,
-              and shipping quality improvements that didn't fit RC scope.
+              Final stable release of the v0.8.x line. Ships unlimited WiFi profiles,
+              manual recovery mode, extraction progress, <code>--help</code> flags,
+              <code>pkg commands</code>, device ID, and other quality-of-life improvements
+              from the RC iteration backlog.
             </p>
 
-            <div class="roadmap-section-label">OS</div>
+            <div class="roadmap-section-label">OS — Shipped</div>
+            <ul class="roadmap-items">
+              <li class="done-item"><strong><code>--help</code> / <code>-h</code></strong> &mdash; usage flags on all built-in commands; per-command hint lookup in <code>help</code></li>
+              <li class="done-item"><strong>Unlimited saved WiFi networks</strong> &mdash; networks.cfg replaces the 2-slot registry approach</li>
+              <li class="done-item"><strong>Auto-save WiFi on connect</strong> &mdash; <code>wifi connect</code> saves credentials automatically</li>
+              <li class="done-item"><strong><code>pkg commands</code></strong> &mdash; lists shell commands registered by installed packages</li>
+              <li class="done-item"><strong>Manual <code>recovery</code> command</strong> &mdash; enter recovery shell without a boot error</li>
+              <li class="done-item"><strong>Extraction progress</strong> &mdash; <code>update from-file</code> shows <code>[n/total]</code> counter during archive extraction</li>
+              <li class="done-item"><strong>Device ID in registry &amp; <code>fetch</code></strong> &mdash; <code>System.Device_ID</code> shown in system info display</li>
+              <li class="done-item"><strong>RAM warning at 70&nbsp;KB</strong> &mdash; shell warns once when free memory is low</li>
+            </ul>
+
+            <div class="roadmap-section-label">OS — Backlog (v0.9.0)</div>
             <ul class="roadmap-items">
               <li><strong>Editor as package</strong> &mdash; removable and reinstallable via <code>pkg</code></li>
               <li><strong>Fetch as package</strong> &mdash; same treatment, enables independent updates</li>
-              <li><strong>Benchmark package</strong> &mdash; remove built-in <code>bench</code>, replace with a richer package (mem, ROM, future SD speed)</li>
+              <li><strong>Benchmark package</strong> &mdash; remove built-in <code>bench</code>, replace with a richer package</li>
               <li><strong>Build tags</strong> &mdash; auto-tagged per build, aligned with GitHub releases</li>
-              <li><strong>Compiled / source flag</strong> &mdash; registry key + <code>fetch</code> display for compiled vs source installs</li>
+              <li><strong>Compiled / source flag</strong> &mdash; registry key + <code>fetch</code> display</li>
               <li><strong>Check-updates command</strong> &mdash; queries the website for available versions</li>
-              <li><strong><code>--help</code> / <code>-h</code></strong> &mdash; usage flags on most built-in commands</li>
-              <li><strong>WiFi improvements</strong> &mdash; unlimited saved networks, auto-save on connect, DNS/metered settings</li>
-              <li><strong>Device ID</strong> &mdash; configurable + command to change it</li>
-              <li><strong>Low-level serial throughput</strong> &mdash; improve output speed of <code>RPCortex.py</code> write calls</li>
-              <li><strong>Manual recovery mode</strong> &mdash; enter recovery without triggering a boot error</li>
-              <li><strong>RAM warning at 70&nbsp;KB</strong> (already in rc4; confirmed here)</li>
             </ul>
 
-            <div class="roadmap-section-label">Packages</div>
-            <ul class="roadmap-items">
-              <li><strong>wavey</strong> &mdash; animated gradient display that adapts to terminal size</li>
-              <li><strong>sd</strong> &mdash; SD card support stub (full scheduling integration in v0.9.0)</li>
-              <li>Additional community packages TBD</li>
-            </ul>
-
-            <div class="roadmap-section-label">Compiled Releases</div>
+            <div class="roadmap-section-label">Compiled Releases (v0.9.0)</div>
             <ul class="roadmap-items">
               <li><strong>.rpc releases ship <code>.mpy</code> by default</strong> &mdash; source .rpc kept as separate developer artifact</li>
               <li><strong>Web Installer &amp; Update page</strong> &mdash; source vs compiled selector added</li>

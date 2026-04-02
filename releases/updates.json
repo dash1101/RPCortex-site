@@ -1,15 +1,22 @@
 [
   {
-    "group": "RPCortex Nebula \u03b281",
+    "group": "RPCortex Nebula β81",
     "groupLabel": "current",
     "releases": [
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
+        "subversion": "stable",
+        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Stable.rpc",
+        "tag": "stable",
+        "default": true
+      },
+      {
+        "name": "RPCortex Nebula",
+        "version": "v0.8.1",
         "subversion": "rc1",
         "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-RC1.rpc",
-        "tag": "release candidate",
-        "default": true
+        "tag": "release candidate"
       },
       {
         "name": "RPCortex Nebula",
@@ -17,18 +24,11 @@
         "subversion": "beta3",
         "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta3.rpc",
         "tag": "beta"
-      },
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.1",
-        "subversion": "beta3_source",
-        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta3_source.rpc",
-        "tag": "beta (source)"
       }
     ]
   },
   {
-    "group": "RPCortex Nebula \u03b28X",
+    "group": "RPCortex Nebula β8X",
     "releases": [
       {
         "name": "RPCortex Nebula",
