@@ -162,14 +162,12 @@
     <div class="nav-inner">
       <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
       <div class="nav-links">
-        <a href="https://rpc.novalabs.app">Home</a>
         <a href="NebulaDocs.html">Docs</a>
-        <a href="roadmap.html">Roadmap</a>
-        <a href="PackageDev.html">Build</a>
         <a href="packages.html">Packages</a>
-        <a href="install.html">Web Installer</a>
-        <a href="update.html">Update</a>
-        <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="install.html">Install</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
       </div>
     </div>
   </nav>
@@ -330,8 +328,16 @@
               <li><strong>TUI framework</strong> &mdash; developer-facing API for building adaptive box-draw apps (modelled on PowerShell <code>edit</code>)</li>
               <li><strong>Updated TUI design</strong> &mdash; apply new language to <code>settings</code>, <code>edit</code>, and other panels</li>
               <li><strong>OS personalisation</strong> &mdash; owner name, device name, timezone</li>
-              <li>WiFi speed test, extended benchmark (mem / ROM / SD)</li>
+              <li><strong>SSH shell access</strong> &mdash; lightweight SSH-style server giving Launchpad access over TCP; requires <code>uasyncio</code> so the shell can run as a background task alongside the listener; not full OpenSSH &mdash; just enough to open a session and get a shell prompt</li>
+              <li><strong>Download progress bars</strong> &mdash; <code>[####----] 47%</code> during <code>wget</code>, <code>curl</code>, and <code>pkg install</code>; uses <code>Content-Length</code> response header; degrades gracefully when header is missing</li>
+              <li>Extended benchmark (mem / ROM / SD)</li>
               <li>Dev packages: <code>git</code> (clone / fetch), others TBD</li>
+            </ul>
+
+            <div class="roadmap-section-label">Networking</div>
+            <ul class="roadmap-items">
+              <li><strong>Extended <code>curl</code> flags</strong> &mdash; <code>-X POST</code>, <code>-d &lt;data&gt;</code>, <code>-H &lt;header&gt;</code>, <code>-o &lt;file&gt;</code>, <code>-s</code> (silent), <code>-I</code> (HEAD), custom timeout</li>
+              <li><strong><code>speedtest</code> package</strong> &mdash; measure upload / download throughput; displays result in Mbps / KBps; ships as a package so it can be updated independently</li>
             </ul>
 
             <div class="roadmap-section-label">Build &amp; Portability</div>
