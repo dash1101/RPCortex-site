@@ -1,40 +1,38 @@
 [
   {
-    "group": "RPCortex Nebula β81",
+    "group": "RPCortex Pulsar β9",
     "groupLabel": "current",
+    "releases": [
+      {
+        "name": "RPCortex Pulsar",
+        "version": "v0.9.0",
+        "subversion": "stable",
+        "file": "https://github.com/dash1101/RPCortex/releases/download/v0.9.0/RPC-Pulsar-b9-Stable.rpc",
+        "tag": "stable",
+        "default": true
+      }
+    ]
+  },
+  {
+    "group": "RPCortex Nebula β82",
+    "releases": [
+      {
+        "name": "RPCortex Nebula",
+        "version": "v0.8.2",
+        "subversion": "stable",
+        "file": "https://github.com/dash1101/RPCortex/releases/download/v0.8.2/RPC-Nebula-b82-Stable.rpc",
+        "tag": "stable"
+      }
+    ]
+  },
+  {
+    "group": "RPCortex Nebula β81",
     "releases": [
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
         "subversion": "stable",
         "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Stable.rpc",
-        "tag": "stable",
-        "default": true
-      },
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.1",
-        "subversion": "rc1",
-        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-RC1.rpc",
-        "tag": "release candidate"
-      },
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.1",
-        "subversion": "beta3",
-        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta3.rpc",
-        "tag": "beta"
-      }
-    ]
-  },
-  {
-    "group": "RPCortex Nebula β8X",
-    "releases": [
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.0",
-        "subversion": "rc4",
-        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b8X-RC4.rpc",
         "tag": "stable"
       }
     ]
