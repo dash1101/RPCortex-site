@@ -14,18 +14,6 @@
     ]
   },
   {
-    "group": "RPCortex Nebula β82",
-    "releases": [
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.2",
-        "subversion": "stable",
-        "file": "https://github.com/dash1101/RPCortex/releases/download/v0.8.2/RPC-Nebula-b82-Stable.rpc",
-        "tag": "stable"
-      }
-    ]
-  },
-  {
     "group": "RPCortex Nebula β81",
     "releases": [
       {

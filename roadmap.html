@@ -186,193 +186,181 @@
 
       <div class="roadmap-timeline">
 
-        <!-- v0.8.1-rc1 — shipped -->
+        <!-- v0.8.1 — shipped -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
             <div class="roadmap-dot done">✓</div>
           </div>
           <div class="roadmap-body">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v0.8.1-rc1</span>
+              <span class="roadmap-ver">v0.8.1 &mdash; Nebula</span>
               <span class="roadmap-status future">Shipped</span>
             </div>
             <p class="roadmap-desc">
-              First release candidate for v0.8.1. All core systems are stable. This pass
-              closes the remaining open bugs from the beta cycle and ships the last few
-              quality-of-life features before the final release.
+              The final stable release of the β8 "Nebula" line. Closed out the beta
+              backlog: unlimited WiFi profiles, manual recovery mode, <code>--help</code>
+              flags, <code>pkg commands</code>, tilde expansion everywhere, password
+              masking, a functional <code>Program_Execution</code> toggle, echo file
+              redirection, and POST <code>.mpy</code> fallback.
             </p>
-
-            <div class="roadmap-section-label">OS Fixes</div>
-            <ul class="roadmap-items">
-              <li><strong>Boot clock disabled after every boot</strong> &mdash; crash sentinel was never cleared on success; fixed so <code>OC_On_Boot</code> persists across reboots correctly</li>
-              <li><strong>NOPASS login left crash sentinel alive</strong> &mdash; guest logins now clear <code>Settings.Startup</code> like normal logins do</li>
-              <li><strong>Password masking</strong> &mdash; login and account prompts echo <code>&bull;</code> instead of plaintext</li>
-              <li><strong>Case-insensitive <code>cd</code></strong> &mdash; tries case-insensitive match if exact name isn't found</li>
-              <li><strong>Single-file delete prompt</strong> &mdash; <code>rm</code> on a single file no longer shows the irrelevant <code>(a)</code> option</li>
-              <li><strong>Startup message fix</strong> &mdash; corrected incorrect "recovery mode" banner shown after an unexpected shutdown</li>
-            </ul>
-
-            <div class="roadmap-section-label">OS Features</div>
-            <ul class="roadmap-items">
-              <li><strong>Tilde expansion everywhere</strong> &mdash; <code>~</code> and <code>~/path</code> expand to the user home in all command arguments, not just <code>cd</code></li>
-              <li><strong><code>Program_Execution</code> setting is functional</strong> &mdash; disabling it via <code>settings</code> or <code>reg set</code> blocks <code>exec</code> and script fall-through</li>
-              <li><strong>Echo file redirect</strong> &mdash; <code>echo "text" &gt; file</code> and <code>echo "text" &gt;&gt; file</code></li>
-              <li><strong>Low RAM warning</strong> &mdash; shell warns once when free memory drops below 70&nbsp;KB</li>
-              <li><strong>POST .mpy fallback</strong> &mdash; if a <code>.py</code> module isn't found, POST checks for a compiled <code>.mpy</code> version</li>
-            </ul>
-
-            <div class="roadmap-section-label">Website</div>
-            <ul class="roadmap-items">
-              <li>Download <code>.pkg</code> button now styled correctly on the Packages page</li>
-              <li>RP2 family language throughout &mdash; removed Pico-only references</li>
-              <li>Roadmap page added and linked from all nav bars</li>
-            </ul>
           </div>
         </div>
 
-        <!-- v0.8.1 Final — current -->
+        <!-- v0.9.0 Pulsar — current/stable -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
             <div class="roadmap-dot active">🔵</div>
           </div>
           <div class="roadmap-body active">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v0.8.1</span>
-              <span class="roadmap-status testing">Stable</span>
+              <span class="roadmap-ver">v0.9.0 &mdash; Pulsar</span>
+              <span class="roadmap-status testing">Stable &middot; Current</span>
             </div>
             <p class="roadmap-desc">
-              Final stable release of the v0.8.x line. Ships unlimited WiFi profiles,
-              manual recovery mode, extraction progress, <code>--help</code> flags,
-              <code>pkg commands</code>, device ID, and other quality-of-life improvements
-              from the RC iteration backlog.
+              The first release of the β9 "Pulsar" series and the direct successor to
+              v0.8.1. A stability-and-quality-of-life release: persistent aliases,
+              over-the-air updates, safer large-file operations, and a leaner, faster
+              shell. The benchmark and system-info tools became real packages, and a
+              portable compiled <code>.mpy</code> image now ships alongside source.
             </p>
 
-            <div class="roadmap-section-label">OS — Shipped</div>
+            <div class="roadmap-section-label">Shell &amp; Filesystem</div>
             <ul class="roadmap-items">
-              <li class="done-item"><strong><code>--help</code> / <code>-h</code></strong> &mdash; usage flags on all built-in commands; per-command hint lookup in <code>help</code></li>
-              <li class="done-item"><strong>Unlimited saved WiFi networks</strong> &mdash; networks.cfg replaces the 2-slot registry approach</li>
-              <li class="done-item"><strong>Auto-save WiFi on connect</strong> &mdash; <code>wifi connect</code> saves credentials automatically</li>
-              <li class="done-item"><strong><code>pkg commands</code></strong> &mdash; lists shell commands registered by installed packages</li>
-              <li class="done-item"><strong>Manual <code>recovery</code> command</strong> &mdash; enter recovery shell without a boot error</li>
-              <li class="done-item"><strong>Extraction progress</strong> &mdash; <code>update from-file</code> shows <code>[n/total]</code> counter during archive extraction</li>
-              <li class="done-item"><strong>Device ID in registry &amp; <code>fetch</code></strong> &mdash; <code>System.Device_ID</code> shown in system info display</li>
-              <li class="done-item"><strong>RAM warning at 70&nbsp;KB</strong> &mdash; shell warns once when free memory is low</li>
+              <li class="done-item"><strong>Persistent aliases</strong> &mdash; survive reboots via <code>aliases.cfg</code></li>
+              <li class="done-item"><strong>Streamed <code>cp</code> / <code>mv</code></strong> &mdash; 1&nbsp;KB chunks, no more large-file OOM; <code>mv</code> uses an instant same-FS rename</li>
+              <li class="done-item"><strong>Relative paths</strong> for <code>cp</code> / <code>mv</code> / <code>rename</code></li>
+              <li class="done-item"><strong>Multi-file <code>cat</code></strong>, <strong><code>du</code></strong> (tree size), <strong><code>watch</code></strong> (periodic re-run)</li>
+              <li class="done-item"><strong><code>date set</code></strong> &mdash; set the RTC so log timestamps are correct</li>
+              <li class="done-item"><strong>Configurable prompt hostname</strong> &mdash; <code>reg set System.Device_ID &lt;name&gt;</code></li>
             </ul>
 
-            <div class="roadmap-section-label">OS — Backlog (v0.9.0)</div>
+            <div class="roadmap-section-label">Updates &amp; Packages</div>
             <ul class="roadmap-items">
-              <li><strong>Editor as package</strong> &mdash; removable and reinstallable via <code>pkg</code></li>
-              <li><strong>Fetch as package</strong> &mdash; same treatment, enables independent updates</li>
-              <li><strong>Benchmark package</strong> &mdash; remove built-in <code>bench</code>, replace with a richer package</li>
-              <li><strong>Build tags</strong> &mdash; auto-tagged per build, aligned with GitHub releases</li>
-              <li><strong>Compiled / source flag</strong> &mdash; registry key + <code>fetch</code> display</li>
-              <li><strong>Check-updates command</strong> &mdash; queries the website for available versions</li>
+              <li class="done-item"><strong>Over-the-air updates</strong> &mdash; <code>update check</code> / <code>update online</code> install the latest release over WiFi</li>
+              <li class="done-item"><strong><code>fetch</code> and <code>bench</code> are packages now</strong> (PicoFetch / NebulaMark) &mdash; updatable via <code>pkg upgrade</code></li>
+              <li class="done-item"><strong><code>pkg upgrade</code> handles built-in packages</strong> and preserves their registry keys</li>
+              <li class="done-item"><strong>Version &amp; codename never drift</strong> &mdash; synced from the running code on every boot</li>
             </ul>
 
-            <div class="roadmap-section-label">Compiled Releases (v0.9.0)</div>
+            <div class="roadmap-section-label">Performance &amp; Build</div>
             <ul class="roadmap-items">
-              <li><strong>.rpc releases ship <code>.mpy</code> by default</strong> &mdash; source .rpc kept as separate developer artifact</li>
-              <li><strong>Web Installer &amp; Update page</strong> &mdash; source vs compiled selector added</li>
+              <li class="done-item"><strong>No typing lag</strong> &mdash; per-keystroke completion is zero-I/O; filesystem only touched on Tab</li>
+              <li class="done-item"><strong>No output lag</strong> &mdash; log writes batched (flush every 8 lines / on warnings)</li>
+              <li class="done-item"><strong>Portable compiled image</strong> &mdash; architecture-neutral <code>.mpy</code> build (~44% smaller, faster import)</li>
             </ul>
+
+            <div class="roadmap-note">
+              Pipes (<code>|</code>) and <code>&amp;&amp;</code> / <code>||</code> were intentionally
+              deferred &mdash; they need a per-command exit-code convention to be done
+              correctly. They lead the v0.9.1 plan below.
+            </div>
           </div>
         </div>
 
-        <!-- v0.9.0 -->
+        <!-- v0.9.1 — next -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
             <div class="roadmap-dot planned">🟡</div>
           </div>
           <div class="roadmap-body">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v0.9.0</span>
-              <span class="roadmap-status planned">Planned</span>
+              <span class="roadmap-ver">v0.9.1</span>
+              <span class="roadmap-status planned">Next</span>
             </div>
             <p class="roadmap-desc">
-              Major release. Introduces the scripting language, shell pipes, scheduled
-              and startup tasks, the first pass at multitasking via <code>uasyncio</code>,
-              and deep memory and performance optimisations.
+              The next pass focuses on shell power and automation &mdash; the things that
+              turn RPCortex from an interactive shell into something you can script and
+              leave running.
             </p>
+
+            <ul class="roadmap-items" style="margin-bottom: 20px;">
+              <li><strong>Shell pipes</strong> &mdash; <code>cat f | grep ERR</code>; the unblocking item for everything else</li>
+              <li><strong>Startup tasks</strong> &mdash; run commands / scripts automatically after login</li>
+              <li><strong>Scheduled tasks</strong> &mdash; repeat at intervals via software uptime timer</li>
+              <li><strong>First-cut scripting</strong> &mdash; variables, conditionals, loops in <code>.rps</code> scripts</li>
+              <li><strong>Expanded recovery tools</strong> &mdash; fsck-style checks, registry repair, log export</li>
+              <li><strong>Download progress bars</strong> + extended <code>curl</code> flags</li>
+            </ul>
 
             <div class="roadmap-section-label">Shell &amp; Scripting</div>
             <ul class="roadmap-items">
-              <li><strong>Shell pipes</strong> &mdash; <code>cmd1 | cmd2 | cmd3</code></li>
-              <li><strong>Custom scripting language</strong> &mdash; feature-packed, tightly integrated with Launchpad; supports variables, conditionals, loops, and <code>~</code> expansion</li>
-              <li><strong>Tilde expansion everywhere</strong> &mdash; aliases, script args, any path-accepting command</li>
+              <li><strong>Shell pipes</strong> &mdash; <code>cat file | grep ERROR</code>, built on a real per-command exit-code / stdout-capture convention</li>
+              <li><strong><code>&amp;&amp;</code> / <code>||</code> chaining</strong> &mdash; conditional sequencing, the companion to pipes</li>
+              <li><strong>Custom scripting language</strong> &mdash; first cut: variables, conditionals, loops, and <code>~</code> expansion, tightly integrated with Launchpad</li>
             </ul>
 
-            <div class="roadmap-section-label">Task Scheduling</div>
+            <div class="roadmap-section-label">Task Scheduling &amp; Background</div>
             <ul class="roadmap-items">
-              <li><strong>Startup tasks</strong> &mdash; run commands, scripts, or packages automatically on every boot</li>
-              <li><strong>Scheduled tasks</strong> &mdash; run things at timed intervals post-boot using a software uptime offset (no RTC required)</li>
-              <li><strong>Unattended mode</strong> &mdash; background execution (tail logs, toggle GPIO, pull and apply fixes over WiFi)</li>
+              <li><strong>Startup tasks</strong> &mdash; run commands, scripts, or packages automatically after login</li>
+              <li><strong>Scheduled tasks</strong> &mdash; run things at intervals using a software uptime offset (no battery-backed RTC needed)</li>
+              <li><strong>Unattended / background mode</strong> &mdash; long-running tasks (tail a log, watch GPIO) without holding the shell</li>
             </ul>
 
-            <div class="roadmap-section-label">Multitasking</div>
+            <div class="roadmap-section-label">Recovery &amp; Hardware</div>
             <ul class="roadmap-items">
-              <li><strong>First <code>uasyncio</code> integration</strong> &mdash; cooperative multitasking for background tasks alongside the shell</li>
+              <li><strong>Expanded recovery tools</strong> &mdash; diagnostics and repair commands inside recovery mode (fsck-style checks, registry repair, log export)</li>
+              <li><strong>GPIO control via registry</strong> &mdash; toggle pins to reset a hung peripheral without a reboot</li>
+            </ul>
+
+            <div class="roadmap-section-label">Networking &amp; UX</div>
+            <ul class="roadmap-items">
+              <li><strong>Download progress bars</strong> &mdash; <code>[####----] 47%</code> for <code>wget</code>/<code>curl</code>/<code>pkg install</code> via <code>Content-Length</code></li>
+              <li><strong>Extended <code>curl</code> flags</strong> &mdash; <code>-X</code>, <code>-d</code>, <code>-H</code>, <code>-o</code>, <code>-s</code>, <code>-I</code>, timeout</li>
+              <li><strong>OS personalisation</strong> &mdash; owner name, device name, timezone</li>
             </ul>
 
             <div class="roadmap-section-label">Memory &amp; Performance</div>
             <ul class="roadmap-items">
-              <li>Lazy loading &amp; ephemeral imports &mdash; evict modules after use for non-critical commands</li>
-              <li>Chunked file I/O throughout (512 / 1024-byte buffers)</li>
-              <li>Module eviction on memory pressure + <code>gc.collect()</code></li>
-              <li>Avoid string concatenation in hot paths</li>
-              <li>Further RAM optimisations targeting Pico&nbsp;W (~200&nbsp;KB shown in <code>meminfo</code>)</li>
-              <li>Frozen modules / custom <code>.uf2</code> firmware build (feasibility study)</li>
-            </ul>
-
-            <div class="roadmap-section-label">Features</div>
-            <ul class="roadmap-items">
-              <li><strong>Recovery mode tools</strong> &mdash; expanded diagnostic and repair commands</li>
-              <li><strong>TUI framework</strong> &mdash; developer-facing API for building adaptive box-draw apps (modelled on PowerShell <code>edit</code>)</li>
-              <li><strong>Updated TUI design</strong> &mdash; apply new language to <code>settings</code>, <code>edit</code>, and other panels</li>
-              <li><strong>OS personalisation</strong> &mdash; owner name, device name, timezone</li>
-              <li><strong>SSH shell access</strong> &mdash; lightweight SSH-style server giving Launchpad access over TCP; requires <code>uasyncio</code> so the shell can run as a background task alongside the listener; not full OpenSSH &mdash; just enough to open a session and get a shell prompt</li>
-              <li><strong>Download progress bars</strong> &mdash; <code>[####----] 47%</code> during <code>wget</code>, <code>curl</code>, and <code>pkg install</code>; uses <code>Content-Length</code> response header; degrades gracefully when header is missing</li>
-              <li>Extended benchmark (mem / ROM / SD)</li>
-              <li>Dev packages: <code>git</code> (clone / fetch), others TBD</li>
-            </ul>
-
-            <div class="roadmap-section-label">Networking</div>
-            <ul class="roadmap-items">
-              <li><strong>Extended <code>curl</code> flags</strong> &mdash; <code>-X POST</code>, <code>-d &lt;data&gt;</code>, <code>-H &lt;header&gt;</code>, <code>-o &lt;file&gt;</code>, <code>-s</code> (silent), <code>-I</code> (HEAD), custom timeout</li>
-              <li><strong><code>speedtest</code> package</strong> &mdash; measure upload / download throughput; displays result in Mbps / KBps; ships as a package so it can be updated independently</li>
-            </ul>
-
-            <div class="roadmap-section-label">Build &amp; Portability</div>
-            <ul class="roadmap-items">
-              <li>Compile OS to <code>.mpy</code> &mdash; build script + thin <code>main.py</code> wrapper</li>
-              <li>Non-absolute internal paths for on-device debugging</li>
-              <li>Windows MicroPython port stubs for local shell testing</li>
+              <li>Lazy / ephemeral imports &mdash; evict non-critical modules after use, then <code>gc.collect()</code></li>
+              <li>Module eviction under memory pressure with automatic retry</li>
+              <li>Avoid string concatenation in hot paths to cut fragmentation</li>
+              <li>Targeted Pico&nbsp;W RAM tuning (~200&nbsp;KB free ceiling)</li>
             </ul>
 
             <div class="roadmap-note">
-              v0.9.0 is a substantial release. The exact feature set may shift as v0.8.1 stabilises.
-              Items listed here represent the current plan, not a firm commitment.
+              The exact split between v0.9.1 and later v0.9.x point releases will firm up
+              as work lands. This is the current plan, not a firm commitment.
             </div>
           </div>
         </div>
 
-        <!-- v0.9.1+ -->
+        <!-- v0.9.x / v1.0 — future -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
             <div class="roadmap-dot planned" style="opacity:0.5;">⚪</div>
           </div>
-          <div class="roadmap-body" style="opacity:0.75;">
+          <div class="roadmap-body" style="opacity:0.85;">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v0.9.1 &ndash; v0.9.x</span>
+              <span class="roadmap-ver">v0.9.x &rarr; v1.0</span>
               <span class="roadmap-status future">Future</span>
             </div>
             <p class="roadmap-desc">
-              The v0.9.x series builds toward v1.0. The big milestone is
-              proper multi-threading. Everything here is tentative.
+              The road to v1.0. The headline milestone is real concurrency; everything
+              here is tentative and depends on the multitasking foundation landing first.
             </p>
+
+            <div class="roadmap-section-label">Concurrency</div>
             <ul class="roadmap-items">
-              <li><strong>Proper multi-threading</strong> &mdash; pre-emptive or deep cooperative; tested before v1.0 release</li>
-              <li><strong>Multiple terminals &amp; tabbing</strong> &mdash; requires multitasking to land first</li>
-              <li><strong>Mouse support in TUI</strong> &mdash; depends on terminal emulator cooperation via serial escapes</li>
-              <li>MicroPython Viper optimisation (deferred: sacrifices non-RP2 support &mdash; decision pending platform strategy)</li>
+              <li><strong>First <code>uasyncio</code> integration</strong> &mdash; cooperative multitasking for background tasks alongside the shell</li>
+              <li><strong>Proper multi-threading &amp; background services</strong> &mdash; the core architectural goal before v1.0; heavily tested</li>
+              <li><strong>Multiple terminals &amp; tabbing</strong> &mdash; PowerShell-style session management, once multitasking is stable</li>
+              <li><strong>SSH-style shell over TCP</strong> &mdash; a lightweight listener that hands out a Launchpad session; needs <code>uasyncio</code></li>
+            </ul>
+
+            <div class="roadmap-section-label">Apps &amp; Developer Tools</div>
+            <ul class="roadmap-items">
+              <li><strong>TUI framework</strong> &mdash; reusable adaptive box-draw components for building terminal apps</li>
+              <li><strong>System apps on the TUI framework</strong> &mdash; rebuild <code>settings</code>, <code>edit</code>, and friends</li>
+              <li><strong>Dev packages</strong> &mdash; <code>git</code> (clone / fetch / push), a <code>speedtest</code> package, and more</li>
+              <li><strong>SD card support</strong> &mdash; init package, surfaced as a startup task</li>
+            </ul>
+
+            <div class="roadmap-section-label">Build &amp; Portability</div>
+            <ul class="roadmap-items">
+              <li>Frozen modules / custom <code>.uf2</code> firmware build (feasibility)</li>
+              <li>Windows MicroPython port stubs for off-device debugging (conditional <code>machine</code> imports, relative paths)</li>
+              <li>Mouse support in the TUI (terminal-dependent)</li>
+              <li>Viper / native optimisation &mdash; deferred; would sacrifice non-RP2 portability</li>
             </ul>
           </div>
         </div>
@@ -386,7 +374,7 @@
   <footer>
     <div class="inner">
       <div class="footer-row">
-        <span class="footer-brand">RPCortex Nebula</span>
+        <span class="footer-brand">RPCortex Pulsar</span>
         <div class="footer-links">
           <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
           <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>

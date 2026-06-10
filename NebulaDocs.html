@@ -27,11 +27,12 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Documentation</h1>
-      <p>RPCortex Nebula v0.8.1 &nbsp;&bull;&nbsp; Full reference for the shell, commands, registry, and hardware</p>
+      <p>RPCortex Pulsar v0.9.0 &nbsp;&bull;&nbsp; Full reference for the shell, commands, registry, and hardware</p>
       <div class="version-switcher">
         <span>Version:</span>
         <a href="NebulaDocs_v080.html">v0.8.0-rc4</a>
-        <a href="NebulaDocs_v081.html" class="version-active">v0.8.1</a>
+        <a href="NebulaDocs_v081.html">v0.8.1</a>
+        <a href="NebulaDocs.html" class="version-active">v0.9.0</a>
       </div>
     </div>
   </header>
@@ -108,9 +109,9 @@
       <!-- THE SHELL -->
       <h2 id="the-shell">The Shell</h2>
       <p>The shell prompt format is:</p>
-      <pre><code>username@nebula:~&gt;
-username@nebula:~/docs&gt;
-username@nebula:/Core&gt;</code></pre>
+      <pre><code>username@pulsar:~&gt;
+username@pulsar:~/docs&gt;
+username@pulsar:/Core&gt;</code></pre>
       <p><code>~</code> is shorthand for the user's home directory (<code>/Users/&lt;username&gt;/</code>). The shell starts there on login. <code>cd ~</code> and bare <code>cd</code> both return home.</p>
 
       <h3>Keyboard shortcuts</h3>
@@ -134,7 +135,7 @@ username@nebula:/Core&gt;</code></pre>
       <h3>Critical commands</h3>
       <p><code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, <code>gc</code>, <code>alias</code>, <code>unalias</code>, and <code>rawrepl</code> are implemented as inline functions that bypass the loader entirely. They always work regardless of heap state.</p>
       <h3>Aliases</h3>
-      <p>Session aliases let you define shorthand for any command. They last until logout.</p>
+      <p>Aliases let you define shorthand for any command. They <strong>persist across reboots</strong> &mdash; saved to <code>/Nebula/Registry/aliases.cfg</code> and reloaded at shell start. Critical built-ins can't be shadowed.</p>
       <pre><code>alias ll=ls
 alias cls=clear
 alias              # list all aliases
@@ -160,13 +161,14 @@ ls; pwd; whoami</code></pre>
           <tr><td>mkdir &lt;path&gt;</td><td>Create directory</td></tr>
           <tr><td>rm &lt;path&gt;</td><td>Remove file or directory (recursive for directories)</td></tr>
           <tr><td>touch &lt;file&gt;</td><td>Create an empty file</td></tr>
-          <tr><td>read &lt;file&gt;</td><td>Print file contents</td></tr>
+          <tr><td>read / cat &lt;file&gt;...</td><td>Print file contents; accepts multiple files (header per file)</td></tr>
           <tr><td>head &lt;file&gt; [n]</td><td>First n lines (default 10)</td></tr>
           <tr><td>tail &lt;file&gt; [n]</td><td>Last n lines (default 10)</td></tr>
-          <tr><td>mv &lt;src&gt; &lt;dst&gt;</td><td>Move or rename</td></tr>
-          <tr><td>cp &lt;src&gt; &lt;dst&gt;</td><td>Copy file</td></tr>
-          <tr><td>rename &lt;old&gt; &lt;new&gt;</td><td>Rename in place</td></tr>
+          <tr><td>mv &lt;src&gt; &lt;dst&gt;</td><td>Move or rename (relative or absolute; instant same-FS rename, streamed across FS)</td></tr>
+          <tr><td>cp &lt;src&gt; &lt;dst&gt;</td><td>Copy file (relative or absolute; streamed in 1&nbsp;KB chunks &mdash; large-file safe)</td></tr>
+          <tr><td>rename &lt;old&gt; &lt;new&gt;</td><td>Rename in place (relative or absolute)</td></tr>
           <tr><td>df</td><td>Flash usage: total, used, free</td></tr>
+          <tr><td>du [path]</td><td>Total size of a file or directory tree (recursive)</td></tr>
           <tr><td>tree [path]</td><td>Recursive directory listing</td></tr>
           <tr><td>exec &lt;file&gt;</td><td>Run a Python file directly</td></tr>
         </tbody>
@@ -205,6 +207,8 @@ dirname /Core/Launchpad/sys_sys.py</code></pre>
           <tr><td>meminfo</td><td>Detailed RAM breakdown</td></tr>
           <tr><td>uptime</td><td>Time since last boot</td></tr>
           <tr><td>date</td><td>Current date/time from RTC</td></tr>
+          <tr><td>date set &lt;Y-M-D [H:M:S]&gt;</td><td>Set the hardware RTC (so log timestamps are correct)</td></tr>
+          <tr><td>watch [-n &lt;secs&gt;] &lt;cmd&gt;</td><td>Re-run a command periodically (default 2&nbsp;s) until Ctrl+C</td></tr>
           <tr><td>ver</td><td>OS version string</td></tr>
           <tr><td>clear / cls</td><td>Clear the terminal</td></tr>
           <tr><td>fetch / neofetch</td><td>System info display with ASCII logo</td></tr>
@@ -214,8 +218,8 @@ dirname /Core/Launchpad/sys_sys.py</code></pre>
           <tr><td>sleep &lt;secs&gt;</td><td>Pause the shell for the given number of seconds (e.g. <code>sleep 2.5</code>)</td></tr>
           <tr><td>which &lt;cmd&gt;</td><td>Show where a command is defined: built-in, .lp registry path, or alias</td></tr>
           <tr><td>rawrepl</td><td>Exit the OS and return to MicroPython REPL &mdash; use to re-flash via Web Installer</td></tr>
-          <tr><td>alias [name=cmd]</td><td>Define a session alias or list all aliases</td></tr>
-          <tr><td>unalias &lt;name&gt;</td><td>Remove a session alias</td></tr>
+          <tr><td>alias [name=cmd]</td><td>Define or list aliases &mdash; persisted to <code>aliases.cfg</code>, survive reboots</td></tr>
+          <tr><td>unalias &lt;name&gt;</td><td>Remove an alias (and update the persisted file)</td></tr>
           <tr><td>echo &lt;text&gt;</td><td>Print text</td></tr>
           <tr><td>history</td><td>Show command history</td></tr>
           <tr><td>env [section]</td><td>Dump registry contents</td></tr>
@@ -245,7 +249,18 @@ dirname /Core/Launchpad/sys_sys.py</code></pre>
 
       <!-- OS MANAGEMENT -->
       <h2 id="os-management">OS Management</h2>
-      <p>These commands manage the OS itself &mdash; updates, factory reset, and full reinstall.</p>
+      <p>These commands manage the OS itself &mdash; over-the-air updates, file-based updates, factory reset, and full reinstall.</p>
+
+      <h3>update check / update online</h3>
+      <p>Over-the-air updates over WiFi. <code>update check</code> fetches the release manifest and tells you whether a newer version exists; <code>update online</code> downloads and installs it, then reboots:</p>
+      <pre><code>update check                   # is there a newer release?
+update online                  # download + install the latest, then reboot
+update online --force          # reinstall even if already up to date</code></pre>
+      <ul>
+        <li>Requires a WiFi connection (<code>wifi connect</code> first)</li>
+        <li>Preserves all user data &mdash; accounts, WiFi, settings, and installed packages</li>
+        <li>The running version and codename are re-synced from the new code on the next boot, so they can never drift</li>
+      </ul>
 
       <h3>update from-file</h3>
       <p>Extracts a <code>.rpc</code> release archive to the running OS:</p>
@@ -506,6 +521,15 @@ vi                         # scratch buffer, no file</code></pre>
       <h2 id="registry">Registry</h2>
       <p>The registry lives at <code>/Nebula/Registry/registry.cfg</code> as a plain INI file. It's created from an embedded template on first boot if missing.</p>
 
+      <h3>[System]</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Values</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Codename</td><td>string</td><td>Release codename (e.g. <code>RPCortex B9 - Pulsar</code>); re-synced from the running code every boot</td></tr>
+          <tr><td>Device_ID</td><td>string</td><td>Hostname shown in the shell prompt (<code>user@&lt;Device_ID&gt;</code>). Change it: <code>reg set System.Device_ID mypico</code></td></tr>
+        </tbody>
+      </table>
+
       <h3>[Settings]</h3>
       <table>
         <thead><tr><th>Key</th><th>Values</th><th>Description</th></tr></thead>
@@ -516,7 +540,7 @@ vi                         # scratch buffer, no file</code></pre>
           <tr><td>Network_Autoconnect</td><td>true/false</td><td>WiFi autoconnect on boot</td></tr>
           <tr><td>Active_User</td><td>string</td><td>Current session user</td></tr>
           <tr><td>Startup</td><td>0 / 1 / 3 / 6 / 7</td><td>Boot state sentinel. 0 = clean, 1 = session active, 3 = update crashed, 6 = clock calibration crashed, 7 = boot clock crashed</td></tr>
-          <tr><td>Version</td><td>string</td><td>OS version</td></tr>
+          <tr><td>Version</td><td>string</td><td>OS version; re-synced from the running code every boot (can't drift after an update)</td></tr>
           <tr><td>Note</td><td>string</td><td>One-shot post-action notification. Set to <code>"update_ok"</code> after a successful update; displayed at next login then cleared.</td></tr>
         </tbody>
       </table>
@@ -534,7 +558,7 @@ vi                         # scratch buffer, no file</code></pre>
       </table>
 
       <h3>[Networks]</h3>
-      <p>WiFi credentials for up to 2 saved networks. Keys are created dynamically when you save a network.</p>
+      <p>Saved WiFi networks are stored separately in <code>/Nebula/Registry/networks.cfg</code> (tab-separated SSID/password, unlimited entries) &mdash; not in the registry. <code>wifi connect</code> saves automatically and reuses saved passwords.</p>
 
       <h3>[Features]</h3>
       <table>
@@ -632,7 +656,7 @@ settings           # toggle via settings panel</code></pre>
         <li><strong>SD card support</strong> &mdash; registry key exists, implementation pending</li>
       </ul>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar v0.9.0 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
 
     </article>
   </div>
@@ -641,11 +665,11 @@ settings           # toggle via settings panel</code></pre>
   <footer>
     <div class="inner">
       <div class="footer-row">
-        <span class="footer-brand">RPCortex Nebula</span>
+        <span class="footer-brand">RPCortex Pulsar</span>
         <div class="footer-links">
           <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
           <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
-          <a href="NebulaDocs_v081.html">Docs</a>
+          <a href="NebulaDocs.html">Docs</a>
           <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
         </div>
       </div>

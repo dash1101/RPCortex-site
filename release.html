@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPCortex &mdash; v0.8.1-beta3 Release Notes</title>
+  <title>RPCortex &mdash; v0.9.0 Pulsar Release Notes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,7 +27,7 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Release Notes</h1>
-      <p>v0.8.1-beta3 &nbsp;&bull;&nbsp; Codenamed <strong>Nebula</strong> &nbsp;&bull;&nbsp; β81 &nbsp;&bull;&nbsp; Changes since v0.8.0-rc4</p>
+      <p>v0.9.0 &nbsp;&bull;&nbsp; Codenamed <strong>Pulsar</strong> &nbsp;&bull;&nbsp; &beta;9 &nbsp;&bull;&nbsp; Direct successor to v0.8.1</p>
     </div>
   </header>
 
@@ -36,122 +36,147 @@
     <nav class="docs-toc">
       <h4>Contents</h4>
       <a href="#status">Status</a>
-      <a href="#whats-new">What's new since rc4</a>
+      <a href="#whats-new">What&rsquo;s New</a>
+      <a href="#shell">Shell &amp; QoL</a>
+      <a href="#filesystem">Filesystem</a>
+      <a href="#updates">Updates &amp; Packages</a>
+      <a href="#performance">Performance</a>
+      <a href="#bugfixes">Bug Fixes</a>
+      <a href="#deferred">Not in this release</a>
       <a href="#installation">Installation</a>
       <a href="#limitations">Known Limitations</a>
-      <a href="#whats-next">What's Next</a>
+      <a href="#whats-next">What&rsquo;s Next</a>
     </nav>
 
     <article class="docs-article">
 
       <h2 id="status">Status</h2>
-      <p><strong>Stable.</strong> Ships in a clean factory-default state. Confirmed working on RP2040, RP2350, and ESP32-S3.</p>
+      <p><strong>Stable.</strong> Runs on RP2040, RP2350, and ESP32 / ESP32-S2 / ESP32-S3. This is the first public release since <code>v0.8.1</code> and supersedes it directly &mdash; the v0.8.2 work was an internal milestone that was never published as its own release; everything is folded in here. Recommended upgrade for everyone on v0.8.x.</p>
       <div class="note-box">
-        Release notes for <strong>v0.8.1-beta3</strong> &mdash; covers what changed since <strong>v0.8.0-rc4</strong>. For the full feature reference see the <a href="NebulaDocs.html">docs</a>.
+        These notes cover everything new since <strong>v0.8.1</strong>. For the full feature reference, see the <a href="NebulaDocs.html">docs</a>. For what&rsquo;s coming next, see the <a href="roadmap.html">roadmap</a>.
       </div>
 
-      <h2 id="whats-new">What's new since v0.8.0-rc4</h2>
+      <h2 id="whats-new">What&rsquo;s New in Pulsar</h2>
+      <p>The β8 &ldquo;Nebula&rdquo; line graduates to <strong>Pulsar</strong> — a stability-and-quality-of-life release that makes the shell faster, safer with large files, and finally self-updating over the air. Every change is self-contained and low-risk.</p>
 
-      <h3>Bug fixes</h3>
+      <h2 id="shell">Shell &mdash; Quality of Life</h2>
+
+      <h3>Persistent aliases</h3>
+      <p><code>alias ll=ls -l</code> now <em>survives reboots</em>. Aliases are stored in <code>/Nebula/Registry/aliases.cfg</code>, loaded at shell start, and saved immediately on every <code>alias</code> or <code>unalias</code>. Critical built-ins can never be shadowed by an alias.</p>
+
+      <h3>watch</h3>
+      <p>Re-run any command on a timer until Ctrl+C:</p>
+      <pre><code>watch -n 5 sysinfo
+watch meminfo</code></pre>
+      <p>Clears the screen between runs. Default interval is 2 seconds.</p>
+
+      <h3>Multi-file cat</h3>
+      <p><code>cat a.txt b.txt c.txt</code> prints each file with a <code>==> name <==</code> header, the same as GNU <code>cat</code>. Single-file behaviour is unchanged.</p>
+
+      <h3>Configurable prompt hostname</h3>
+      <p>The <code>user@host</code> part of your prompt now reads from the registry:</p>
+      <pre><code>reg set System.Device_ID mypico
+# prompt becomes:  root@mypico:~></code></pre>
+      <p>Fresh installs default to <code>pulsar</code>. Existing devices upgrading from v0.8.x keep their old <code>nebula</code> default until changed.</p>
+
+      <h3>date set</h3>
+      <p>Set the real-time clock from the shell so session-log timestamps are correct:</p>
+      <pre><code>date set 2026-06-10 14:30:00</code></pre>
+      <p>Bare <code>date</code> still prints the current time. The RTC is not battery-backed on a bare Pico — it resets on power loss.</p>
+
+      <h2 id="filesystem">Filesystem &mdash; Safer &amp; Friendlier</h2>
+
+      <h3>Large-file cp / mv no longer OOM</h3>
+      <p>Copies now stream in 1&nbsp;KB chunks instead of loading the entire file into RAM at once. On a 264&nbsp;KB Pico 1 this was the difference between success and a <code>MemoryError</code> on files larger than ~100&nbsp;KB. <code>mv</code> uses an instant same-filesystem rename when possible and only falls back to streamed copy-then-delete across filesystems.</p>
+
+      <h3>Relative paths for cp / mv / rename</h3>
+      <p><code>cp notes.txt backup/</code> now works. All three commands accept relative paths (resolved against the current directory) in addition to absolute paths. Identical source and destination is caught before any work is done.</p>
+
+      <h3>du</h3>
+      <p>Report the total size of a file or an entire directory tree:</p>
+      <pre><code>du /Core
+du notes.txt</code></pre>
+
+      <h2 id="updates">Updates &amp; Packages</h2>
+
+      <h3>Over-the-air updates</h3>
+      <p>RPCortex can now check for and install updates entirely from the shell over WiFi:</p>
       <ul>
-        <li><strong><code>ls</code> no longer changes your working directory.</strong> Running <code>ls /Core</code> previously left you inside <code>/Core</code> after it finished. Fixed by using <code>uos.listdir(target)</code> directly.</li>
-        <li><strong>POST beeper crash fixed.</strong> If beeper was enabled in settings but <code>beeper_pin</code> was still <code>None</code>, <code>post.py</code> crashed with a <code>NameError</code>. <code>beeper</code> is now initialized to <code>False</code> at module level.</li>
-        <li><strong>POST registry creation handles missing <code>/Nebula/</code> parent.</strong> On a completely fresh filesystem, <code>check_registry()</code> now creates <code>/Nebula/</code> before creating <code>/Nebula/Registry/</code>.</li>
-        <li><strong>Boot-clock crash sentinel now shows a login message.</strong> Startup mode <code>7</code> (device crashed while applying boot clock) now has an entry in <code>_STARTUP_MSGS</code> and displays a warning at login. Previously the sentinel was cleared by POST but no notification reached the user.</li>
+        <li><strong><code>update check</code></strong> &mdash; asks the update server whether a newer release exists and shows version notes.</li>
+        <li><strong><code>update online</code></strong> &mdash; downloads and installs the latest release, then reboots. Your accounts, WiFi profiles, settings, and installed packages are preserved.</li>
+        <li><strong><code>update online --force</code></strong> &mdash; reinstalls even if you are already current (useful for repair).</li>
+        <li><strong><code>update from-file &lt;path.rpc&gt;</code></strong> &mdash; apply a local archive (unchanged from before).</li>
       </ul>
+      <p>After any update, the OS reports the new version on first login. The registry&rsquo;s <code>Settings.Version</code> and <code>System.Codename</code> are synced from the running code on every boot &mdash; they can never drift out of sync after an OTA update.</p>
 
-      <h3>Registry overhaul</h3>
-      <ul>
-        <li><strong>Config caching:</strong> <code>regedit.py</code> now caches the parsed config in memory. Repeated <code>read()</code> calls no longer re-parse the file from disk.</li>
-        <li><strong>Removed dead code:</strong> The unused XOR-encrypted user store (<code>user.dat</code>) removed from <code>regedit.py</code>. Only <code>usrmgmt.py</code> / <code>user.cfg</code> handles users now.</li>
-        <li><strong>f-strings removed:</strong> All f-strings in <code>regedit.py</code> replaced with <code>.format()</code> for broader firmware compatibility.</li>
-      </ul>
+      <h3>fetch and bench are packages now</h3>
+      <p><code>fetch</code> / <code>neofetch</code> (PicoFetch) and <code>bench</code> (NebulaMark) have moved from <code>Core/</code> into proper packages under <code>/Packages/</code>. They still install and run exactly the same, but now they are updatable independently with <code>pkg upgrade PicoFetch</code> or <code>pkg upgrade NebulaMark</code> &mdash; no full OS flash needed for a new benchmark version.</p>
 
-      <h3>Stability fixes</h3>
-      <ul>
-        <li><strong>Fixed <code>recovery_mode()</code> crash:</strong> <code>initialization.py</code> was calling an undefined <code>recovery()</code> function &mdash; now dispatches correctly.</li>
-        <li><strong>GC optimization:</strong> Redundant double/triple <code>gc.collect()</code> calls removed across the codebase. Faster and just as effective.</li>
-        <li><strong>Removed unused <code>import random</code></strong> from <code>main.py</code> &mdash; small free RAM at boot.</li>
-      </ul>
+      <h3>pkg upgrade handles built-in packages</h3>
+      <p><code>pkg upgrade</code> now correctly upgrades built-in packages (previously blocked by the builtin guard) and preserves their registry keys across the uninstall/reinstall cycle.</p>
 
-      <h3>Serial file transfer (<code>_xfer</code>)</h3>
-      <p>New critical inline command added to the <code>_CRITICAL</code> dict alongside <code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, <code>gc</code>. Receives files over serial using base64 &mdash; used by the web package browser and browser update page to push files to a running device without touching the raw REPL or requiring WiFi.</p>
+      <h2 id="performance">Performance</h2>
 
-      <h3>Web package browser</h3>
-      <p><a href="packages.html">packages.html</a> now uses the <code>_xfer</code> serial protocol instead of raw REPL. The browser package browser was available in rc4 but required the device to be in REPL mode. It now installs to a running Launchpad shell &mdash; no mode switch, no reboot. HTTPS auto-translation added for Chromium mixed-content compliance. All website JS moved to <code>js/</code>; CSS unified into <code>style.css</code>.</p>
+      <h3>No more typing lag at 115200 baud</h3>
+      <p>Inline ghost-text completion (the suggestion that appears as you type) now does a zero-I/O command-name dict scan per keystroke. The filesystem is only touched when you actually press Tab for path completion. At 115200 baud, each <code>uos.listdir()</code> call added noticeable lag &mdash; gone.</p>
 
-      <h3>Log directory auto-creation</h3>
-      <p>POST now creates <code>/Nebula/Logs/</code> automatically. Was listed as &ldquo;what&rsquo;s next&rdquo; in rc4 &mdash; done.</p>
+      <h3>No more output lag</h3>
+      <p>Log writes are batched: flushed every 8 lines, or immediately on a WARNING or ERROR. Previously every log write flushed to LittleFS (<em>~10&nbsp;ms each</em>), causing bursts of output to stall visibly. Warnings and errors still flush immediately for crash-log safety.</p>
 
-      <h3>OS management commands</h3>
-      <p>Three new shell commands for managing the OS lifecycle. All require an explicit typed confirmation.</p>
-      <ul>
-        <li><strong><code>update from-file &lt;path&gt;</code></strong> &mdash; applies a <code>.rpc</code> archive to the running OS. Skips <code>/Users/</code> and <code>/Nebula/</code> entirely so accounts, WiFi credentials, and config are preserved. Sets a crash sentinel before writing. Reboots when done.</li>
-        <li><strong><code>factoryreset</code></strong> &mdash; soft reset: wipes user accounts, home dirs, non-builtin packages, and logs. OS files untouched. Type <code>CONFIRM</code>. Reboots into first-run setup.</li>
-        <li><strong><code>reinstall</code></strong> &mdash; full OS wipe: deletes <code>/Core/</code>, <code>/Packages/</code>, <code>/Nebula/</code>, <code>/Users/</code>, writes a reinstall stub as <code>main.py</code>, reboots. Type <code>WIPE</code>. Optionally stage a <code>.rpc</code> for auto-install: <code>reinstall /path/to/os.rpc</code>.</li>
-      </ul>
-      <p>Supporting infrastructure: <code>Core/rpc_install.py</code> (streaming two-pass ZIP extractor, peak RAM = largest single file not archive size) and <code>Core/rpc_stub.py</code> (self-contained boot stub, no <code>Core/</code> imports needed).</p>
+      <h3>Portable compiled image</h3>
+      <p>A precompiled <code>.mpy</code> image now ships alongside the source build. It&rsquo;s architecture-neutral &mdash; one image for RP2040, RP2350, and ESP32 (RPCortex uses no <code>@native</code>/<code>@viper</code> code). About 44% smaller than source and imports faster. Deploy with <code>mpremote</code> or <code>deploy.bat --compiled</code>.</p>
 
-      <h3>Browser OS update page</h3>
-      <p>New <a href="update.html">update.html</a>: update from a browser tab while the device is running. Loads a <code>.rpc</code> with JSZip, skips user data, pushes files via <code>_xfer</code>, sends <code>reboot</code> at the end. No raw REPL, no WiFi. Source: server version picker or a local file.</p>
+      <h2 id="bugfixes">Bug Fixes (since v0.8.1)</h2>
 
-      <h3>First-run setup improvements</h3>
-      <ul>
-        <li>Official package repo added automatically &mdash; no prompt, no opt-in needed.</li>
-        <li><code>guest</code> account created silently.</li>
-        <li>New setup question: <strong>verbose boot</strong> preference (on/off). Was previously only settable after login.</li>
-        <li>Post-update notification: on first login after a successful <code>update from-file</code>, the shell shows a one-time confirmation banner and clears itself.</li>
-      </ul>
+      <h3>Saved WiFi passwords actually work</h3>
+      <p><code>wifi connect &lt;ssid&gt;</code> was reading the old removed 2-slot registry keys (<code>Networks.WiFi_SSID_1/2</code>) and therefore never found any saved passwords, re-prompting every time. It now reads <code>networks.cfg</code> via the same path as autoconnect and connects silently when a saved profile exists.</p>
+
+      <h3>No more false &ldquo;previous session ended unexpectedly&rdquo; on every boot</h3>
+      <p>POST arms <code>Settings.Startup</code> to <code>"1"</code> at the end of its run. <code>initialization.py</code> was reading that key for the startup banner &mdash; so it always saw <code>"1"</code> (session active) and displayed the crash warning. Fixed: POST captures the pre-arm value into <code>post.boot_startup_mode</code>; initialization reads that instead. The OTA-update-success banner and other startup modes now appear correctly too.</p>
+
+      <h3>Built-in packages show in pkg list on fresh installs</h3>
+      <p>The <code>Packages/Launchpad/package.cfg</code> and <code>Packages/Editor/package.cfg</code> stubs were missing from the image (deleted in an old wipe commit). Fresh installs showed no built-in packages in <code>pkg list</code>. Restored.</p>
+
+      <h3>Every password prompt is masked</h3>
+      <p>Account creation (<code>mkacct</code>), password change (<code>chpswd</code>), account removal (<code>rmuser</code>), and <code>wifi add</code> all now echo <code>&bull;</code> bullets. Login always did; the rest didn&rsquo;t.</p>
+
+      <h3>compile.bat ships the full OS</h3>
+      <p>The PicoFetch and NebulaMark package directories were silently omitted from compiled builds. Fixed &mdash; the compiled image now matches the source image.</p>
+
+      <h2 id="deferred">Not in This Release (Deliberately)</h2>
+      <p><strong>Pipes (<code>cmd1 | cmd2</code>) and <code>&amp;&amp;</code> / <code>||</code></strong> are not here yet. They need a proper per-command exit-code and stdout-capture convention across every command; bolting them on without that would be fragile and inconsistent. They are first in line for v0.9.1.</p>
 
       <h2 id="installation">Installation</h2>
-      <p><strong>Fresh install:</strong> Use the <a href="install.html">Web Installer</a> &mdash; flash from your browser, no software needed.</p>
-      <p><strong>Updating from rc4:</strong> Use the <a href="update.html">OS Update</a> page or run <code>update from-file /path/to/os.rpc</code> from the shell. User data is preserved.</p>
-      <p><strong>Manual:</strong> Flash MicroPython v1.25+ (v1.28 recommended), copy release files to the board, connect at 115200 baud, reboot.</p>
+      <p><strong>Fresh install:</strong> Use the <a href="install.html">Web Installer</a> &mdash; flash from your browser over USB, no desktop software required (Chrome or Edge).</p>
+      <p><strong>Updating from v0.8.x:</strong> Run <code>update check</code> then <code>update online</code> from the shell, or use the <a href="update.html">OS Update page</a>, or <code>update from-file /path/to/RPC-Pulsar-b9-Stable.rpc</code>. User accounts, WiFi profiles, settings, and installed packages are all preserved.</p>
+      <p><strong>Manual:</strong> Flash MicroPython v1.25+ (v1.28 recommended), copy all files from the release to the board&rsquo;s filesystem, connect a serial terminal at <strong>115200 baud</strong>, and reboot.</p>
+      <div class="note-box">
+        Already running RPCortex and want a completely clean reflash? Run <code>rawrepl</code> at the shell prompt to drop back to the MicroPython REPL, then use the Web Installer as normal. No wipe needed.
+      </div>
 
       <h2 id="limitations">Known Limitations</h2>
-      <p>Same as v0.8.0-rc4 except <code>/Nebula/Logs/</code> manual creation is no longer needed &mdash; POST handles it.</p>
       <ul>
-        <li>MemoryError may occur in the shell after heavy use due to heap fragmentation. <code>freeup</code> compacts; <code>reboot</code> clears.</li>
-        <li>ESP32-S3 temperature sensor reports unrealistic values (~300&ndash;450&nbsp;&deg;C). Hardware calibration difference, not an RPCortex bug.</li>
-        <li>No real-time clock on base Pico: <code>date</code> shows time since boot epoch until RTC is set.</li>
-        <li>HTTPS on Pico 1 W needs ~9.5&nbsp;KB contiguous heap. Run <code>freeup</code> first if fragmented.</li>
-        <li>WiFi passwords stored plaintext in the registry. No secure enclave on this hardware.</li>
-        <li>The editor requires a real terminal emulator &mdash; Thonny REPL won&rsquo;t render it.</li>
+        <li><strong>MemoryError after heavy use</strong> &mdash; the heap fragments over time. Run <code>freeup</code> to compact; <code>reboot</code> clears it completely. (The shell says &ldquo;heap fragmented&rdquo;, not &ldquo;low memory&rdquo; &mdash; <code>gc.mem_free()</code> can show 90&nbsp;KB free while still raising this.)</li>
+        <li><strong>RTC not battery-backed on bare Pico</strong> &mdash; the clock resets on power loss. Set it after each boot with <code>date set</code>, or accept boot-epoch timestamps.</li>
+        <li><strong>ESP32-S3 temperature reads ~300&ndash;450&thinsp;&deg;C</strong> &mdash; a hardware calibration difference, not an RPCortex bug.</li>
+        <li><strong>HTTPS on Pico 1&nbsp;W needs ~9.5&nbsp;KB contiguous heap</strong> &mdash; run <code>freeup</code> first if a TLS request fails with <code>MemoryError</code>.</li>
+        <li><strong>WiFi passwords stored plaintext</strong> in <code>networks.cfg</code> &mdash; this hardware has no secure enclave.</li>
+        <li><strong>Text editor needs a real terminal</strong> (PuTTY) &mdash; Thonny&rsquo;s REPL won&rsquo;t render it.</li>
       </ul>
 
-      <h2 id="beta3">What's new in beta3</h2>
-
-      <h3>Shell improvements</h3>
+      <h2 id="whats-next">What&rsquo;s Next</h2>
+      <p>v0.9.1 focuses on shell power and automation &mdash; the things that turn RPCortex from an interactive shell into something you can script and leave running:</p>
       <ul>
-        <li><strong>Multi-command lines:</strong> Commands can now be chained with <code>;</code> on a single line: <code>mkdir /data; cd /data; ls</code>. Quote-aware &mdash; semicolons inside single or double quotes are not treated as separators.</li>
-        <li><strong>Faster command dispatch:</strong> Removed redundant state re-injection on every cached command call. Cached commands no longer re-set six module attributes per invocation.</li>
-        <li><strong>CTRL+C at login no longer reboots:</strong> Fixed a restart loop in <code>main.py</code> that intercepted <code>KeyboardInterrupt</code> at the outer level and silently rebooted.</li>
-        <li><strong>Tab completion fixed for directories:</strong> Path completion now uses <code>uos.stat()</code> to detect directories instead of <code>uos.listdir()</code> (which raised on files).</li>
+        <li><strong>Shell pipes</strong> (<code>cat f | grep ERR</code>) and <code>&amp;&amp;</code> / <code>||</code> chaining</li>
+        <li><strong>Startup tasks</strong> &mdash; run scripts or commands automatically after login</li>
+        <li><strong>Scheduled tasks</strong> &mdash; repeat commands at intervals using software uptime</li>
+        <li><strong>First-cut scripting</strong> &mdash; variables, conditionals, loops</li>
+        <li><strong>Expanded recovery tools</strong> &mdash; fsck-style checks, registry repair, log export</li>
+        <li><strong>Download progress bars</strong> and extended <code>curl</code> flags</li>
       </ul>
+      <p>See the <a href="roadmap.html">roadmap</a> for the full plan.</p>
 
-      <h3>File deletion fix</h3>
-      <p><code>rm</code> y/n/a/c prompt now works correctly: <strong>a</strong> deletes all subsequent files without prompting, <strong>c</strong> cancels all remaining deletions, <strong>n</strong> skips and prevents parent directory removal. Previously <code>n</code> and <code>c</code> behaved identically and <code>a</code> only affected the current file.</p>
-
-      <h3>Web package browser</h3>
-      <p>The browser package installer (<a href="packages.html">packages.html</a>) now automatically disconnects from the device after a successful package install. No manual disconnect step needed.</p>
-
-      <h3>Modular release JSON</h3>
-      <p>The <a href="install.html">Web Installer</a> version picker is now driven by <code>releases/releases.json</code>. Add new releases by editing the JSON &mdash; no HTML changes needed.</p>
-
-      <h3>Minor fixes</h3>
-      <ul>
-        <li><code>logout()</code> dead fallback branch removed (imported from wrong module).</li>
-        <li><code>echo</code> / <code>say</code> usage message corrected: <code>Usage: echo &lt;text&gt;  (aliases: print)</code>.</li>
-        <li>Duplicate <code>gc.collect()</code> removed from <code>pkg update</code> handler.</li>
-      </ul>
-
-      <h2 id="whats-next">What's Next</h2>
-      <ul>
-        <li>SD card support</li>
-        <li><code>update check</code> &mdash; online update check (reserved, not yet implemented)</li>
-      </ul>
-
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.1-beta3 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.0 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
 
     </article>
   </div>
@@ -160,11 +185,12 @@
   <footer>
     <div class="inner">
       <div class="footer-row">
-        <span class="footer-brand">RPCortex Nebula</span>
+        <span class="footer-brand">RPCortex Pulsar</span>
         <div class="footer-links">
           <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
           <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
           <a href="NebulaDocs.html">Docs</a>
+          <a href="roadmap.html">Roadmap</a>
           <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
         </div>
       </div>

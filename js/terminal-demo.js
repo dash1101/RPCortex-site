@@ -8,7 +8,7 @@
   var body = document.getElementById('term-body');
   if (!body) return;
 
-  var PROMPT = 'root@nebula:~';
+  var PROMPT = 'root@pulsar:~';
 
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
@@ -21,10 +21,10 @@
     if (text.startsWith('[@]')) return '<span class="ok">[@]</span>' + esc(text.slice(3));
     if (text.startsWith('[:]')) return '<span class="info">[:]</span>' + esc(text.slice(3));
     if (text.startsWith('[?]')) return '<span class="twarn">[?]</span>' + esc(text.slice(3));
-    var ri = text.indexOf('root@nebula');
+    var ri = text.indexOf('root@pulsar');
     if (ri !== -1) {
       return esc(text.slice(0, ri)) +
-        '<span style="color:var(--text);font-weight:700">root@nebula</span>' +
+        '<span style="color:var(--text);font-weight:700">root@pulsar</span>' +
         esc(text.slice(ri + 10));
     }
     return esc(text);
@@ -88,7 +88,7 @@
         { t: '' },
         { t: '' },
         { t: '      :::::::::  :::::::::   ::::::::    ', w: 40 },
-        { t: '     :+:    :+: :+:    :+: :+:    :+:    root@nebula', w: 40 },
+        { t: '     :+:    :+: :+:    :+: :+:    :+:    root@pulsar', w: 40 },
         { t: '    +:+    +:+ +:+    +:+ +:+            \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500', w: 40 },
         { t: '   +#++:++#:  +#++:++#+  +#+                   OS : RPCortex v0.8.1-beta4 (rp2)', w: 40 },
         { t: '  +#+    +#+ +#+        +#+                 Board : Raspberry Pi Pico 2 W', w: 40 },

@@ -1,5 +1,9 @@
-# RPCortex Nebula — Documentation
-### v0.8.1-beta2
+# RPCortex Pulsar — Documentation
+### v0.9.0
+
+> **Canonical reference:** the always-current, complete documentation lives at
+> **[NebulaDocs.html](https://rpc.novalabs.app/NebulaDocs.html)**. This markdown
+> export is a convenience copy and may lag behind the HTML for some sections.
 
 ---
 
@@ -115,13 +119,14 @@ The RP2040 has 264KB of RAM. After loading several commands or running HTTPS req
 | `mkdir <path>` | Create directory |
 | `rm <path>` | Remove file or directory (recursive for directories) |
 | `touch <file>` | Create an empty file |
-| `read <file>` | Print file contents |
+| `read` / `cat <file>...` | Print file contents; accepts multiple files |
 | `head <file> [n]` | First n lines (default 10) |
 | `tail <file> [n]` | Last n lines (default 10) |
-| `mv <src> <dst>` | Move or rename |
-| `cp <src> <dst>` | Copy file |
-| `rename <old> <new>` | Rename in place |
+| `mv <src> <dst>` | Move or rename (relative or absolute; streamed across filesystems) |
+| `cp <src> <dst>` | Copy file (relative or absolute; streamed in 1 KB chunks — large-file safe) |
+| `rename <old> <new>` | Rename in place (relative or absolute) |
 | `df` | Flash usage — total, used, free |
+| `du [path]` | Total size of a file or directory tree (recursive) |
 | `tree [path]` | Recursive directory listing |
 | `exec <file>` | Run a Python file directly |
 
@@ -135,6 +140,8 @@ The RP2040 has 264KB of RAM. After loading several commands or running HTTPS req
 | `meminfo` | Detailed RAM breakdown |
 | `uptime` | Time since last boot |
 | `date` | Current date/time from RTC |
+| `date set <Y-M-D [H:M:S]>` | Set the hardware RTC (correct log timestamps) |
+| `watch [-n <secs>] <cmd>` | Re-run a command periodically until Ctrl+C |
 | `ver` | OS version string |
 | `clear` / `cls` | Clear the terminal |
 | `fetch` / `neofetch` | System info display with ASCII logo |
@@ -502,4 +509,4 @@ settings           # toggle via panel
 
 ---
 
-*RPCortex Nebula v0.8.1-beta2 — by dash1101*
+*RPCortex Pulsar v0.9.0 — by dash1101*
