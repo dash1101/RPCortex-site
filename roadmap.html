@@ -367,6 +367,37 @@
 
       </div><!-- /.roadmap-timeline -->
 
+      <!-- PACKAGE IDEAS -->
+      <div class="roadmap-body" style="margin-top: 8px;">
+        <div class="roadmap-header">
+          <span class="roadmap-ver">Package ideas</span>
+          <span class="roadmap-status future">Anytime</span>
+        </div>
+        <p class="roadmap-desc">
+          Packages install and update independently of the OS, so these don&rsquo;t
+          gate any release &mdash; they can land whenever someone builds them. The OS
+          already has the networking and hardware primitives most of them need.
+          Roughly ordered by usefulness &times; ease.
+        </p>
+        <ul class="roadmap-items">
+          <li><strong><code>ntp</code></strong> &mdash; sync the clock from an NTP server over WiFi (no more clock reset on power loss). <em>Best first package.</em></li>
+          <li><strong><code>dht</code></strong> &mdash; read temperature &amp; humidity from a DHT11/DHT22; the most common Pico sensor.</li>
+          <li><strong><code>i2cscan</code></strong> &mdash; scan the I2C bus and name detected devices; the first thing you do with a new sensor.</li>
+          <li><strong><code>gpio</code></strong> &mdash; set / read / PWM pins straight from the shell.</li>
+          <li><strong><code>calc</code></strong> &mdash; evaluate math from the prompt; base conversions (<code>hex</code>, <code>bin</code>).</li>
+          <li><strong><code>backup</code></strong> &mdash; archive &amp; restore your home directory and registry before a reset or migration.</li>
+          <li><strong><code>httpd</code></strong> &mdash; serve a live status page (CPU / RAM / uptime / temp) over WiFi.</li>
+          <li><strong><code>mqtt</code></strong> &mdash; publish / subscribe so RPCortex can talk to Home Assistant, Node-RED, and friends.</li>
+          <li><strong><code>speedtest</code></strong> &mdash; measure WiFi up/down throughput in Mbps.</li>
+          <li><strong><code>git</code></strong> &mdash; clone / fetch repositories (read-mostly); the heaviest of the set.</li>
+        </ul>
+        <div class="roadmap-note">
+          Got an idea for a package? Open an issue or drop it in
+          <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a> &mdash;
+          see the <a href="PackageDev.html">Package Dev guide</a> to build your own.
+        </div>
+      </div>
+
     </div><!-- /.inner -->
   </section>
 
