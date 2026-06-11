@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPCortex &mdash; v0.9.0 Pulsar Release Notes</title>
+  <title>RPCortex &mdash; v0.9.1 Pulsar Release Notes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,7 +27,7 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Release Notes</h1>
-      <p>v0.9.0 &nbsp;&bull;&nbsp; Codenamed <strong>Pulsar</strong> &nbsp;&bull;&nbsp; &beta;9 &nbsp;&bull;&nbsp; Direct successor to v0.8.1</p>
+      <p>v0.9.1 &nbsp;&bull;&nbsp; Codenamed <strong>Pulsar</strong> &nbsp;&bull;&nbsp; &beta;9 &nbsp;&bull;&nbsp; Succeeds v0.8.1 directly</p>
     </div>
   </header>
 
@@ -39,10 +39,12 @@
       <a href="#whats-new">What&rsquo;s New</a>
       <a href="#shell">Shell &amp; QoL</a>
       <a href="#filesystem">Filesystem</a>
-      <a href="#updates">Updates &amp; Packages</a>
+      <a href="#shellpower">Pipes, Scripts &amp; Automation</a>
+      <a href="#packages">Packages &amp; Updates</a>
+      <a href="#networking">Networking</a>
+      <a href="#recovery">Recovery</a>
       <a href="#performance">Performance</a>
       <a href="#bugfixes">Bug Fixes</a>
-      <a href="#deferred">Not in this release</a>
       <a href="#installation">Installation</a>
       <a href="#limitations">Known Limitations</a>
       <a href="#whats-next">What&rsquo;s Next</a>
@@ -51,18 +53,18 @@
     <article class="docs-article">
 
       <h2 id="status">Status</h2>
-      <p><strong>Stable.</strong> Runs on RP2040, RP2350, and ESP32 / ESP32-S2 / ESP32-S3. This is the first public release since <code>v0.8.1</code> and supersedes it directly &mdash; the v0.8.2 work was an internal milestone that was never published as its own release; everything is folded in here. Recommended upgrade for everyone on v0.8.x.</p>
+      <p><strong>In developer testing.</strong> Runs on RP2040, RP2350, and ESP32 / ESP32-S2 / ESP32-S3. This is the first public release since <code>v0.8.1</code> and supersedes it directly. Recommended upgrade for everyone on v0.8.x.</p>
       <div class="note-box">
         These notes cover everything new since <strong>v0.8.1</strong>. For the full feature reference, see the <a href="NebulaDocs.html">docs</a>. For what&rsquo;s coming next, see the <a href="roadmap.html">roadmap</a>.
       </div>
 
       <h2 id="whats-new">What&rsquo;s New in Pulsar</h2>
-      <p>The β8 &ldquo;Nebula&rdquo; line graduates to <strong>Pulsar</strong> — a stability-and-quality-of-life release that makes the shell faster, safer with large files, and finally self-updating over the air. Every change is self-contained and low-risk.</p>
+      <p>The β8 &ldquo;Nebula&rdquo; line graduates to <strong>Pulsar</strong> — a major step that ships stability improvements, large-file safety, OTA updates, <em>and</em> the shell-power features (pipes, scripting, automation) all in one release. The data directory is now <code>/Pulsar/</code>; updating devices migrate automatically.</p>
 
       <h2 id="shell">Shell &mdash; Quality of Life</h2>
 
       <h3>Persistent aliases</h3>
-      <p><code>alias ll=ls -l</code> now <em>survives reboots</em>. Aliases are stored in <code>/Nebula/Registry/aliases.cfg</code>, loaded at shell start, and saved immediately on every <code>alias</code> or <code>unalias</code>. Critical built-ins can never be shadowed by an alias.</p>
+      <p><code>alias ll=ls -l</code> now <em>survives reboots</em>. Aliases are stored in <code>/Pulsar/Registry/aliases.cfg</code>, loaded at shell start, and saved immediately on every <code>alias</code> or <code>unalias</code>. Critical built-ins can never be shadowed by an alias.</p>
 
       <h3>watch</h3>
       <p>Re-run any command on a timer until Ctrl+C:</p>
@@ -97,23 +99,97 @@ watch meminfo</code></pre>
       <pre><code>du /Core
 du notes.txt</code></pre>
 
-      <h2 id="updates">Updates &amp; Packages</h2>
+      <h2 id="shellpower">Pipes, Scripts &amp; Automation</h2>
+
+      <h3>Shell pipes</h3>
+      <p>Commands can now be piped together using <code>|</code>:</p>
+      <pre><code>cat /Pulsar/Logs/latest.log | grep ERROR | wc
+ls /Core | sort | head -10</code></pre>
+      <p>Pipe consumers (<code>grep</code>, <code>wc</code>, <code>sort</code>, <code>uniq</code>, <code>cat</code>, <code>head</code>, <code>tail</code>) read <code>stdin</code> when given no file argument. Output is captured per-stage with zero extra RAM overhead. Status helpers (<code>error()</code>, <code>warn()</code>) always print to the terminal, not into the pipe.</p>
+
+      <h3>&amp;&amp; and || chaining</h3>
+      <p>Conditional sequencing now works as expected:</p>
+      <pre><code>wifi connect &amp;&amp; pkg update
+update online || echo "Update failed"
+ntp sync -s &amp;&amp; startup add task run</code></pre>
+      <p>Exit status is derived from whether a command called <code>RPCortex.error()</code> or <code>fatal()</code> &mdash; no per-command changes needed; every existing built-in participates automatically.</p>
+
+      <h3>.rps scripting</h3>
+      <p>Write and run scripts from the shell:</p>
+      <pre><code>script myscript.rps</code></pre>
+      <p>Supported constructs: <code>set $var value</code>, <code>$var</code> expansion, <code>if &lt;condition&gt;</code> / <code>else</code> / <code>end</code>, <code>while &lt;condition&gt;</code> / <code>end</code>. Built-in conditions: <code>eq</code>, <code>ne</code>, <code>exists</code>, <code>empty</code>. Any shell command can also be used as a condition (non-zero exit = false). Scripts execute lines through the live shell engine, so all commands and aliases work.</p>
+
+      <h3>Startup tasks</h3>
+      <p>Commands run automatically after login from <code>/Pulsar/Registry/startup.cfg</code>:</p>
+      <pre><code>startup add ntp sync -s      # sync clock silently at login
+startup add wifi autoconnect # connect to strongest saved network
+startup list
+startup remove 1</code></pre>
+
+      <h3>Scheduled tasks</h3>
+      <p>Repeat commands on a software-uptime timer:</p>
+      <pre><code>task add 300 fetch           # run fetch every 5 minutes
+task run                     # foreground scheduler (q / Ctrl+C to stop)
+startup add task run         # make device headless/autonomous</code></pre>
+      <p>The scheduler stays responsive via <code>select()</code> — keyboard input is checked between ticks.</p>
+
+      <h2 id="packages">Packages &amp; Updates</h2>
 
       <h3>Over-the-air updates</h3>
-      <p>RPCortex can now check for and install updates entirely from the shell over WiFi:</p>
+      <p>RPCortex can check for and install updates entirely from the shell over WiFi:</p>
       <ul>
-        <li><strong><code>update check</code></strong> &mdash; asks the update server whether a newer release exists and shows version notes.</li>
-        <li><strong><code>update online</code></strong> &mdash; downloads and installs the latest release, then reboots. Your accounts, WiFi profiles, settings, and installed packages are preserved.</li>
-        <li><strong><code>update online --force</code></strong> &mdash; reinstalls even if you are already current (useful for repair).</li>
-        <li><strong><code>update from-file &lt;path.rpc&gt;</code></strong> &mdash; apply a local archive (unchanged from before).</li>
+        <li><strong><code>update check</code></strong> &mdash; asks the update server whether a newer release exists.</li>
+        <li><strong><code>update online</code></strong> &mdash; downloads and installs the latest release, then reboots. Accounts, WiFi profiles, settings, and installed packages are preserved.</li>
+        <li><strong><code>update online --force</code></strong> &mdash; reinstalls even if already current.</li>
+        <li><strong><code>update from-file &lt;path.rpc&gt;</code></strong> &mdash; apply a local archive.</li>
       </ul>
-      <p>After any update, the OS reports the new version on first login. The registry&rsquo;s <code>Settings.Version</code> and <code>System.Codename</code> are synced from the running code on every boot &mdash; they can never drift out of sync after an OTA update.</p>
 
-      <h3>fetch and bench are packages now</h3>
-      <p><code>fetch</code> / <code>neofetch</code> (PicoFetch) and <code>bench</code> (NebulaMark) have moved from <code>Core/</code> into proper packages under <code>/Packages/</code>. They still install and run exactly the same, but now they are updatable independently with <code>pkg upgrade PicoFetch</code> or <code>pkg upgrade NebulaMark</code> &mdash; no full OS flash needed for a new benchmark version.</p>
+      <h3>New built-in: NTP</h3>
+      <p>The NTP package ships built-in and syncs the hardware RTC over UDP:</p>
+      <pre><code>ntp sync              # sync and print result
+ntp sync -s           # silent — no output unless error (ideal for startup tasks)</code></pre>
+      <p>Handles the MicroPython year-2000 epoch offset automatically.</p>
+
+      <h3>New packages: calc, gpio, i2cscan</h3>
+      <ul>
+        <li><strong><code>calc</code></strong> &mdash; evaluate math expressions: <code>calc 3 * (4 + 2) / 1.5</code>, <code>calc sqrt(2)</code>, <code>calc pi * r**2</code>. Full <code>math</code> module available.</li>
+        <li><strong><code>gpio</code></strong> &mdash; <code>gpio read/set/toggle/pwm/adc</code> from the shell. Named pins (<code>LED</code>) supported on all boards.</li>
+        <li><strong><code>i2cscan</code></strong> &mdash; scan I&sup2;C buses and display discovered device addresses.</li>
+      </ul>
+
+      <h3>fetch and bench are packages</h3>
+      <p><code>fetch</code> (PicoFetch) and <code>bench</code> (PulseMark) have moved from <code>Core/</code> into proper packages under <code>/Packages/</code>. They are now updatable independently with <code>pkg upgrade PicoFetch</code> &mdash; no full OS flash needed.</p>
 
       <h3>pkg upgrade handles built-in packages</h3>
       <p><code>pkg upgrade</code> now correctly upgrades built-in packages (previously blocked by the builtin guard) and preserves their registry keys across the uninstall/reinstall cycle.</p>
+
+      <h2 id="networking">Networking</h2>
+
+      <h3>Download progress bars</h3>
+      <p><code>wget</code> now shows a live progress bar when the server sends a <code>Content-Length</code> header:</p>
+      <pre><code>[########--------] 47%  (381 KB / 812 KB)</code></pre>
+
+      <h3>Extended curl flags</h3>
+      <p><code>curl</code> now accepts: <code>-X &lt;method&gt;</code>, <code>-d &lt;body&gt;</code>, <code>-H &lt;header&gt;</code>, <code>-o &lt;file&gt;</code>, <code>-s</code> (silent), <code>-I</code> (headers only), <code>--timeout &lt;secs&gt;</code>.</p>
+
+      <h3>wifi autoconnect and silent flags</h3>
+      <p><code>wifi autoconnect</code> (or <code>wifi auto</code>) scans nearby networks and connects to the saved one with the strongest signal — no prompts, no SSID argument required. Ideal for startup tasks.</p>
+      <p><code>wifi connect -s</code> and <code>ntp sync -s</code> suppress output unless an error occurs — designed for use in startup scripts.</p>
+
+      <h3>Owner and timezone personalisation</h3>
+      <pre><code>reg set System.Owner "dash"
+reg set System.TZ_Offset -5</code></pre>
+      <p>Owner name appears in <code>fetch</code> next to the device ID. Timezone offset (whole hours from UTC) is applied to the <code>date</code> display.</p>
+
+      <h2 id="recovery">Recovery Tools</h2>
+      <p>A new set of recovery commands live in <code>recovery.lp</code> (loaded separately from <code>system.lp</code> so they work even if system commands are damaged):</p>
+      <ul>
+        <li><strong><code>fscheck</code></strong> &mdash; walk the filesystem, report missing files and stat errors.</li>
+        <li><strong><code>diag</code></strong> &mdash; hardware diagnostics: CPU, RAM, flash, clock, WiFi status.</li>
+        <li><strong><code>logdump [n]</code></strong> &mdash; print the last <em>n</em> lines of <code>/Pulsar/Logs/latest.log</code>.</li>
+        <li><strong><code>regreset</code></strong> &mdash; delete <code>registry.cfg</code> (POST rebuilds from template); keeps <code>user.cfg</code> and <code>networks.cfg</code>.</li>
+        <li><strong><code>pkgdisable</code> / <code>pkgenable</code></strong> &mdash; comment/uncomment a package entry in <code>programs.lp</code> without uninstalling.</li>
+      </ul>
 
       <h2 id="performance">Performance</h2>
 
@@ -143,9 +219,6 @@ du notes.txt</code></pre>
       <h3>compile.bat ships the full OS</h3>
       <p>The PicoFetch and NebulaMark package directories were silently omitted from compiled builds. Fixed &mdash; the compiled image now matches the source image.</p>
 
-      <h2 id="deferred">Not in This Release (Deliberately)</h2>
-      <p><strong>Pipes (<code>cmd1 | cmd2</code>) and <code>&amp;&amp;</code> / <code>||</code></strong> are not here yet. They need a proper per-command exit-code and stdout-capture convention across every command; bolting them on without that would be fragile and inconsistent. They are first in line for v0.9.1.</p>
-
       <h2 id="installation">Installation</h2>
       <p><strong>Fresh install:</strong> Use the <a href="install.html">Web Installer</a> &mdash; flash from your browser over USB, no desktop software required (Chrome or Edge).</p>
       <p><strong>Updating from v0.8.x:</strong> Run <code>update check</code> then <code>update online</code> from the shell, or use the <a href="update.html">OS Update page</a>, or <code>update from-file /path/to/RPC-Pulsar-b9-Stable.rpc</code>. User accounts, WiFi profiles, settings, and installed packages are all preserved.</p>
@@ -165,18 +238,16 @@ du notes.txt</code></pre>
       </ul>
 
       <h2 id="whats-next">What&rsquo;s Next</h2>
-      <p>v0.9.1 focuses on shell power and automation &mdash; the things that turn RPCortex from an interactive shell into something you can script and leave running:</p>
+      <p><strong>v0.9.5</strong> is a dedicated multitasking exploration release. The goal is to prove <code>uasyncio</code> alongside the shell before v1.0 builds on it:</p>
       <ul>
-        <li><strong>Shell pipes</strong> (<code>cat f | grep ERR</code>) and <code>&amp;&amp;</code> / <code>||</code> chaining</li>
-        <li><strong>Startup tasks</strong> &mdash; run scripts or commands automatically after login</li>
-        <li><strong>Scheduled tasks</strong> &mdash; repeat commands at intervals using software uptime</li>
-        <li><strong>First-cut scripting</strong> &mdash; variables, conditionals, loops</li>
-        <li><strong>Expanded recovery tools</strong> &mdash; fsck-style checks, registry repair, log export</li>
-        <li><strong>Download progress bars</strong> and extended <code>curl</code> flags</li>
+        <li><strong>First <code>uasyncio</code> integration</strong> &mdash; background tasks while the shell stays interactive</li>
+        <li><strong>Background <code>task run</code></strong> &mdash; scheduled tasks no longer block the prompt</li>
+        <li><strong>Concurrency safety audit</strong> &mdash; identify which modules need re-entry guards</li>
+        <li><strong>TCP shell listener</strong> (experimental) &mdash; SSH-style access over WiFi</li>
       </ul>
-      <p>See the <a href="roadmap.html">roadmap</a> for the full plan.</p>
+      <p>v1.0 builds on the stable multitasking foundation: TUI framework, SD card support, multiple terminals, and more. See the <a href="roadmap.html">roadmap</a> for the full plan.</p>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.0 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
 
     </article>
   </div>

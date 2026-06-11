@@ -26,18 +26,6 @@
     ]
   },
   {
-    "group": "RPCortex Nebula β8X",
-    "releases": [
-      {
-        "name": "RPCortex Nebula",
-        "version": "v0.8.0",
-        "subversion": "rc4",
-        "file": "https://rpc.novalabs.app/releases/download/v0.8.0/RPC-Nebula-b8X-RC4.rpc",
-        "tag": "stable"
-      }
-    ]
-  },
-  {
     "group": "RPCortex Fusion",
     "releases": [
       {

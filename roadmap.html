@@ -206,152 +206,135 @@
           </div>
         </div>
 
-        <!-- v0.9.0 Pulsar — current/stable -->
+        <!-- v0.9.1 Pulsar — current/stable -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
             <div class="roadmap-dot active">🔵</div>
           </div>
           <div class="roadmap-body active">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v0.9.0 &mdash; Pulsar</span>
-              <span class="roadmap-status testing">Stable &middot; Current</span>
+              <span class="roadmap-ver">v0.9.1 &mdash; Pulsar</span>
+              <span class="roadmap-status testing">In Development &middot; Current</span>
             </div>
             <p class="roadmap-desc">
-              The first release of the β9 "Pulsar" series and the direct successor to
-              v0.8.1. A stability-and-quality-of-life release: persistent aliases,
-              over-the-air updates, safer large-file operations, and a leaner, faster
-              shell. The benchmark and system-info tools became real packages, and a
-              portable compiled <code>.mpy</code> image now ships alongside source.
+              The definitive β9 "Pulsar" release &mdash; succeeds v0.8.1 directly.
+              Turns RPCortex from an interactive shell into something you can script,
+              automate, and leave running headlessly. Every previous v0.9.0 goal is
+              included and the scope was expanded to cover shell-power, packages, and the
+              <code>/Pulsar/</code> storage layout in one shot.
             </p>
 
             <div class="roadmap-section-label">Shell &amp; Filesystem</div>
             <ul class="roadmap-items">
               <li class="done-item"><strong>Persistent aliases</strong> &mdash; survive reboots via <code>aliases.cfg</code></li>
-              <li class="done-item"><strong>Streamed <code>cp</code> / <code>mv</code></strong> &mdash; 1&nbsp;KB chunks, no more large-file OOM; <code>mv</code> uses an instant same-FS rename</li>
-              <li class="done-item"><strong>Relative paths</strong> for <code>cp</code> / <code>mv</code> / <code>rename</code></li>
-              <li class="done-item"><strong>Multi-file <code>cat</code></strong>, <strong><code>du</code></strong> (tree size), <strong><code>watch</code></strong> (periodic re-run)</li>
-              <li class="done-item"><strong><code>date set</code></strong> &mdash; set the RTC so log timestamps are correct</li>
-              <li class="done-item"><strong>Configurable prompt hostname</strong> &mdash; <code>reg set System.Device_ID &lt;name&gt;</code></li>
-            </ul>
-
-            <div class="roadmap-section-label">Updates &amp; Packages</div>
-            <ul class="roadmap-items">
-              <li class="done-item"><strong>Over-the-air updates</strong> &mdash; <code>update check</code> / <code>update online</code> install the latest release over WiFi</li>
-              <li class="done-item"><strong><code>fetch</code> and <code>bench</code> are packages now</strong> (PicoFetch / NebulaMark) &mdash; updatable via <code>pkg upgrade</code></li>
-              <li class="done-item"><strong><code>pkg upgrade</code> handles built-in packages</strong> and preserves their registry keys</li>
-              <li class="done-item"><strong>Version &amp; codename never drift</strong> &mdash; synced from the running code on every boot</li>
-            </ul>
-
-            <div class="roadmap-section-label">Performance &amp; Build</div>
-            <ul class="roadmap-items">
-              <li class="done-item"><strong>No typing lag</strong> &mdash; per-keystroke completion is zero-I/O; filesystem only touched on Tab</li>
-              <li class="done-item"><strong>No output lag</strong> &mdash; log writes batched (flush every 8 lines / on warnings)</li>
-              <li class="done-item"><strong>Portable compiled image</strong> &mdash; architecture-neutral <code>.mpy</code> build (~44% smaller, faster import)</li>
-            </ul>
-
-            <div class="roadmap-note">
-              Pipes (<code>|</code>) and <code>&amp;&amp;</code> / <code>||</code> were intentionally
-              deferred &mdash; they need a per-command exit-code convention to be done
-              correctly. They lead the v0.9.1 plan below.
-            </div>
-          </div>
-        </div>
-
-        <!-- v0.9.1 — in development -->
-        <div class="roadmap-entry">
-          <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot active">🔧</div>
-          </div>
-          <div class="roadmap-body active">
-            <div class="roadmap-header">
-              <span class="roadmap-ver">v0.9.1 &mdash; Pulsar</span>
-              <span class="roadmap-status testing">In Development</span>
-            </div>
-            <p class="roadmap-desc">
-              The shell-power &amp; automation pass &mdash; the release that turns RPCortex
-              from an interactive shell into something you can script and leave running.
-              Everything below is built and tested; this build is in developer testing on
-              real hardware ahead of tagging.
-            </p>
-
-            <div class="roadmap-section-label">Shell &amp; Scripting</div>
-            <ul class="roadmap-items">
-              <li class="done-item"><strong>Pipes</strong> &mdash; <code>cat file | grep ERROR | wc</code>, on a real output-capture / exit-code convention</li>
-              <li class="done-item"><strong><code>&amp;&amp;</code> / <code>||</code> chaining</strong> &mdash; conditional sequencing (<code>wifi connect &amp;&amp; pkg update</code>)</li>
-              <li class="done-item"><strong>Scripting (<code>.rps</code>)</strong> &mdash; <code>set</code>/<code>$vars</code>, <code>if</code>/<code>else</code>, <code>while</code>, run with <code>script file.rps</code></li>
+              <li class="done-item"><strong>Pipes</strong> &mdash; <code>cat file | grep ERROR | wc</code>, real output-capture / exit-code convention</li>
+              <li class="done-item"><strong><code>&amp;&amp;</code> / <code>||</code> chaining</strong> &mdash; <code>wifi connect &amp;&amp; pkg update</code></li>
+              <li class="done-item"><strong>Scripting (<code>.rps</code>)</strong> &mdash; <code>set</code>/<code>$vars</code>, <code>if</code>/<code>else</code>, <code>while</code>; run by filename</li>
+              <li class="done-item"><strong>Streamed <code>cp</code> / <code>mv</code></strong> &mdash; 1&nbsp;KB chunks; <code>mv</code> uses instant same-FS rename for zero copy</li>
+              <li class="done-item"><strong>Configurable prompt hostname</strong>, <strong><code>date set</code></strong> RTC, <strong><code>du</code></strong>, <strong><code>watch</code></strong></li>
+              <li class="done-item"><strong><code>/Pulsar/</code> storage</strong> &mdash; registry, logs, and pkg cache moved from <code>/Nebula/</code>; auto-migrated on update</li>
             </ul>
 
             <div class="roadmap-section-label">Automation</div>
             <ul class="roadmap-items">
               <li class="done-item"><strong>Startup tasks</strong> &mdash; <code>startup add &lt;cmd&gt;</code> runs commands automatically at login</li>
-              <li class="done-item"><strong>Scheduled tasks</strong> &mdash; <code>task add &lt;secs&gt; &lt;cmd&gt;</code> + <code>task run</code> scheduler (software-uptime timer)</li>
+              <li class="done-item"><strong>Scheduled tasks</strong> &mdash; <code>task add &lt;secs&gt; &lt;cmd&gt;</code> + foreground <code>task run</code> scheduler</li>
               <li class="done-item"><strong>Unattended mode</strong> &mdash; <code>startup add task run</code> boots straight into a headless scheduler</li>
             </ul>
 
-            <div class="roadmap-section-label">Recovery &amp; Hardware</div>
+            <div class="roadmap-section-label">Packages &amp; Updates</div>
             <ul class="roadmap-items">
-              <li class="done-item"><strong>Recovery tools</strong> &mdash; <code>fscheck</code>, <code>diag</code>, <code>logdump</code>, <code>regreset</code>, <code>pkgdisable</code></li>
-              <li class="done-item"><strong>GPIO package</strong> &mdash; <code>gpio read/set/toggle/pwm/adc</code> from the shell</li>
-              <li class="done-item"><strong>I²C scanner + calculator</strong> &mdash; the <code>i2cscan</code> and <code>calc</code> packages</li>
+              <li class="done-item"><strong>Over-the-air updates</strong> &mdash; <code>update check</code> / <code>update online</code> over WiFi</li>
+              <li class="done-item"><strong>PicoFetch &amp; PulseMark</strong> (renamed from NebulaMark) &mdash; real updatable packages</li>
+              <li class="done-item"><strong>NTP built-in</strong> &mdash; <code>ntp sync</code> sets the clock; <code>startup add ntp sync -s</code> for silent boot sync</li>
+              <li class="done-item"><strong>New packages</strong> &mdash; <code>calc</code>, <code>gpio</code>, <code>i2cscan</code></li>
+              <li class="done-item"><strong>Compiled <code>.mpy</code> packages</strong> &mdash; <code>make_pkg.py --compile</code>; loader auto-falls-back to <code>.mpy</code></li>
+              <li class="done-item"><strong><code>pkg install</code> multiple names</strong>; PicoFetch / NTP user-removable</li>
             </ul>
 
             <div class="roadmap-section-label">Networking &amp; UX</div>
             <ul class="roadmap-items">
-              <li class="done-item"><strong>Download progress bars</strong> &mdash; <code>[####----] 47%</code> on <code>wget</code> via <code>Content-Length</code></li>
+              <li class="done-item"><strong>Download progress bars</strong> &mdash; <code>[####----] 47%</code> on <code>wget</code></li>
               <li class="done-item"><strong>Extended <code>curl</code> flags</strong> &mdash; <code>-X</code>, <code>-d</code>, <code>-H</code>, <code>-o</code>, <code>-s</code>, <code>-I</code>, <code>--timeout</code></li>
-              <li class="done-item"><strong>Personalisation</strong> &mdash; owner name and timezone (<code>System.Owner</code>, <code>System.TZ_Offset</code>)</li>
+              <li class="done-item"><strong><code>wifi autoconnect</code></strong> &mdash; connect to the strongest saved network, no prompts</li>
+              <li class="done-item"><strong>Silent flags</strong> &mdash; <code>ntp sync -s</code>, <code>wifi connect -s</code> (errors only)</li>
+              <li class="done-item"><strong>Owner &amp; timezone</strong> &mdash; <code>System.Owner</code>, <code>System.TZ_Offset</code></li>
             </ul>
 
-            <div class="roadmap-section-label">Memory &amp; Performance (carry-over)</div>
+            <div class="roadmap-section-label">Recovery &amp; Build</div>
             <ul class="roadmap-items">
-              <li>Lazy / ephemeral imports &mdash; evict non-critical modules after use, then <code>gc.collect()</code></li>
-              <li>Avoid string concatenation in hot paths; targeted Pico&nbsp;W RAM tuning</li>
+              <li class="done-item"><strong>Recovery tools</strong> &mdash; <code>fscheck</code>, <code>diag</code>, <code>logdump</code>, <code>regreset</code>, <code>pkgdisable</code></li>
+              <li class="done-item"><strong>Faster deploy</strong> &mdash; single chained <code>mpremote</code> session (~30&times; faster than per-file)</li>
             </ul>
 
             <div class="roadmap-note">
-              In developer testing on RP2040 / RP2350 / ESP32-S3. The compiled image is
-              architecture-neutral MicroPython bytecode — one build for all targets.
+              In developer testing on RP2040 / RP2350 / ESP32-S3 ahead of tagging.
             </div>
           </div>
         </div>
 
-        <!-- v0.9.x / v1.0 — future -->
+        <!-- v0.9.5 — multitasking test -->
+        <div class="roadmap-entry">
+          <div class="roadmap-dot-wrap">
+            <div class="roadmap-dot planned" style="opacity:0.65;">🟡</div>
+          </div>
+          <div class="roadmap-body" style="opacity:0.9;">
+            <div class="roadmap-header">
+              <span class="roadmap-ver">v0.9.5 &mdash; Pulsar</span>
+              <span class="roadmap-status future">Planned</span>
+            </div>
+            <p class="roadmap-desc">
+              A dedicated multitasking exploration release. The goal is to get
+              <code>uasyncio</code> working alongside the shell safely so that v1.0 can
+              build on a proven foundation &mdash; not to ship production features yet.
+              Expect breaking changes; this is an intentional stepping stone.
+            </p>
+            <ul class="roadmap-items">
+              <li><strong>First <code>uasyncio</code> integration</strong> &mdash; run background tasks while the shell stays interactive</li>
+              <li><strong>Concurrency safety audit</strong> &mdash; identify which modules need locking / re-entry guards</li>
+              <li><strong>Background <code>task run</code></strong> &mdash; scheduled tasks run async, no foreground blocker</li>
+              <li><strong>TCP shell listener</strong> (experimental) &mdash; first attempt at SSH-style access over WiFi</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- v1.0 — future -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
             <div class="roadmap-dot planned" style="opacity:0.5;">⚪</div>
           </div>
           <div class="roadmap-body" style="opacity:0.85;">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v0.9.x &rarr; v1.0</span>
+              <span class="roadmap-ver">v1.0</span>
               <span class="roadmap-status future">Future</span>
             </div>
             <p class="roadmap-desc">
-              The road to v1.0. The headline milestone is real concurrency; everything
-              here is tentative and depends on the multitasking foundation landing first.
+              The 1.0 milestone. Multitasking is stable (proven in v0.9.5),
+              the TUI framework lands, and RPCortex becomes a credible platform for
+              long-running embedded applications.
             </p>
 
             <div class="roadmap-section-label">Concurrency</div>
             <ul class="roadmap-items">
-              <li><strong>First <code>uasyncio</code> integration</strong> &mdash; cooperative multitasking for background tasks alongside the shell</li>
-              <li><strong>Proper multi-threading &amp; background services</strong> &mdash; the core architectural goal before v1.0; heavily tested</li>
-              <li><strong>Multiple terminals &amp; tabbing</strong> &mdash; PowerShell-style session management, once multitasking is stable</li>
-              <li><strong>SSH-style shell over TCP</strong> &mdash; a lightweight listener that hands out a Launchpad session; needs <code>uasyncio</code></li>
+              <li><strong>Stable <code>uasyncio</code> multitasking</strong> &mdash; production-grade, not experimental</li>
+              <li><strong>Multiple terminals &amp; tabbing</strong> &mdash; PowerShell-style session management</li>
+              <li><strong>SSH-style shell over TCP</strong> &mdash; a lightweight listener; needs stable <code>uasyncio</code></li>
             </ul>
 
             <div class="roadmap-section-label">Apps &amp; Developer Tools</div>
             <ul class="roadmap-items">
-              <li><strong>TUI framework</strong> &mdash; reusable adaptive box-draw components for building terminal apps</li>
+              <li><strong>TUI framework</strong> &mdash; reusable adaptive box-draw components for terminal apps</li>
               <li><strong>System apps on the TUI framework</strong> &mdash; rebuild <code>settings</code>, <code>edit</code>, and friends</li>
-              <li><strong>Dev packages</strong> &mdash; <code>git</code> (clone / fetch / push), a <code>speedtest</code> package, and more</li>
               <li><strong>SD card support</strong> &mdash; init package, surfaced as a startup task</li>
+              <li><strong>Dev packages</strong> &mdash; <code>git</code>, <code>speedtest</code>, <code>httpd</code>, and more</li>
             </ul>
 
             <div class="roadmap-section-label">Build &amp; Portability</div>
             <ul class="roadmap-items">
               <li>Frozen modules / custom <code>.uf2</code> firmware build (feasibility)</li>
-              <li>Windows MicroPython port stubs for off-device debugging (conditional <code>machine</code> imports, relative paths)</li>
+              <li>Windows MicroPython port stubs for off-device debugging</li>
               <li>Mouse support in the TUI (terminal-dependent)</li>
-              <li>Viper / native optimisation &mdash; deferred; would sacrifice non-RP2 portability</li>
+              <li>Viper / native optimisation &mdash; deferred until platform strategy settled</li>
             </ul>
           </div>
         </div>

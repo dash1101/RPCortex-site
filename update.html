@@ -46,8 +46,8 @@
       <div class="prereq-grid" style="margin-bottom:36px;">
         <div class="prereq-card">
           <div class="prereq-num">1</div>
-          <h3>Device running RPCortex v0.8.0+</h3>
-          <p>Your device must be powered on, booted, and logged in to the Launchpad shell. Requires <strong>v0.8.0-rc4 or later</strong>. For a <strong>fresh install</strong>, run <code>rawrepl</code> in the shell first, then use the <a href="install.html">Web Installer</a>.</p>
+          <h3>Device running RPCortex v0.8.1+</h3>
+          <p>Your device must be powered on, booted, and logged in to the Launchpad shell. Requires <strong>v0.8.1 or later</strong>. For a <strong>fresh install</strong>, run <code>rawrepl</code> in the shell first, then use the <a href="install.html">Web Installer</a>.</p>
         </div>
         <div class="prereq-card">
           <div class="prereq-num">2</div>
@@ -114,7 +114,7 @@
 
           <div class="warn-box" style="margin:20px 0 24px;">
             <strong>What gets updated:</strong> All OS files in <code>/Core/</code>, <code>/Packages/</code> (built-in stubs), and <code>main.py</code>.<br>
-            <strong>What is preserved:</strong> <code>/Users/</code> (home dirs), <code>/Nebula/</code> (registry, WiFi credentials, package cache, logs). Your accounts and settings are not touched.
+            <strong>What is preserved:</strong> <code>/Users/</code> (home dirs), <code>/Pulsar/</code> (registry, WiFi credentials, package cache, logs). Your accounts and settings are not touched. Devices running v0.8.x will have <code>/Pulsar/</code> auto-migrated from <code>/Nebula/</code> on first boot after update.
           </div>
 
           <button class="btn-primary" id="startBtn" disabled style="width:100%;padding:14px;">

@@ -44,8 +44,18 @@
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <button class="btn-primary" id="connectBtn" style="padding:10px 24px;font-size:0.88rem;">Connect Device</button>
+          <button class="btn-secondary" id="getInstalledBtn" style="padding:10px 24px;font-size:0.88rem;display:none;">Get Installed</button>
           <button class="btn-secondary" id="disconnectBtn" style="padding:10px 24px;font-size:0.88rem;display:none;">Disconnect</button>
         </div>
+      </div>
+
+      <!-- INSTALLED PACKAGES PANEL (shown after "Get Installed") -->
+      <div id="installedPanel" style="display:none;margin-bottom:28px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <span style="font-size:0.95rem;font-weight:600;color:var(--text);">Installed on device</span>
+          <button id="installedCloseBtn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0 4px;">&times;</button>
+        </div>
+        <div id="installedList" style="font-family:var(--mono);font-size:0.83rem;color:var(--text-muted);line-height:1.7;white-space:pre-wrap;"></div>
       </div>
       <p class="serial-note" id="serialNote">
         Requires Chrome 89+ or Edge 89+. Close PuTTY/Thonny before connecting. The device must be logged in to the Launchpad shell.

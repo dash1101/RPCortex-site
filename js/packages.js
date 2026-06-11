@@ -28,8 +28,12 @@
   }
 
   /* ── DOM refs ─────────────────────────────────────────────────── */
-  var connectBtn     = document.getElementById('connectBtn');
-  var disconnectBtn  = document.getElementById('disconnectBtn');
+  var connectBtn       = document.getElementById('connectBtn');
+  var disconnectBtn    = document.getElementById('disconnectBtn');
+  var getInstalledBtn  = document.getElementById('getInstalledBtn');
+  var installedPanel   = document.getElementById('installedPanel');
+  var installedList    = document.getElementById('installedList');
+  var installedCloseBtn= document.getElementById('installedCloseBtn');
   var connectDot     = document.getElementById('connectDot');
   var connectLabel   = document.getElementById('connectLabel');
   var pkgContainer   = document.getElementById('pkgContainer');
@@ -49,9 +53,52 @@
     connectDot.className     = 'connect-dot ' + (connected ? 'on' : 'off');
     connectLabel.textContent = connected ? 'Device connected' : 'No device connected';
     connectLabel.className   = 'connect-status' + (connected ? ' connected' : '');
-    connectBtn.style.display    = connected ? 'none' : '';
-    disconnectBtn.style.display = connected ? '' : 'none';
+    connectBtn.style.display      = connected ? 'none' : '';
+    disconnectBtn.style.display   = connected ? '' : 'none';
+    if (getInstalledBtn) getInstalledBtn.style.display = connected ? '' : 'none';
+    if (!connected && installedPanel) installedPanel.style.display = 'none';
     updateInstallButtons();
+  }
+
+  /* ── Get Installed ─────────────────────────────────────────────── */
+  if (getInstalledBtn) {
+    getInstalledBtn.addEventListener('click', async function () {
+      if (!activeDevice) return;
+      getInstalledBtn.disabled = true;
+      getInstalledBtn.textContent = 'Reading…';
+      try {
+        activeDevice.clearBuffer();
+        await activeDevice.write('pkg list\r');
+        /* Wait up to 6s for the next prompt to appear */
+        var out = await activeDevice.waitFor('>', 6000).catch(function () {
+          return activeDevice.rxBuffer;
+        });
+        /* Strip the command echo and ANSI codes, keep the content lines */
+        var clean = out
+          .replace(/\x1b\[[0-9;]*m/g, '')   // ANSI colours
+          .replace(/\r/g, '')
+          .split('\n')
+          .filter(function (l) {
+            var t = l.trim();
+            return t && t.indexOf('pkg list') === -1 && t.indexOf('>') !== 0;
+          })
+          .join('\n');
+        installedList.textContent = clean || '(no packages installed, or no response from device)';
+        installedPanel.style.display = '';
+        installedPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch (e) {
+        installedList.textContent = 'Error reading device: ' + (e.message || String(e));
+        installedPanel.style.display = '';
+      }
+      getInstalledBtn.disabled = false;
+      getInstalledBtn.textContent = 'Get Installed';
+    });
+  }
+
+  if (installedCloseBtn) {
+    installedCloseBtn.addEventListener('click', function () {
+      installedPanel.style.display = 'none';
+    });
   }
 
   connectBtn.addEventListener('click', async function () {
@@ -195,7 +242,7 @@
       var data = new Uint8Array(await resp.arrayBuffer());
       xferLogLine('[@] Downloaded ' + data.length + ' bytes.', 'xfer-log-ok');
       xferProgress.style.width = '10%';
-      var destPath = '/Nebula/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
+      var destPath = '/Pulsar/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
       await _doXfer(data, destPath, pkgName);
     } catch (e) {
       xferLogLine('[-] Error: ' + (e.message || String(e)), 'xfer-log-err');
@@ -214,7 +261,7 @@
       xferLogLine('[@] Loaded ' + data.length + ' bytes from local file.', 'xfer-log-ok');
       xferProgress.style.width = '10%';
       var safeName = pkgName.toLowerCase().replace(/[^a-z0-9_]/g, '_').replace(/\.pkg$/, '');
-      var destPath = '/Nebula/pkg/tmp_' + safeName + '.pkg';
+      var destPath = '/Pulsar/pkg/tmp_' + safeName + '.pkg';
       await _doXfer(data, destPath, pkgName);
     } catch (e) {
       xferLogLine('[-] Error: ' + (e.message || String(e)), 'xfer-log-err');
