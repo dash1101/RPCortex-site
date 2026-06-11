@@ -237,7 +237,7 @@ dirname /Core/Launchpad/sys_sys.py</code></pre>
           <tr><td>reg set &lt;key&gt; &lt;val&gt;</td><td>Write a registry key</td></tr>
           <tr><td>settings</td><td>Open the settings panel</td></tr>
           <tr><td>edit [file]</td><td>Open the built-in editor</td></tr>
-          <tr><td>bench</td><td>Run the NebulaMark benchmark</td></tr>
+          <tr><td>bench</td><td>Run the PulseMark benchmark</td></tr>
         </tbody>
       </table>
 
@@ -699,8 +699,8 @@ pulse boot on      # apply on every boot
 settings           # toggle via settings panel</code></pre>
       <p>Manual overclock beyond 220 MHz is allowed. A warning is shown but the clock is set to whatever you specify. The RP2040 is generally stable up to around 240&ndash;250 MHz with the right flash timing.</p>
 
-      <h3>NebulaMark</h3>
-      <p><code>bench</code> runs the NebulaMark suite: integer ops, floating-point ops, Mandelbrot iteration, and Pi approximation. Results are printed as calculation times in milliseconds.</p>
+      <h3>PulseMark</h3>
+      <p><code>bench</code> runs the PulseMark suite: integer ops, floating-point ops, Mandelbrot iteration, and Pi approximation. Results are printed as calculation times in milliseconds. (Formerly &ldquo;NebulaMark&rdquo;.)</p>
 
       <h3>Heap and fragmentation</h3>
       <p><code>freeup</code> clears the command cache and runs garbage collection. Use it before heavy network operations or when you get a <code>MemoryError</code> despite apparent free RAM. <code>meminfo</code> shows the current heap state.</p>
