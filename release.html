@@ -13,10 +13,10 @@
     <div class="nav-inner">
       <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
       <div class="nav-links">
-        <a href="NebulaDocs.html">Docs</a>
-        <a href="packages.html">Packages</a>
-        <a href="roadmap.html">Roadmap</a>
-        <a href="install.html">Install</a>
+        <a href="docs">Docs</a>
+        <a href="packages">Packages</a>
+        <a href="roadmap">Roadmap</a>
+        <a href="install">Install</a>
         <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
         <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
       </div>
@@ -55,7 +55,7 @@
       <h2 id="status">Status</h2>
       <p><strong>In developer testing.</strong> Runs on RP2040, RP2350, and ESP32 / ESP32-S2 / ESP32-S3. This is the first public release since <code>v0.8.1</code> and supersedes it directly. Recommended upgrade for everyone on v0.8.x.</p>
       <div class="note-box">
-        These notes cover everything new since <strong>v0.8.1</strong>. For the full feature reference, see the <a href="NebulaDocs.html">docs</a>. For what&rsquo;s coming next, see the <a href="roadmap.html">roadmap</a>.
+        These notes cover everything new since <strong>v0.8.1</strong>. For the full feature reference, see the <a href="docs">docs</a>. For what&rsquo;s coming next, see the <a href="roadmap">roadmap</a>.
       </div>
 
       <h2 id="whats-new">What&rsquo;s New in Pulsar</h2>
@@ -220,8 +220,8 @@ reg set System.TZ_Offset -5</code></pre>
       <p>The PicoFetch and NebulaMark package directories were silently omitted from compiled builds. Fixed &mdash; the compiled image now matches the source image.</p>
 
       <h2 id="installation">Installation</h2>
-      <p><strong>Fresh install:</strong> Use the <a href="install.html">Web Installer</a> &mdash; flash from your browser over USB, no desktop software required (Chrome or Edge).</p>
-      <p><strong>Updating from v0.8.x:</strong> Run <code>update check</code> then <code>update online</code> from the shell, or use the <a href="update.html">OS Update page</a>, or <code>update from-file /path/to/RPC-Pulsar-b9-Stable.rpc</code>. User accounts, WiFi profiles, settings, and installed packages are all preserved.</p>
+      <p><strong>Fresh install:</strong> Use the <a href="install">Web Installer</a> &mdash; flash from your browser over USB, no desktop software required (Chrome or Edge).</p>
+      <p><strong>Updating from v0.8.x:</strong> Run <code>update check</code> then <code>update online</code> from the shell, or use the <a href="update">OS Update page</a>, or <code>update from-file /path/to/RPC-Pulsar-b9-Stable.rpc</code>. User accounts, WiFi profiles, settings, and installed packages are all preserved.</p>
       <p><strong>Manual:</strong> Flash MicroPython v1.25+ (v1.28 recommended), copy all files from the release to the board&rsquo;s filesystem, connect a serial terminal at <strong>115200 baud</strong>, and reboot.</p>
       <div class="note-box">
         Already running RPCortex and want a completely clean reflash? Run <code>rawrepl</code> at the shell prompt to drop back to the MicroPython REPL, then use the Web Installer as normal. No wipe needed.
@@ -245,7 +245,7 @@ reg set System.TZ_Offset -5</code></pre>
         <li><strong>Concurrency safety audit</strong> &mdash; identify which modules need re-entry guards</li>
         <li><strong>TCP shell listener</strong> (experimental) &mdash; SSH-style access over WiFi</li>
       </ul>
-      <p>v1.0 builds on the stable multitasking foundation: TUI framework, SD card support, multiple terminals, and more. See the <a href="roadmap.html">roadmap</a> for the full plan.</p>
+      <p>v1.0 builds on the stable multitasking foundation: TUI framework, SD card support, multiple terminals, and more. See the <a href="roadmap">roadmap</a> for the full plan.</p>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
 
@@ -260,8 +260,8 @@ reg set System.TZ_Offset -5</code></pre>
         <div class="footer-links">
           <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
           <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
-          <a href="NebulaDocs.html">Docs</a>
-          <a href="roadmap.html">Roadmap</a>
+          <a href="docs">Docs</a>
+          <a href="roadmap">Roadmap</a>
           <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
         </div>
       </div>

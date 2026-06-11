@@ -13,10 +13,10 @@
     <div class="nav-inner">
       <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
       <div class="nav-links">
-        <a href="NebulaDocs.html">Docs</a>
-        <a href="packages.html">Packages</a>
-        <a href="roadmap.html">Roadmap</a>
-        <a href="install.html">Install</a>
+        <a href="docs">Docs</a>
+        <a href="packages">Packages</a>
+        <a href="roadmap">Roadmap</a>
+        <a href="install">Install</a>
         <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
         <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
       </div>
@@ -30,9 +30,9 @@
       <p>RPCortex Nebula v0.8.0-rc4 &nbsp;&bull;&nbsp; Full reference for the shell, commands, registry, and hardware</p>
       <div class="version-switcher">
         <span>Version:</span>
-        <a href="NebulaDocs_v080.html" class="version-active">v0.8.0-rc4</a>
-        <a href="NebulaDocs_v081.html">v0.8.1</a>
-        <a href="NebulaDocs.html">v0.9.1</a>
+        <a href="docs_v080" class="version-active">v0.8.0-rc4</a>
+        <a href="docs_v081">v0.8.1</a>
+        <a href="docs">v0.9.1</a>
       </div>
     </div>
   </header>
@@ -320,16 +320,16 @@ pkg install HelloWorld</code></pre>
       <p><code>repo/make_pkg.py</code> is a PC-side script that builds a <code>.pkg</code> from a source directory:</p>
       <pre><code>python make_pkg.py MyPackage/</code></pre>
       <p>Packages must use <code>ZIP_STORED</code> (no compression) &mdash; <code>make_pkg.py</code> handles this automatically. If you build with a standard ZIP tool using deflate, install will fail unless the target firmware has <code>zlib</code>.</p>
-      <p><a href="PackageDev.html">Full package development guide &rarr;</a></p>
+      <p><a href="PackageDev">Full package development guide &rarr;</a></p>
 
       <!-- WEB TOOLS -->
       <h2 id="web-tools">Web Tools</h2>
       <p>Two browser-based tools for interacting with a connected device over USB. Both use the Web Serial API (Chrome/Edge 89+).</p>
 
-      <h3><a href="install.html">Web Installer</a></h3>
+      <h3><a href="install">Web Installer</a></h3>
       <p>Flash MicroPython and copy RPCortex to a board directly from your browser using raw REPL mode. No software to install. Requires a bare MicroPython device (not a running RPCortex shell).</p>
 
-      <h3><a href="packages.html">Package Browser</a></h3>
+      <h3><a href="packages">Package Browser</a></h3>
       <p>Browse the package repo and install packages to a connected board via raw REPL. No WiFi required on the device.</p>
       <div class="note-box">In v0.8.1-beta2 the package browser was updated to use the <code>_xfer</code> serial protocol instead of raw REPL, and no longer requires the device to be in REPL mode &mdash; the shell can stay running.</div>
 
@@ -537,7 +537,7 @@ settings           # toggle via settings panel</code></pre>
         <div class="footer-links">
           <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
           <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
-          <a href="NebulaDocs_v081.html">Docs</a>
+          <a href="docs_v081">Docs</a>
           <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
         </div>
       </div>
