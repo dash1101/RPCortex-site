@@ -165,7 +165,9 @@
         <div class="codeblock">
           <div class="codeblock-label">Or update from the shell (device needs WiFi or a staged .rpc file)</div>
           <pre><span style="color:var(--text-muted)"># Option A — download and apply directly (WiFi required)</span>
-wget http://rpc.novalabs.app/releases/RPC-Nebula-b81-Beta.rpc /update.rpc
+update online
+<span style="color:var(--text-muted)"># — or manually specify a file:</span>
+wget http://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b91-Stable.rpc /update.rpc
 update from-file /update.rpc
 
 <span style="color:var(--text-muted)"># Option B — full wipe and reinstall from a staged .rpc</span>

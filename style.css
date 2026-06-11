@@ -2,44 +2,40 @@
 /* Liquid Glass Design System                                    */
 
 :root {
-  /* ── Base palette (unchanged colour scheme) ── */
-  --bg:          #060b14;
-  --bg-alt:      #08111f;
-  /* Card fill is now a soft diagonal gradient — gives glass a "mica" material
-     depth instead of a flat tint. Still translucent so backdrop-blur shows. */
-  --bg-card:     linear-gradient(157deg, rgba(14,28,52,0.60) 0%, rgba(7,16,34,0.46) 52%, rgba(6,13,28,0.54) 100%);
-  --bg-card-solid: rgba(6, 14, 30, 0.52);
-  --border:      rgba(255, 255, 255, 0.10);
-  --border-hi:   rgba(0, 200, 255, 0.32);
-  --text:        #d8eaf8;
-  --text-muted:  #5a7a98;
-  --cyan:        #00c8ff;
-  --cyan-dim:    #009ac4;
-  --cyan-glow:   rgba(0,200,255,0.14);
-  --green:       #00e87d;
-  --yellow:      #ffd000;
-  --red:         #ff3355;
-  --accent:      #0ea5e9;
+  /* ── Summer palette — warm teal / amber / coral ── */
+  --bg:          #040d11;
+  --bg-alt:      #071018;
+  --bg-card:     linear-gradient(157deg, rgba(6,26,36,0.62) 0%, rgba(3,16,24,0.46) 52%, rgba(4,14,22,0.56) 100%);
+  --bg-card-solid: rgba(4, 14, 24, 0.54);
+  --border:      rgba(45, 212, 190, 0.09);
+  --border-hi:   rgba(251, 146, 60, 0.30);
+  --text:        #dff0ec;
+  --text-muted:  #4a7a72;
+  --cyan:        #2dd4be;    /* warm teal — primary colour */
+  --cyan-dim:    #14b8a6;
+  --cyan-glow:   rgba(45,212,190,0.13);
+  --green:       #34d399;
+  --yellow:      #fbbf24;    /* amber */
+  --red:         #f87171;
+  --accent:      #fb923c;    /* warm orange — badges, highlights, hover accents */
   --radius:      18px;
   --radius-sm:   11px;
   --ease:        cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* ── Liquid-glass system ── stronger blur, a brighter specular rim, and a
-     layered shadow stack for real depth. Cascades to every .glass surface. */
-  --glass-blur:     blur(36px) saturate(1.9) brightness(1.09);
-  --glass-specular: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  /* ── Liquid-glass system — frosted summer frost: slightly warmer specular ── */
+  --glass-blur:     blur(36px) saturate(1.85) brightness(1.07);
+  --glass-specular: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   --glass-shadow:
       0 10px 44px rgba(0,0,0,0.55),
       0 2px 10px rgba(0,0,0,0.35),
-      inset 0 1px 0 rgba(255,255,255,0.13),
-      inset 0 0 0 1px rgba(255,255,255,0.035);
+      inset 0 1px 0 rgba(255,255,255,0.11),
+      inset 0 0 0 1px rgba(255,255,255,0.030);
   --glass-shadow-lg:
       0 28px 80px rgba(0,0,0,0.62),
       0 6px 18px rgba(0,0,0,0.42),
-      inset 0 1px 0 rgba(255,255,255,0.15),
-      inset 0 0 0 1px rgba(255,255,255,0.045);
-  /* Diagonal glare used as a ::before sheen on premium surfaces */
-  --glass-sheen: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 20%, transparent 42%);
+      inset 0 1px 0 rgba(255,255,255,0.13),
+      inset 0 0 0 1px rgba(255,255,255,0.040);
+  --glass-sheen: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 20%, transparent 42%);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -56,18 +52,18 @@ body {
   background-color: var(--bg);
   background-image:
     /* Mica grain — fine fractal noise gives glass surfaces a material texture */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
-    /* Top-left: main cyan orb */
-    radial-gradient(ellipse 65% 55% at 12% 18%,  rgba(0, 170, 240, 0.12) 0%, transparent 60%),
-    /* Bottom-right: teal accent orb */
-    radial-gradient(ellipse 55% 48% at 90% 82%,  rgba(0, 210, 170, 0.08) 0%, transparent 55%),
-    /* Center-right: deep blue orb */
-    radial-gradient(ellipse 48% 38% at 78% 22%,  rgba(40, 80, 240, 0.06) 0%, transparent 50%),
-    /* Center: warm ambient fill */
-    radial-gradient(ellipse 80% 70% at 50% 50%,  rgba(0, 60, 120, 0.08) 0%, transparent 65%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E"),
+    /* Top-left: warm amber orb — summer sunrise */
+    radial-gradient(ellipse 65% 55% at 10% 16%,  rgba(251, 146, 60, 0.10) 0%, transparent 60%),
+    /* Bottom-right: coral/rose orb — tropical sunset */
+    radial-gradient(ellipse 56% 50% at 92% 82%,  rgba(244, 114, 182, 0.08) 0%, transparent 55%),
+    /* Center-right: warm teal orb — ocean shimmer */
+    radial-gradient(ellipse 48% 40% at 76% 24%,  rgba(45, 212, 190, 0.07) 0%, transparent 50%),
+    /* Center: deep ocean ambient fill */
+    radial-gradient(ellipse 80% 70% at 50% 50%,  rgba(0, 60, 70, 0.07) 0%, transparent 65%),
     /* Subtle grid */
-    linear-gradient(rgba(0,180,255,0.020) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,180,255,0.020) 1px, transparent 1px);
+    linear-gradient(rgba(45,212,190,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45,212,190,0.018) 1px, transparent 1px);
   background-size: 180px 180px, auto, auto, auto, auto, 52px 52px, 52px 52px;
   background-attachment: fixed, fixed, fixed, fixed, fixed, fixed, fixed;
 }
@@ -75,20 +71,61 @@ body {
 a { color: var(--cyan-dim); text-decoration: none; transition: color 0.15s var(--ease); }
 a:hover { color: var(--cyan); }
 
-/* Cyan-tinted text selection */
-::selection { background: rgba(0,200,255,0.26); color: #eaf7ff; }
+/* Warm teal text selection */
+::selection { background: rgba(45,212,190,0.24); color: #e0faf6; }
 
 /* Slim, premium scrollbar (WebKit) */
 ::-webkit-scrollbar { width: 11px; height: 11px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0,180,255,0.18);
+  background: rgba(45,212,190,0.18);
   border: 3px solid transparent;
   border-radius: 10px;
   background-clip: padding-box;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(0,200,255,0.34); background-clip: padding-box; }
-html { scrollbar-color: rgba(0,180,255,0.28) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar-thumb:hover { background: rgba(45,212,190,0.34); background-clip: padding-box; }
+html { scrollbar-color: rgba(45,212,190,0.26) transparent; scrollbar-width: thin; }
+
+/* ── Animated summer orbs — fixed, blurred, pointer-events:none ──────────
+   Two slow-drifting radial glows behind all content. The body background
+   provides static orbs; these add subtle parallax motion.
+   Frozen by prefers-reduced-motion below.                                  */
+body::before {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  width: 580px;
+  height: 580px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251,146,60,0.075) 0%, transparent 70%);
+  top: -140px;
+  left: -100px;
+  filter: blur(55px);
+  animation: orb-drift-a 22s ease-in-out infinite alternate;
+}
+body::after {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244,114,182,0.065) 0%, transparent 70%);
+  bottom: -110px;
+  right: -90px;
+  filter: blur(48px);
+  animation: orb-drift-b 19s ease-in-out infinite alternate-reverse;
+}
+@keyframes orb-drift-a {
+  from { transform: translate(0,    0)    scale(1); }
+  to   { transform: translate(80px, 60px) scale(1.18); }
+}
+@keyframes orb-drift-b {
+  from { transform: translate(0,     0)     scale(1); }
+  to   { transform: translate(-65px, -50px) scale(1.14); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
@@ -166,8 +203,13 @@ nav {
   color: var(--cyan);
   letter-spacing: 0.5px;
   text-decoration: none;
-  text-shadow: 0 0 24px rgba(0,200,255,0.5);
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  animation: logo-glow 5s ease-in-out infinite;
+}
+@keyframes logo-glow {
+  0%, 100% { text-shadow: 0 0 22px rgba(45,212,190,0.50); }
+  40%       { text-shadow: 0 0 36px rgba(45,212,190,0.72), 0 0 14px rgba(251,146,60,0.20); }
+  70%       { text-shadow: 0 0 28px rgba(45,212,190,0.58), 0 0 10px rgba(244,114,182,0.15); }
 }
 .nav-logo:hover { opacity: 0.85; color: var(--cyan); }
 .nav-links { display: flex; gap: 28px; }
@@ -185,31 +227,37 @@ nav {
   position: relative;
   overflow: hidden;
 }
-/* Extra ambient burst behind hero content */
+/* Animated ambient burst behind hero content — warm summer sunrise */
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 75% 65% at 50% -5%, rgba(0,190,255,0.10) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 40% at 20% 100%, rgba(0,200,255,0.04) 0%, transparent 55%);
+    radial-gradient(ellipse 75% 65% at 50% -5%, rgba(45,212,190,0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 20% 100%, rgba(251,146,60,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 85% 10%,  rgba(244,114,182,0.05) 0%, transparent 50%);
   pointer-events: none;
+  animation: hero-orb-breathe 14s ease-in-out infinite alternate;
+}
+@keyframes hero-orb-breathe {
+  from { opacity: 1;    transform: scale(1); }
+  to   { opacity: 0.80; transform: scale(1.06) translateY(-8px); }
 }
 .hero-inner { max-width: 860px; margin: 0 auto; position: relative; }
 
 .badge {
   display: inline-block;
   padding: 5px 16px;
-  border: 1px solid rgba(0,200,255,0.22);
+  border: 1px solid rgba(45,212,190,0.22);
   border-radius: 20px;
   font-size: 0.78rem;
   color: var(--cyan-dim);
   margin-bottom: 28px;
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  background: rgba(0,200,255,0.06);
+  background: rgba(45,212,190,0.06);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 0 16px rgba(0,200,255,0.08);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 0 16px rgba(45,212,190,0.08);
   letter-spacing: 0.3px;
 }
 
@@ -218,13 +266,14 @@ nav {
   font-weight: 800;
   line-height: 1.12;
   margin-bottom: 22px;
-  background: linear-gradient(115deg, #eef6ff 0%, #90d8ff 30%, var(--cyan) 50%, #bfeaff 68%, #eef6ff 100%);
+  /* Summer gradient: cool teal → warm coral → amber */
+  background: linear-gradient(115deg, #d4fdf8 0%, #5eead4 26%, #2dd4be 44%, #f9a8d4 64%, #fde68a 82%, #d4fdf8 100%);
   background-size: 220% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.5px;
-  animation: hero-shimmer 9s ease-in-out infinite;
+  animation: hero-shimmer 10s ease-in-out infinite;
 }
 @keyframes hero-shimmer {
   0%, 100% { background-position: 0% center; }
@@ -257,17 +306,17 @@ nav {
   letter-spacing: 0.2px;
 }
 .btn-primary {
-  background: linear-gradient(145deg, rgba(0,165,225,0.9) 0%, rgba(0,100,155,0.85) 100%);
+  background: linear-gradient(145deg, rgba(20,184,166,0.92) 0%, rgba(4,120,104,0.88) 100%);
   color: #ffffff;
-  border: 1px solid rgba(0,200,255,0.3);
-  box-shadow: 0 0 28px rgba(0,180,255,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  border: 1px solid rgba(45,212,190,0.30);
+  box-shadow: 0 0 28px rgba(45,212,190,0.22), inset 0 1px 0 rgba(255,255,255,0.15);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 .btn-primary:hover {
-  opacity: 0.92;
+  opacity: 0.94;
   transform: translateY(-2px);
-  box-shadow: 0 0 40px rgba(0,200,255,0.40), inset 0 1px 0 rgba(255,255,255,0.2);
+  box-shadow: 0 0 40px rgba(45,212,190,0.36), 0 0 18px rgba(251,146,60,0.12), inset 0 1px 0 rgba(255,255,255,0.2);
   color: #ffffff;
 }
 .btn-primary:disabled {
@@ -375,10 +424,10 @@ nav {
   display: block;
   width: 36px;
   height: 2px;
-  background: linear-gradient(90deg, var(--cyan), transparent);
+  background: linear-gradient(90deg, var(--cyan), var(--accent), transparent);
   margin-top: 10px;
   border-radius: 2px;
-  box-shadow: 0 0 12px rgba(0,200,255,0.6);
+  box-shadow: 0 0 12px rgba(45,212,190,0.55);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -400,9 +449,9 @@ nav {
   transition: border-color 0.22s, transform 0.22s, box-shadow 0.22s;
 }
 .feature-card:hover {
-  border-color: rgba(0,200,255,0.30);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 0 28px rgba(0,180,255,0.07), inset 0 1px 0 rgba(255,255,255,0.10);
+  border-color: rgba(45,212,190,0.28);
+  transform: translateY(-5px);
+  box-shadow: 0 18px 52px rgba(0,0,0,0.46), 0 0 30px rgba(45,212,190,0.09), 0 0 18px rgba(251,146,60,0.06), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 .feature-icon { font-size: 1.7rem; margin-bottom: 14px; }
 .feature-card h3 { font-size: 0.975rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
@@ -476,15 +525,15 @@ nav {
 .step-num {
   width: 34px; height: 34px;
   border-radius: 50%;
-  background: rgba(0,200,255,0.06);
-  border: 1.5px solid rgba(0,200,255,0.5);
+  background: rgba(45,212,190,0.07);
+  border: 1.5px solid rgba(45,212,190,0.48);
   color: var(--cyan);
   font-weight: 700;
   font-size: 0.9rem;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  box-shadow: 0 0 14px rgba(0,200,255,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 0 14px rgba(45,212,190,0.20), inset 0 1px 0 rgba(255,255,255,0.10);
 }
 .step-text strong { display: block; margin-bottom: 4px; color: var(--text); }
 .step-text p { font-size: 0.875rem; color: var(--text-muted); }
@@ -598,9 +647,9 @@ nav {
   gap: 8px;
 }
 .docs-card:hover {
-  border-color: rgba(0,200,255,0.28);
-  transform: translateY(-3px);
-  box-shadow: 0 14px 44px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.09);
+  border-color: rgba(45,212,190,0.26);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.48), 0 0 22px rgba(45,212,190,0.07), inset 0 1px 0 rgba(255,255,255,0.09);
 }
 .docs-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); }
 .docs-card p  { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
@@ -665,7 +714,7 @@ footer {
   font-weight: 700;
   color: var(--cyan);
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  text-shadow: 0 0 18px rgba(0,200,255,0.4);
+  text-shadow: 0 0 18px rgba(45,212,190,0.40);
 }
 .footer-links { display: flex; gap: 24px; }
 .footer-links a { font-size: 0.82rem; color: var(--text-muted); transition: color 0.15s; }
@@ -727,10 +776,10 @@ footer {
 }
 .version-switcher a:hover { border-color: rgba(0,200,255,0.28); color: var(--text); }
 .version-switcher a.version-active {
-  border-color: rgba(0,200,255,0.45);
+  border-color: rgba(45,212,190,0.44);
   color: var(--cyan);
   font-weight: 600;
-  box-shadow: 0 0 12px rgba(0,200,255,0.12);
+  box-shadow: 0 0 12px rgba(45,212,190,0.14);
 }
 
 .docs-page-layout {
@@ -960,7 +1009,7 @@ footer {
   line-height: 1;
   margin-bottom: 12px;
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  text-shadow: 0 0 20px rgba(0,180,255,0.45);
+  text-shadow: 0 0 20px rgba(45,212,190,0.45);
 }
 .prereq-card h3 { font-size: 0.975rem; font-weight: 600; color: var(--text); margin: 0 0 8px; }
 .prereq-card p   { font-size: 0.875rem; color: var(--text-muted); margin: 0; line-height: 1.6; }
