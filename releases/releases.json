@@ -5,9 +5,9 @@
     "releases": [
       {
         "name": "RPCortex Pulsar",
-        "version": "v0.9.0",
-        "subversion": "stable",
-        "file": "https://github.com/dash1101/RPCortex/releases/download/v0.9.0/RPC-Pulsar-b9-Stable.rpc",
+        "version": "v0.9.1",
+        "subversion": "Beta",
+        "file": "https://github.com/dash1101/RPCortex/releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc",
         "tag": "stable",
         "default": true
       }
@@ -20,7 +20,7 @@
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
         "subversion": "stable",
-        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b81-Stable.rpc",
+        "file": "https://rpc.novalabs.app/releases/download/v0.8.1/RPC-Nebula-b81-Stable.rpc",
         "tag": "stable"
       }
     ]
@@ -32,7 +32,7 @@
         "name": "RPCortex Nebula",
         "version": "v0.8.0",
         "subversion": "rc4",
-        "file": "https://rpc.novalabs.app/releases/RPC-Nebula-b8X-RC4.rpc",
+        "file": "https://rpc.novalabs.app/releases/download/v0.8.0/RPC-Nebula-b8X-RC4.rpc",
         "tag": "stable"
       }
     ]
@@ -44,7 +44,7 @@
         "name": "RPCortex Fusion",
         "version": "v0.7.0",
         "subversion": "rc2",
-        "file": "https://rpc.novalabs.app/releases/RPC-FUSION-OS-RC2.rpc",
+        "file": "https://rpc.novalabs.app/releases/download/v0.7.0/RPC-FUSION-OS-RC2.rpc",
         "tag": "unstable"
       }
     ]
