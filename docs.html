@@ -236,7 +236,7 @@ dirname /Core/Launchpad/sys_sys.py</code></pre>
           <tr><td>reg set &lt;key&gt; &lt;val&gt;</td><td>Write a registry key</td></tr>
           <tr><td>settings</td><td>Open the settings panel</td></tr>
           <tr><td>edit [file]</td><td>Open the built-in editor</td></tr>
-          <tr><td>bench</td><td>Run the PulseMark benchmark</td></tr>
+          <tr><td>bench</td><td>Run the RPCMark benchmark</td></tr>
         </tbody>
       </table>
 
@@ -290,18 +290,50 @@ dirname /Core/Launchpad/sys_sys.py</code></pre>
       </div>
 
       <h3>Scripts (<code>.rps</code>)</h3>
-      <p>Run a script with <code>script &lt;file.rps&gt;</code>. Scripts run through the live shell, so every command (and pipes / chaining) is available.</p>
+      <p>Run a script with <code>script &lt;file.rps&gt;</code>. Scripts run through the live shell, so every command (and pipes / chaining) is available. Variables are untyped text; <code>$NAME</code> expands anywhere on a line.</p>
       <table>
-        <thead><tr><th>Syntax</th><th>Meaning</th></tr></thead>
+        <thead><tr><th>Statement</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td># comment</td><td>Comment line (ignored)</td></tr>
-          <tr><td>set NAME VALUE</td><td>Define a variable; <code>$NAME</code> expands it anywhere</td></tr>
-          <tr><td>if COND … else … end</td><td>Conditional block</td></tr>
-          <tr><td>while COND … end</td><td>Loop while COND is true</td></tr>
-          <tr><td>&lt;any command&gt;</td><td>Run a shell command</td></tr>
+          <tr><td><code># comment</code></td><td>Comment line (ignored)</td></tr>
+          <tr><td><code>set NAME VALUE</code></td><td>Define a variable; <code>$NAME</code> expands it anywhere</td></tr>
+          <tr><td><code>inc NAME [n]</code> / <code>dec NAME [n]</code></td><td>Add / subtract <code>n</code> (default 1) on a numeric variable</td></tr>
+          <tr><td><code>prompt NAME [text]</code></td><td>Read a line of input from the user into <code>NAME</code></td></tr>
+          <tr><td><code>capture NAME &lt;command&gt;</code></td><td>Run a command and store its output in <code>NAME</code></td></tr>
+          <tr><td><code>if COND … else … end</code></td><td>Conditional block (<code>else</code> optional)</td></tr>
+          <tr><td><code>while COND … end</code></td><td>Loop while COND is true</td></tr>
+          <tr><td><code>break</code> / <code>continue</code></td><td>Exit / skip the current <code>while</code> iteration</td></tr>
+          <tr><td><code>stop</code></td><td>End the script early</td></tr>
+          <tr><td><code>&lt;any command&gt;</code></td><td>Run a shell command (pipes, <code>&amp;&amp;</code>, <code>||</code> all work)</td></tr>
         </tbody>
       </table>
-      <p>COND is a builtin test &mdash; <code>eq A B</code>, <code>ne A B</code>, <code>exists PATH</code>, <code>empty A</code> &mdash; or any command (true when it succeeds).</p>
+      <p><strong>Conditions.</strong> A <code>COND</code> is a builtin test, or any shell command (true when it exits without error):</p>
+      <table>
+        <thead><tr><th>Test</th><th>True when</th></tr></thead>
+        <tbody>
+          <tr><td><code>eq A B</code> / <code>ne A B</code></td><td>A equals / does not equal B</td></tr>
+          <tr><td><code>gt A B</code> / <code>lt A B</code></td><td>A &gt; B / A &lt; B (numeric when both look like numbers, else text)</td></tr>
+          <tr><td><code>ge A B</code> / <code>le A B</code></td><td>A &ge; B / A &le; B</td></tr>
+          <tr><td><code>contains A B</code></td><td>B is a substring of A</td></tr>
+          <tr><td><code>exists PATH</code></td><td>The file or directory exists</td></tr>
+          <tr><td><code>empty A</code></td><td>A is empty</td></tr>
+          <tr><td><code>not COND</code></td><td>Negates any of the above (or a command)</td></tr>
+        </tbody>
+      </table>
+      <p>A counted loop, using <code>inc</code> and a numeric test:</p>
+      <pre><code># countdown.rps
+set i 5
+while gt $i 0
+  echo $i...
+  dec i
+  sleep 1
+end
+echo liftoff!</code></pre>
+      <p>Command output capture and interactive input:</p>
+      <pre><code># greet.rps
+prompt name What is your name?
+capture me whoami
+echo Hello $name, you are logged in as $me.</code></pre>
+      <p>A GPIO blink loop that stops when a flag file is removed:</p>
       <pre><code># blink.rps
 set pin 25
 while exists /run.flag
@@ -407,6 +439,7 @@ reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</c
         <thead><tr><th>Command</th><th>Description</th></tr></thead>
         <tbody>
           <tr><td>whoami</td><td>Current logged-in user</td></tr>
+          <tr><td>users</td><td>List all accounts with <code>active</code> / <code>admin</code> / <code>nopass</code> tags</td></tr>
           <tr><td>mkacct</td><td>Create a new account (prompts for username and password)</td></tr>
           <tr><td>rmuser &lt;user&gt;</td><td>Delete an account. Non-root users must verify the target's password first.</td></tr>
           <tr><td>chpswd &lt;user&gt;</td><td>Change a password</td></tr>
@@ -563,31 +596,35 @@ vi                         # scratch buffer, no file</code></pre>
 
       <!-- SETTINGS PANEL -->
       <h2 id="settings-panel">Settings Panel</h2>
-      <p>Run <code>settings</code> to open an interactive panel:</p>
-      <pre><code>&#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;
-&#x2502;  RPCortex Settings               125 MHz  27.4C  92 KB      &#x2502;
-&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;
-&#x2502;                                                              &#x2502;
-&#x2502;  SYSTEM                                                      &#x2502;
-&#x2502;  [1] Verbose Boot         : OFF                              &#x2502;
-&#x2502;  [2] Program Execution    : ON                               &#x2502;
-&#x2502;                                                              &#x2502;
-&#x2502;  HARDWARE                                                    &#x2502;
-&#x2502;  [3] Boot Overclock       : OFF                              &#x2502;
-&#x2502;  [4] Beeper               : OFF                              &#x2502;
-&#x2502;  [5] SD Card Support      : OFF                              &#x2502;
-&#x2502;                                                              &#x2502;
-&#x2502;  NETWORK                                                     &#x2502;
-&#x2502;  [6] WiFi Autoconnect     : ON                               &#x2502;
-&#x2502;                                                              &#x2502;
-&#x2502;  [1-6] toggle   [r] refresh   [q] quit                       &#x2502;
-&#x2502;                                                              &#x2502;
-&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</code></pre>
-      <p><code>[1&ndash;6]</code> toggle the setting. <code>[r]</code> refreshes the display. <code>[q]</code> exits.</p>
+      <p>Run <code>settings</code> to open an interactive panel. As of v0.9.1 it uses the SysMon-style borderless layout and redraws efficiently &mdash; toggling a setting repaints only that row, not the whole screen:</p>
+      <pre><code>  RPCortex Settings                      125 MHz  27.4C  92 KB
+══════════════════════════════════════════════════════════════
+
+══ SYSTEM ════════════════════════════════════════════════════
+  [1] Verbose Boot         : OFF
+  [2] Program Execution    : ON
+
+══ HARDWARE ══════════════════════════════════════════════════
+  [3] Boot Overclock       : OFF
+  [4] Beeper               : OFF
+  [5] SD Card Support      : OFF
+
+══ NETWORK ═══════════════════════════════════════════════════
+  [6] WiFi Autoconnect     : ON
+
+══ PERSONALIZATION ═══════════════════════════════════════════
+  [o] Owner                : Dash
+  [t] Timezone Offset      : -5       hrs from UTC
+  [d] Device ID            : pulsar   hostname
+  [i] Idle Logout          : 0        minutes (0 = off)
+
+══════════════════════════════════════════════════════════════
+  [1-6] toggle   [o/t/d/i] edit   [r] refresh   [q] quit</code></pre>
+      <p><code>[1&ndash;6]</code> toggle a setting. <code>[o/t/d/i]</code> edit a personalization value (no more <code>reg set</code> needed). <code>[r]</code> refreshes the title-bar stats. <code>[q]</code> exits.</p>
 
       <h3>Settings reference</h3>
       <table>
-        <thead><tr><th>#</th><th>Setting</th><th>Registry key</th></tr></thead>
+        <thead><tr><th>Key</th><th>Setting</th><th>Registry key</th></tr></thead>
         <tbody>
           <tr><td>1</td><td>Verbose Boot</td><td><code>Settings.Verbose_Boot</code></td></tr>
           <tr><td>2</td><td>Program Execution</td><td><code>Features.Program_Execution</code></td></tr>
@@ -595,6 +632,10 @@ vi                         # scratch buffer, no file</code></pre>
           <tr><td>4</td><td>Beeper</td><td><code>Features.beeper</code></td></tr>
           <tr><td>5</td><td>SD Card Support</td><td><code>Features.SD_Support</code></td></tr>
           <tr><td>6</td><td>WiFi Autoconnect</td><td><code>Settings.Network_Autoconnect</code></td></tr>
+          <tr><td>o</td><td>Owner</td><td><code>System.Owner</code></td></tr>
+          <tr><td>t</td><td>Timezone Offset</td><td><code>System.TZ_Offset</code></td></tr>
+          <tr><td>d</td><td>Device ID</td><td><code>System.Device_ID</code></td></tr>
+          <tr><td>i</td><td>Idle Logout (minutes; 0 = off)</td><td><code>Settings.Idle_Logout</code></td></tr>
         </tbody>
       </table>
 
@@ -621,6 +662,7 @@ vi                         # scratch buffer, no file</code></pre>
           <tr><td>OC_On_Boot</td><td>true/false</td><td>Apply max clock on every boot</td></tr>
           <tr><td>Verbose_Boot</td><td>true/false</td><td>Show POST info messages</td></tr>
           <tr><td>Network_Autoconnect</td><td>true/false</td><td>WiFi autoconnect on boot</td></tr>
+          <tr><td>Idle_Logout <span style="color:var(--cyan);">(v0.9.1)</span></td><td>integer</td><td>Auto-logout after this many minutes of shell inactivity. <code>0</code> (default) disables it; read live, so it applies without re-login.</td></tr>
           <tr><td>Active_User</td><td>string</td><td>Current session user</td></tr>
           <tr><td>Startup</td><td>0 / 1 / 3 / 6 / 7</td><td>Boot state sentinel. 0 = clean, 1 = session active, 3 = update crashed, 6 = clock calibration crashed, 7 = boot clock crashed</td></tr>
           <tr><td>Version</td><td>string</td><td>OS version; re-synced from the running code every boot (can't drift after an update)</td></tr>
@@ -698,8 +740,8 @@ pulse boot on      # apply on every boot
 settings           # toggle via settings panel</code></pre>
       <p>Manual overclock beyond 220 MHz is allowed. A warning is shown but the clock is set to whatever you specify. The RP2040 is generally stable up to around 240&ndash;250 MHz with the right flash timing.</p>
 
-      <h3>PulseMark</h3>
-      <p><code>bench</code> runs the PulseMark suite: integer ops, floating-point ops, Mandelbrot iteration, and Pi approximation. Results are printed as calculation times in milliseconds. (Formerly &ldquo;NebulaMark&rdquo;.)</p>
+      <h3>RPCMark</h3>
+      <p><code>bench</code> runs the RPCMark suite: integer ops, floating-point ops, Mandelbrot iteration, and Pi approximation. Results are printed as calculation times in milliseconds. (Formerly &ldquo;NebulaMark&rdquo; / &ldquo;PulseMark&rdquo; &mdash; RPCMark is the permanent name.)</p>
 
       <h3>Heap and fragmentation</h3>
       <p><code>freeup</code> clears the command cache and runs garbage collection. Use it before heavy network operations or when you get a <code>MemoryError</code> despite apparent free RAM. <code>meminfo</code> shows the current heap state.</p>

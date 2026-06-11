@@ -103,7 +103,55 @@
 
   /* ── Raw REPL helpers (used by the OS installer) ──────────────── */
 
+  /**
+   * Make sure the device is at the bare MicroPython REPL (>>>), not inside a
+   * running RPCortex session. RPCortex intercepts Ctrl-C / Ctrl-A (they don't
+   * drop to raw REPL), so on a device that already has RPCortex installed the
+   * installer used to fail. RPCortex provides a `rawrepl` escape that works at
+   * both the shell prompt AND the login prompt — it raises SystemExit and the
+   * firmware falls back to >>>. We probe first, then use it only if needed.
+   *
+   * Returns true if we reached (or were already at) the REPL.
+   */
+  Device.prototype.ensureREPL = async function () {
+    // Interrupt anything currently running and settle.
+    await this.write('\r\x03\x03');
+    await sleep(300);
+    this.clearBuffer();
+
+    // Probe: a bare Enter yields '>>>' at the REPL, or an RPCortex prompt
+    // (which contains a single '>' but never '>>>').
+    await this.write('\r\n');
+    await sleep(400);
+    if (this.rxBuffer.indexOf('>>>') !== -1) {
+      this.clearBuffer();
+      return true;               // already at the REPL
+    }
+
+    // RPCortex is running (shell or login screen). Its `rawrepl` command/escape
+    // exits the OS and returns to the firmware REPL.
+    this.clearBuffer();
+    await this.write('rawrepl\r\n');
+    try {
+      await this.waitFor('>>>', 7000);
+      this.clearBuffer();
+      return true;
+    } catch (e) { /* fall through */ }
+
+    // Last resort: one more interrupt + probe in case timing was off.
+    await this.write('\r\x03\x03');
+    await sleep(400);
+    this.clearBuffer();
+    await this.write('\r\n');
+    await sleep(400);
+    var atRepl = this.rxBuffer.indexOf('>>>') !== -1;
+    this.clearBuffer();
+    return atRepl;
+  };
+
   Device.prototype.enterRawREPL = async function () {
+    // Ensure we're not trapped inside a running RPCortex session first.
+    await this.ensureREPL();
     await this.write('\x03\x03');
     await sleep(400);
     this.clearBuffer();

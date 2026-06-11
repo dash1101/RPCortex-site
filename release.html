@@ -117,7 +117,7 @@ ntp sync -s &amp;&amp; startup add task run</code></pre>
       <h3>.rps scripting</h3>
       <p>Write and run scripts from the shell:</p>
       <pre><code>script myscript.rps</code></pre>
-      <p>Supported constructs: <code>set $var value</code>, <code>$var</code> expansion, <code>if &lt;condition&gt;</code> / <code>else</code> / <code>end</code>, <code>while &lt;condition&gt;</code> / <code>end</code>. Built-in conditions: <code>eq</code>, <code>ne</code>, <code>exists</code>, <code>empty</code>. Any shell command can also be used as a condition (non-zero exit = false). Scripts execute lines through the live shell engine, so all commands and aliases work.</p>
+      <p>Supported constructs: <code>set</code>, <code>$var</code> expansion, <code>inc</code>/<code>dec</code>, <code>prompt</code> (read input), <code>capture</code> (store a command&rsquo;s output), <code>if</code>/<code>else</code>/<code>end</code>, <code>while</code>/<code>end</code>, <code>break</code>/<code>continue</code>, and <code>stop</code>. Conditions: <code>eq</code>, <code>ne</code>, <code>gt</code>, <code>lt</code>, <code>ge</code>, <code>le</code>, <code>contains</code>, <code>exists</code>, <code>empty</code>, and <code>not</code> &mdash; or any shell command (non-zero exit = false). Scripts execute through the live shell engine, so all commands, pipes, and aliases work. See the <a href="docs#automation">scripting reference</a> for examples.</p>
 
       <h3>Startup tasks</h3>
       <p>Commands run automatically after login from <code>/Pulsar/Registry/startup.cfg</code>:</p>
@@ -150,15 +150,26 @@ startup add task run         # make device headless/autonomous</code></pre>
 ntp sync -s           # silent — no output unless error (ideal for startup tasks)</code></pre>
       <p>Handles the MicroPython year-2000 epoch offset automatically.</p>
 
-      <h3>New packages: calc, gpio, i2cscan</h3>
+      <h3>New packages</h3>
       <ul>
         <li><strong><code>calc</code></strong> &mdash; evaluate math expressions: <code>calc 3 * (4 + 2) / 1.5</code>, <code>calc sqrt(2)</code>, <code>calc pi * r**2</code>. Full <code>math</code> module available.</li>
         <li><strong><code>gpio</code></strong> &mdash; <code>gpio read/set/toggle/pwm/adc</code> from the shell. Named pins (<code>LED</code>) supported on all boards.</li>
         <li><strong><code>i2cscan</code></strong> &mdash; scan I&sup2;C buses and display discovered device addresses.</li>
+        <li><strong><code>dht</code></strong> &mdash; read temperature &amp; humidity from a DHT11/DHT22 sensor: <code>dht read 15</code>.</li>
+        <li><strong><code>speedtest</code></strong> &mdash; measure WiFi latency and download throughput.</li>
+        <li><strong><code>backup</code></strong> &mdash; snapshot and restore the registry, accounts, WiFi, aliases, and tasks.</li>
+        <li><strong><code>sysmon</code></strong> &mdash; a live htop-style dashboard with a configurable refresh rate (default 750&nbsp;ms, adjustable with <code>+</code>/<code>-</code>).</li>
+        <li><strong><code>ask</code></strong> &mdash; ask an AI from the shell (Ollama, Groq, Claude, OpenAI).</li>
       </ul>
 
       <h3>fetch and bench are packages</h3>
-      <p><code>fetch</code> (PicoFetch) and <code>bench</code> (PulseMark) have moved from <code>Core/</code> into proper packages under <code>/Packages/</code>. They are now updatable independently with <code>pkg upgrade PicoFetch</code> &mdash; no full OS flash needed.</p>
+      <p><code>fetch</code> (PicoFetch) and <code>bench</code> (RPCMark &mdash; now its permanent name, formerly NebulaMark/PulseMark) have moved from <code>Core/</code> into proper packages under <code>/Packages/</code>. They are now updatable independently with <code>pkg upgrade PicoFetch</code> &mdash; no full OS flash needed.</p>
+
+      <h3>One-click install state on the web</h3>
+      <p>The <a href="packages">Packages page</a> now reads what&rsquo;s already installed on a connected device and labels each card accordingly &mdash; <strong>Install</strong>, <strong>Update</strong> (when the repo has a newer version), or <strong>Re-install</strong>. The check works whether the device is at the shell prompt or the login screen, so it never assumes a logged-in session.</p>
+
+      <h3>Web installer works on a running device</h3>
+      <p>The <a href="install">Web Installer</a> no longer requires the device to be sitting at a bare MicroPython REPL. If RPCortex is already running, it automatically drops to the REPL (via the built-in <code>rawrepl</code> escape, which now works at the login prompt too) before flashing.</p>
 
       <h3>pkg upgrade handles built-in packages</h3>
       <p><code>pkg upgrade</code> now correctly upgrades built-in packages (previously blocked by the builtin guard) and preserves their registry keys across the uninstall/reinstall cycle.</p>
@@ -179,7 +190,16 @@ ntp sync -s           # silent — no output unless error (ideal for startup tas
       <h3>Owner and timezone personalisation</h3>
       <pre><code>reg set System.Owner "dash"
 reg set System.TZ_Offset -5</code></pre>
-      <p>Owner name appears in <code>fetch</code> next to the device ID. Timezone offset (whole hours from UTC) is applied to the <code>date</code> display.</p>
+      <p>Owner name appears in <code>fetch</code> next to the device ID. Timezone offset (whole hours from UTC) is applied to the <code>date</code> display. <code>ntp sync</code> now prints the computed local time directly, so you don&rsquo;t have to run <code>date</code> afterwards.</p>
+
+      <h3>Everything in the settings app</h3>
+      <p>The <code>settings</code> panel was rebuilt to match the SysMon look and now edits the personalisation keys directly &mdash; no more reaching for <code>reg set</code>. Press <code>o</code> / <code>t</code> / <code>d</code> / <code>i</code> to set the owner, timezone, device ID, and idle-logout timeout. The panel also redraws efficiently: toggling a setting repaints just that row instead of clearing the whole screen.</p>
+
+      <h3>Idle auto-logout</h3>
+      <p>Set <code>Settings.Idle_Logout</code> (minutes, in the settings app or registry) and the shell logs out automatically after that long with no input &mdash; a small safety feature for shared or exposed devices. <code>0</code> disables it; recovery mode is never logged out.</p>
+
+      <h3>users command</h3>
+      <p><code>users</code> lists every account on the device with <code>active</code> / <code>admin</code> / <code>nopass</code> tags, alongside its home directory.</p>
 
       <h2 id="recovery">Recovery Tools</h2>
       <p>A new set of recovery commands live in <code>recovery.lp</code> (loaded separately from <code>system.lp</code> so they work even if system commands are damaged):</p>

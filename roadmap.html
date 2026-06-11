@@ -245,7 +245,7 @@
             <div class="roadmap-section-label">Packages &amp; Updates</div>
             <ul class="roadmap-items">
               <li class="done-item"><strong>Over-the-air updates</strong> &mdash; <code>update check</code> / <code>update online</code> over WiFi</li>
-              <li class="done-item"><strong>PicoFetch &amp; PulseMark</strong> (renamed from NebulaMark) &mdash; real updatable packages</li>
+              <li class="done-item"><strong>PicoFetch &amp; RPCMark</strong> (benchmark, formerly NebulaMark/PulseMark) &mdash; real updatable packages</li>
               <li class="done-item"><strong>NTP built-in</strong> &mdash; <code>ntp sync</code> sets the clock; <code>startup add ntp sync -s</code> for silent boot sync</li>
               <li class="done-item"><strong>New packages</strong> &mdash; <code>calc</code>, <code>gpio</code>, <code>i2cscan</code></li>
               <li class="done-item"><strong>Compiled <code>.mpy</code> packages</strong> &mdash; <code>make_pkg.py --compile</code>; loader auto-falls-back to <code>.mpy</code></li>
@@ -326,7 +326,7 @@
               <li><strong>TUI framework</strong> &mdash; reusable adaptive box-draw components for terminal apps</li>
               <li><strong>System apps on the TUI framework</strong> &mdash; rebuild <code>settings</code>, <code>edit</code>, and friends</li>
               <li><strong>SD card support</strong> &mdash; init package, surfaced as a startup task</li>
-              <li><strong>Dev packages</strong> &mdash; <code>git</code>, <code>speedtest</code>, <code>httpd</code>, and more</li>
+              <li><strong>Dev packages</strong> &mdash; <code>git</code>, <code>httpd</code>, <code>mqtt</code>, and more</li>
             </ul>
 
             <div class="roadmap-section-label">Build &amp; Portability</div>
@@ -349,20 +349,20 @@
         </div>
         <p class="roadmap-desc">
           Packages install and update independently of the OS, so these don&rsquo;t
-          gate any release &mdash; they can land whenever someone builds them. The OS
-          already has the networking and hardware primitives most of them need.
-          Roughly ordered by usefulness &times; ease.
+          gate any release &mdash; they can land whenever someone builds them.
         </p>
+        <div class="roadmap-section-label">Available now (in the repo)</div>
+        <p class="roadmap-desc">
+          <code>ntp</code> &middot; <code>dht</code> &middot; <code>i2cscan</code> &middot;
+          <code>gpio</code> &middot; <code>calc</code> &middot; <code>backup</code> &middot;
+          <code>speedtest</code> &middot; <code>sysmon</code> &middot; <code>ask</code>
+          &mdash; plus the built-in <code>picofetch</code> and <code>rpcmark</code>.
+          Browse and one-click install them on the <a href="packages">Packages</a> page.
+        </p>
+        <div class="roadmap-section-label">Still ideas</div>
         <ul class="roadmap-items">
-          <li><strong><code>ntp</code></strong> &mdash; sync the clock from an NTP server over WiFi (no more clock reset on power loss). <em>Best first package.</em></li>
-          <li><strong><code>dht</code></strong> &mdash; read temperature &amp; humidity from a DHT11/DHT22; the most common Pico sensor.</li>
-          <li><strong><code>i2cscan</code></strong> &mdash; scan the I2C bus and name detected devices; the first thing you do with a new sensor.</li>
-          <li><strong><code>gpio</code></strong> &mdash; set / read / PWM pins straight from the shell.</li>
-          <li><strong><code>calc</code></strong> &mdash; evaluate math from the prompt; base conversions (<code>hex</code>, <code>bin</code>).</li>
-          <li><strong><code>backup</code></strong> &mdash; archive &amp; restore your home directory and registry before a reset or migration.</li>
           <li><strong><code>httpd</code></strong> &mdash; serve a live status page (CPU / RAM / uptime / temp) over WiFi.</li>
           <li><strong><code>mqtt</code></strong> &mdash; publish / subscribe so RPCortex can talk to Home Assistant, Node-RED, and friends.</li>
-          <li><strong><code>speedtest</code></strong> &mdash; measure WiFi up/down throughput in Mbps.</li>
           <li><strong><code>git</code></strong> &mdash; clone / fetch repositories (read-mostly); the heaviest of the set.</li>
         </ul>
         <div class="roadmap-note">

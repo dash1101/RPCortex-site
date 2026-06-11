@@ -134,7 +134,7 @@
     _createdDirs.clear();
 
     try {
-      onLog('[:] Entering raw REPL...');
+      onLog('[:] Preparing device (exiting RPCortex if it is running)...');
       await device.enterRawREPL();
       onLog('[@] REPL ready.');
 

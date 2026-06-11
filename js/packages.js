@@ -47,6 +47,49 @@
   /* ── State ────────────────────────────────────────────────────── */
   var activeDevice = null;
   var packages     = [];
+  var installedMap = {};   // lowercase pkg name -> installed version string
+
+  /* ── Version helpers ──────────────────────────────────────────── */
+
+  /** Compare dotted version strings. Returns 1 if a>b, -1 if a<b, 0 if equal. */
+  function cmpVer(a, b) {
+    var pa = String(a).split('.'), pb = String(b).split('.');
+    var n = Math.max(pa.length, pb.length);
+    for (var i = 0; i < n; i++) {
+      var x = parseInt(pa[i], 10) || 0;
+      var y = parseInt(pb[i], 10) || 0;
+      if (x > y) return 1;
+      if (x < y) return -1;
+    }
+    return 0;
+  }
+
+  /** Parse the PKGS_BEGIN/PKG:/PKGS_END manifest text into installedMap. */
+  function parseManifest(text) {
+    var map = {};
+    var lines = text.replace(/\r/g, '').split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      var m = lines[i].match(/^PKG:(.+?):(.+)$/);
+      if (m) map[m[1].trim().toLowerCase()] = m[2].trim();
+    }
+    return map;
+  }
+
+  /**
+   * Read the installed-package manifest from the device using the `_pkgs`
+   * escape, which works at BOTH the shell prompt and the login screen (it does
+   * not assume the launchpad shell is up, unlike `pkg list`).
+   */
+  async function fetchInstalled() {
+    if (!activeDevice) return {};
+    activeDevice.clearBuffer();
+    await activeDevice.write('_pkgs\r');
+    var out = await activeDevice.waitFor('PKGS_END', 6000).catch(function () {
+      return activeDevice.rxBuffer;
+    });
+    activeDevice.clearBuffer();
+    return parseManifest(out);
+  }
 
   /* ── UI: Connection ───────────────────────────────────────────── */
   function setConnected(connected) {
@@ -61,31 +104,37 @@
   }
 
   /* ── Get Installed ─────────────────────────────────────────────── */
+
+  /** Render the installedMap into the side panel. */
+  function showInstalledPanel() {
+    var names = Object.keys(installedMap).sort();
+    if (names.length === 0) {
+      installedList.textContent = '(no packages installed, or no response from device)';
+    } else {
+      var lines = [];
+      for (var i = 0; i < names.length; i++) {
+        // Show the repo-cased name where we know it, else the manifest key.
+        var disp = names[i];
+        for (var j = 0; j < packages.length; j++) {
+          if (packages[j].name.toLowerCase() === names[i]) { disp = packages[j].name; break; }
+        }
+        lines.push(disp + '  v' + installedMap[names[i]]);
+      }
+      installedList.textContent = lines.join('\n');
+    }
+    installedPanel.style.display = '';
+    installedPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
   if (getInstalledBtn) {
     getInstalledBtn.addEventListener('click', async function () {
       if (!activeDevice) return;
       getInstalledBtn.disabled = true;
       getInstalledBtn.textContent = 'Reading…';
       try {
-        activeDevice.clearBuffer();
-        await activeDevice.write('pkg list\r');
-        /* Wait up to 6s for the next prompt to appear */
-        var out = await activeDevice.waitFor('>', 6000).catch(function () {
-          return activeDevice.rxBuffer;
-        });
-        /* Strip the command echo and ANSI codes, keep the content lines */
-        var clean = out
-          .replace(/\x1b\[[0-9;]*m/g, '')   // ANSI colours
-          .replace(/\r/g, '')
-          .split('\n')
-          .filter(function (l) {
-            var t = l.trim();
-            return t && t.indexOf('pkg list') === -1 && t.indexOf('>') !== 0;
-          })
-          .join('\n');
-        installedList.textContent = clean || '(no packages installed, or no response from device)';
-        installedPanel.style.display = '';
-        installedPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        installedMap = await fetchInstalled();
+        renderPackages(packages);   // refresh button states
+        showInstalledPanel();
       } catch (e) {
         installedList.textContent = 'Error reading device: ' + (e.message || String(e));
         installedPanel.style.display = '';
@@ -112,16 +161,19 @@
       await activeDevice.open();
       setConnected(true);
 
-      /* Provoke a fresh prompt to confirm the shell is alive */
+      /* Provoke a fresh prompt to confirm the device is responding */
       await sleep(300);
       activeDevice.clearBuffer();
       await activeDevice.write('\r\n');
       await sleep(300);
-
-      if (activeDevice.rxBuffer.indexOf('>') === -1) {
-        connectLabel.textContent = 'Connected (make sure the shell is at a prompt)';
-      }
       activeDevice.clearBuffer();
+
+      /* Read installed packages so the cards show Install / Update / Re-install.
+         Uses the `_pkgs` escape, which works at the shell or login prompt. */
+      try {
+        installedMap = await fetchInstalled();
+        renderPackages(packages);
+      } catch (e) { /* non-fatal — buttons just default to Install */ }
     } catch (e) {
       if (e.name !== 'NotFoundError') {
         alert('Connection failed: ' + (e.message || String(e)));
@@ -134,7 +186,9 @@
       try { await activeDevice.close(); } catch (e) {}
       activeDevice = null;
     }
+    installedMap = {};
     setConnected(false);
+    renderPackages(packages);   // reset cards to the default Install state
   });
 
   /* ── UI: Transfer overlay ─────────────────────────────────────── */
@@ -243,13 +297,23 @@
       xferLogLine('[@] Downloaded ' + data.length + ' bytes.', 'xfer-log-ok');
       xferProgress.style.width = '10%';
       var destPath = '/Pulsar/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
-      await _doXfer(data, destPath, pkgName);
+      var ok = await _doXfer(data, destPath, pkgName);
+      if (ok) await refreshInstalledAfterInstall();
     } catch (e) {
       xferLogLine('[-] Error: ' + (e.message || String(e)), 'xfer-log-err');
       xferTitle.textContent = 'Transfer failed';
       xferSub.textContent   = e.message || String(e);
     }
     xferCloseBtn.style.display = '';
+  }
+
+  /** Re-read the manifest after an install so cards reflect the new state. */
+  async function refreshInstalledAfterInstall() {
+    try {
+      await sleep(300);
+      installedMap = await fetchInstalled();
+      renderPackages(packages);
+    } catch (e) { /* non-fatal */ }
   }
 
   /* ── Install from local file ───────────────────────────────────── */
@@ -262,7 +326,8 @@
       xferProgress.style.width = '10%';
       var safeName = pkgName.toLowerCase().replace(/[^a-z0-9_]/g, '_').replace(/\.pkg$/, '');
       var destPath = '/Pulsar/pkg/tmp_' + safeName + '.pkg';
-      await _doXfer(data, destPath, pkgName);
+      var okLocal = await _doXfer(data, destPath, pkgName);
+      if (okLocal) await refreshInstalledAfterInstall();
     } catch (e) {
       xferLogLine('[-] Error: ' + (e.message || String(e)), 'xfer-log-err');
       xferTitle.textContent = 'Transfer failed';
@@ -272,11 +337,38 @@
   }
 
   /* ── Render packages ──────────────────────────────────────────── */
+
+  /**
+   * Work out the install-button state for a package given what's installed.
+   * Returns { label, disabled, title }.
+   */
+  function installState(p) {
+    if (!activeDevice) {
+      return { label: 'Install to Device', disabled: true,
+               title: 'Connect a device first' };
+    }
+    var inst = installedMap[p.name.toLowerCase()];
+    if (inst === undefined) {
+      return { label: 'Install to Device', disabled: false,
+               title: 'Install to connected device' };
+    }
+    if (cmpVer(p.ver, inst) > 0) {
+      return { label: 'Update', disabled: false,
+               title: 'Update from v' + inst + ' to v' + p.ver };
+    }
+    return { label: 'Re-install', disabled: false,
+             title: 'Already installed (v' + inst + ') — re-install' };
+  }
+
   function updateInstallButtons() {
     var btns = document.querySelectorAll('.pkg-install-btn');
     for (var i = 0; i < btns.length; i++) {
-      btns[i].disabled = !activeDevice;
-      btns[i].title    = activeDevice ? 'Install to connected device' : 'Connect a device first';
+      var idx = parseInt(btns[i].getAttribute('data-pkg-idx'), 10);
+      if (!packages[idx]) continue;   // packages not loaded yet
+      var st = installState(packages[idx]);
+      btns[i].disabled    = st.disabled;
+      btns[i].title       = st.title;
+      btns[i].textContent = st.label;
     }
   }
 
@@ -289,18 +381,26 @@
     var html = '<div class="pkg-grid">';
     for (var i = 0; i < pkgs.length; i++) {
       var p = pkgs[i];
-      html += '<div class="pkg-card">' +
+      var st = installState(p);
+      var inst = installedMap[p.name.toLowerCase()];
+      var badge = '';
+      if (inst !== undefined) {
+        var upd = cmpVer(p.ver, inst) > 0;
+        badge = '<span class="pkg-installed-badge"' +
+                (upd ? ' style="color:var(--yellow);"' : '') + '>' +
+                (upd ? '↻ update' : '✓ installed') + ' v' + esc(inst) + '</span>';
+      }
+      html += '<div class="pkg-card' + (inst !== undefined ? ' pkg-card-installed' : '') + '">' +
         '<div class="pkg-card-header">' +
           '<span class="pkg-card-name">' + esc(p.name) + '</span>' +
           '<span class="pkg-card-ver">v' + esc(p.ver) + '</span>' +
         '</div>' +
-        '<div class="pkg-card-author">by ' + esc(p.author || 'unknown') + '</div>' +
+        '<div class="pkg-card-author">by ' + esc(p.author || 'unknown') + badge + '</div>' +
         '<div class="pkg-card-desc">' + esc(p.desc || 'No description.') + '</div>' +
         '<div class="pkg-card-actions">' +
           '<button class="pkg-install-btn" data-pkg-idx="' + i + '"' +
-            (activeDevice ? '' : ' disabled') +
-            ' title="' + (activeDevice ? 'Install to connected device' : 'Connect a device first') + '">' +
-            'Install to Device</button>' +
+            (st.disabled ? ' disabled' : '') +
+            ' title="' + esc(st.title) + '">' + esc(st.label) + '</button>' +
           '<button class="pkg-dl-btn" data-pkg-url="' + esc(ensureHttps(p.url)) + '"' +
             ' data-pkg-name="' + esc(p.name) + '" data-pkg-ver="' + esc(p.ver) + '"' +
             ' title="Download .pkg file to your computer">Download .pkg</button>' +
