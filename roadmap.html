@@ -257,69 +257,60 @@
           </div>
         </div>
 
-        <!-- v0.9.1 — next -->
+        <!-- v0.9.1 — in development -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot planned">🟡</div>
+            <div class="roadmap-dot active">🔧</div>
           </div>
-          <div class="roadmap-body">
+          <div class="roadmap-body active">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v0.9.1</span>
-              <span class="roadmap-status planned">Next</span>
+              <span class="roadmap-ver">v0.9.1 &mdash; Pulsar</span>
+              <span class="roadmap-status testing">In Development</span>
             </div>
             <p class="roadmap-desc">
-              The next pass focuses on shell power and automation &mdash; the things that
-              turn RPCortex from an interactive shell into something you can script and
-              leave running.
+              The shell-power &amp; automation pass &mdash; the release that turns RPCortex
+              from an interactive shell into something you can script and leave running.
+              Everything below is built and tested; this build is in developer testing on
+              real hardware ahead of tagging.
             </p>
-
-            <ul class="roadmap-items" style="margin-bottom: 20px;">
-              <li><strong>Shell pipes</strong> &mdash; <code>cat f | grep ERR</code>; the unblocking item for everything else</li>
-              <li><strong>Startup tasks</strong> &mdash; run commands / scripts automatically after login</li>
-              <li><strong>Scheduled tasks</strong> &mdash; repeat at intervals via software uptime timer</li>
-              <li><strong>First-cut scripting</strong> &mdash; variables, conditionals, loops in <code>.rps</code> scripts</li>
-              <li><strong>Expanded recovery tools</strong> &mdash; fsck-style checks, registry repair, log export</li>
-              <li><strong>Download progress bars</strong> + extended <code>curl</code> flags</li>
-            </ul>
 
             <div class="roadmap-section-label">Shell &amp; Scripting</div>
             <ul class="roadmap-items">
-              <li><strong>Shell pipes</strong> &mdash; <code>cat file | grep ERROR</code>, built on a real per-command exit-code / stdout-capture convention</li>
-              <li><strong><code>&amp;&amp;</code> / <code>||</code> chaining</strong> &mdash; conditional sequencing, the companion to pipes</li>
-              <li><strong>Custom scripting language</strong> &mdash; first cut: variables, conditionals, loops, and <code>~</code> expansion, tightly integrated with Launchpad</li>
+              <li class="done-item"><strong>Pipes</strong> &mdash; <code>cat file | grep ERROR | wc</code>, on a real output-capture / exit-code convention</li>
+              <li class="done-item"><strong><code>&amp;&amp;</code> / <code>||</code> chaining</strong> &mdash; conditional sequencing (<code>wifi connect &amp;&amp; pkg update</code>)</li>
+              <li class="done-item"><strong>Scripting (<code>.rps</code>)</strong> &mdash; <code>set</code>/<code>$vars</code>, <code>if</code>/<code>else</code>, <code>while</code>, run with <code>script file.rps</code></li>
             </ul>
 
-            <div class="roadmap-section-label">Task Scheduling &amp; Background</div>
+            <div class="roadmap-section-label">Automation</div>
             <ul class="roadmap-items">
-              <li><strong>Startup tasks</strong> &mdash; run commands, scripts, or packages automatically after login</li>
-              <li><strong>Scheduled tasks</strong> &mdash; run things at intervals using a software uptime offset (no battery-backed RTC needed)</li>
-              <li><strong>Unattended / background mode</strong> &mdash; long-running tasks (tail a log, watch GPIO) without holding the shell</li>
+              <li class="done-item"><strong>Startup tasks</strong> &mdash; <code>startup add &lt;cmd&gt;</code> runs commands automatically at login</li>
+              <li class="done-item"><strong>Scheduled tasks</strong> &mdash; <code>task add &lt;secs&gt; &lt;cmd&gt;</code> + <code>task run</code> scheduler (software-uptime timer)</li>
+              <li class="done-item"><strong>Unattended mode</strong> &mdash; <code>startup add task run</code> boots straight into a headless scheduler</li>
             </ul>
 
             <div class="roadmap-section-label">Recovery &amp; Hardware</div>
             <ul class="roadmap-items">
-              <li><strong>Expanded recovery tools</strong> &mdash; diagnostics and repair commands inside recovery mode (fsck-style checks, registry repair, log export)</li>
-              <li><strong>GPIO control via registry</strong> &mdash; toggle pins to reset a hung peripheral without a reboot</li>
+              <li class="done-item"><strong>Recovery tools</strong> &mdash; <code>fscheck</code>, <code>diag</code>, <code>logdump</code>, <code>regreset</code>, <code>pkgdisable</code></li>
+              <li class="done-item"><strong>GPIO package</strong> &mdash; <code>gpio read/set/toggle/pwm/adc</code> from the shell</li>
+              <li class="done-item"><strong>I²C scanner + calculator</strong> &mdash; the <code>i2cscan</code> and <code>calc</code> packages</li>
             </ul>
 
             <div class="roadmap-section-label">Networking &amp; UX</div>
             <ul class="roadmap-items">
-              <li><strong>Download progress bars</strong> &mdash; <code>[####----] 47%</code> for <code>wget</code>/<code>curl</code>/<code>pkg install</code> via <code>Content-Length</code></li>
-              <li><strong>Extended <code>curl</code> flags</strong> &mdash; <code>-X</code>, <code>-d</code>, <code>-H</code>, <code>-o</code>, <code>-s</code>, <code>-I</code>, timeout</li>
-              <li><strong>OS personalisation</strong> &mdash; owner name, device name, timezone</li>
+              <li class="done-item"><strong>Download progress bars</strong> &mdash; <code>[####----] 47%</code> on <code>wget</code> via <code>Content-Length</code></li>
+              <li class="done-item"><strong>Extended <code>curl</code> flags</strong> &mdash; <code>-X</code>, <code>-d</code>, <code>-H</code>, <code>-o</code>, <code>-s</code>, <code>-I</code>, <code>--timeout</code></li>
+              <li class="done-item"><strong>Personalisation</strong> &mdash; owner name and timezone (<code>System.Owner</code>, <code>System.TZ_Offset</code>)</li>
             </ul>
 
-            <div class="roadmap-section-label">Memory &amp; Performance</div>
+            <div class="roadmap-section-label">Memory &amp; Performance (carry-over)</div>
             <ul class="roadmap-items">
               <li>Lazy / ephemeral imports &mdash; evict non-critical modules after use, then <code>gc.collect()</code></li>
-              <li>Module eviction under memory pressure with automatic retry</li>
-              <li>Avoid string concatenation in hot paths to cut fragmentation</li>
-              <li>Targeted Pico&nbsp;W RAM tuning (~200&nbsp;KB free ceiling)</li>
+              <li>Avoid string concatenation in hot paths; targeted Pico&nbsp;W RAM tuning</li>
             </ul>
 
             <div class="roadmap-note">
-              The exact split between v0.9.1 and later v0.9.x point releases will firm up
-              as work lands. This is the current plan, not a firm commitment.
+              In developer testing on RP2040 / RP2350 / ESP32-S3. The compiled image is
+              architecture-neutral MicroPython bytecode — one build for all targets.
             </div>
           </div>
         </div>

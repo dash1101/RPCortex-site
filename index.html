@@ -26,7 +26,7 @@
   <!-- HERO -->
   <header class="hero">
     <div class="hero-inner">
-      <div class="badge">v0.9.0 &mdash; Pulsar</div>
+      <div class="badge">v0.9.1 &mdash; Pulsar</div>
       <h1>A real OS. On your microcontroller.</h1>
       <p class="hero-sub">
         RPCortex is a full CLI operating system built in MicroPython for the RP2 family and ESP32.
@@ -56,12 +56,17 @@
         <div class="feature-card">
           <div class="feature-icon">⌨</div>
           <h3>Interactive Shell</h3>
-          <p>Colored prompt, full cursor navigation, command history, home directory shorthand, and session logging. Commands load once and stay cached.</p>
+          <p>Colored prompt, full cursor navigation, command history, and session logging. Pipe commands (<code>cat log | grep ERR</code>) and chain them with <code>&amp;&amp;</code> / <code>||</code>. Commands load once and stay cached.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>Automation &amp; Scripting</h3>
+          <p>Run commands at boot (<code>startup</code>) or on a timer (<code>task</code>), and write <code>.rps</code> scripts with variables, <code>if</code>, and <code>while</code>. <code>startup add task run</code> makes the device fully autonomous.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">📁</div>
           <h3>Filesystem</h3>
-          <p><code>ls</code>, <code>cd</code>, <code>mv</code>, <code>cp</code>, <code>rm</code>, <code>tree</code>, <code>df</code>, <code>head</code>, <code>tail</code>. Everything you'd expect from a real shell, including colored output and file metadata.</p>
+          <p><code>ls</code>, <code>cd</code>, <code>mv</code>, <code>cp</code>, <code>rm</code>, <code>tree</code>, <code>df</code>, <code>du</code>, <code>head</code>, <code>tail</code>. Everything you'd expect from a real shell, including colored output and file metadata.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔒</div>
