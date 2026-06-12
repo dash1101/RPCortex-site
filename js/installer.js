@@ -76,7 +76,9 @@
   }
 
   /* ── Raw-REPL file helpers ────────────────────────────────────── */
-  function writeFile(device, devicePath, content) {
+
+  // Low-level write: stream base64 chunks to the device, appending.
+  function writeFileRaw(device, devicePath, content) {
     return (async function () {
       if (content.length === 0) {
         await device.execRaw("f=open('" + devicePath + "','w');f.close()");
@@ -91,6 +93,41 @@
           "f.write(ubinascii.a2b_base64('" + b64 + "'));f.close()"
         );
       }
+    })();
+  }
+
+  // Ask the device for a file's size, or -1 if it doesn't exist.
+  async function deviceFileSize(device, devicePath) {
+    var out = await device.execRaw(
+      "import uos\n" +
+      "try:\n print('SZ',uos.stat('" + devicePath + "')[6])\n" +
+      "except Exception:\n print('SZ',-1)"
+    );
+    var m = (out || '').match(/SZ\s+(-?\d+)/);
+    return m ? parseInt(m[1], 10) : -1;
+  }
+
+  // Verified write: write, then confirm the on-device byte count matches.
+  // Retries up to 3x. This turns the old "silently missing/truncated file"
+  // failure mode (raw-REPL marker desync after exiting a running RPCortex)
+  // into either a correct write or a clear, named error.
+  function writeFile(device, devicePath, content, onLog) {
+    return (async function () {
+      for (var attempt = 1; attempt <= 3; attempt++) {
+        try {
+          await writeFileRaw(device, devicePath, content);
+          var got = await deviceFileSize(device, devicePath);
+          if (got === content.length) return;            // verified OK
+          if (onLog) onLog('[?] ' + devicePath + ' size ' + got + '/' +
+                           content.length + ' — retry ' + attempt + '/3');
+        } catch (e) {
+          if (onLog) onLog('[?] write error on ' + devicePath + ': ' +
+                           (e.message || e) + ' — retry ' + attempt + '/3');
+        }
+        await sleep(120);
+      }
+      throw new Error('Failed to write ' + devicePath +
+                      ' (size never matched after 3 attempts)');
     })();
   }
 
@@ -188,10 +225,10 @@
         onProgress((i + 1) / toInstall.length);
         onLog('[:] [' + (i + 1) + '/' + toInstall.length + '] ' + devicePath);
         await ensureDirs(device, devicePath);
-        await writeFile(device, devicePath, content);
+        await writeFile(device, devicePath, content, onLog);
       }
 
-      onLog('[@] All files written.');
+      onLog('[@] All files written & verified.');
       onLog('[:] Rebooting device...');
       await device.exitRawREPL();
       await sleep(200);
@@ -292,9 +329,9 @@
         var content = new Uint8Array(await file.arrayBuffer());
         appendTransferLog('[:] Sending ' + file.name + ' (' + content.length + ' B) \u2192 ' + dest);
         await ensureDirs(activeDevice, dest);
-        await writeFile(activeDevice, dest, content);
+        await writeFile(activeDevice, dest, content, appendTransferLog);
         await activeDevice.exitRawREPL();
-        appendTransferLog('[@] Done!  ' + dest + ' written successfully.');
+        appendTransferLog('[@] Done!  ' + dest + ' written & verified.');
         appendTransferLog('    Install: pkg install ' + dest);
       } catch (e) {
         try { await activeDevice.exitRawREPL(); } catch (_) {}

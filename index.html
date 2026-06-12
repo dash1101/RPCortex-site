@@ -4,9 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RPCortex — Pulsar OS</title>
+  <!-- Mark JS-enabled before paint so reveal animations only hide content when
+       JavaScript can actually un-hide it (fail-open if JS is off/blocked). -->
+  <script>document.documentElement.className += ' js';</script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- Animated summer scene (parallax orbs + twinkling stars) -->
+  <div class="home-scene" aria-hidden="true">
+    <span class="scene-orb scene-orb-1"></span>
+    <span class="scene-orb scene-orb-2"></span>
+    <span class="scene-orb scene-orb-3"></span>
+    <div class="scene-stars"></div>
+  </div>
 
   <!-- NAV -->
   <nav>
@@ -26,6 +37,24 @@
   <!-- HERO -->
   <header class="hero">
     <div class="hero-inner">
+      <div class="hero-pulse-ring"></div>
+      <div class="hero-emblem">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="emblem-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stop-color="#5eead4"/>
+              <stop offset="55%" stop-color="#2dd4be"/>
+              <stop offset="100%" stop-color="#fb923c"/>
+            </linearGradient>
+          </defs>
+          <g class="emblem-ring">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="url(#emblem-grad)" stroke-width="2.5"/>
+            <circle cx="50" cy="6"  r="3"  fill="#fde68a"/>
+          </g>
+          <polygon class="emblem-star" points="50,28 58,46 50,42 42,46" fill="url(#emblem-grad)"/>
+          <circle cx="50" cy="50" r="5" fill="url(#emblem-grad)"/>
+        </svg>
+      </div>
       <div class="badge">v0.9.1 &mdash; Pulsar</div>
       <h1>A real OS. On your microcontroller.</h1>
       <p class="hero-sub">
@@ -44,6 +73,12 @@
           <span class="term-title">launchpad &mdash; 115200 baud</span>
         </div>
         <div class="term-body" id="term-body"></div>
+      </div>
+      <div class="stat-band">
+        <div class="stat-chip"><div class="stat-num" data-target="264" data-suffix=" KB">0</div><div class="stat-cap">RAM footprint</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="60"  data-suffix="+">0</div><div class="stat-cap">Shell commands</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="12">0</div><div class="stat-cap">Packages</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="100" data-suffix="%">0</div><div class="stat-cap">MicroPython</div></div>
       </div>
     </div>
   </header>
@@ -309,6 +344,8 @@ pkg remove  &lt;name&gt;</pre>
   </footer>
 
   <script src="js/terminal-demo.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/home.js"></script>
 
 </body>
 </html>

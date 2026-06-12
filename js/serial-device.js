@@ -157,7 +157,13 @@
     this.clearBuffer();
     await this.write('\x01');
     await this.waitFor('raw REPL', 5000);
+    await sleep(120);          // let the trailing "> " prompt land
     this.clearBuffer();
+    // Sync the raw-REPL protocol with a no-op before any real command. If
+    // exiting a running RPCortex (via rawrepl) left stray bytes in the pipe,
+    // this absorbs the desync here instead of corrupting the first file write
+    // (which previously caused files like Core/post.py to silently go missing).
+    try { await this.execRaw('0'); } catch (e) {}
   };
 
   Device.prototype.execRaw = async function (code, timeout) {

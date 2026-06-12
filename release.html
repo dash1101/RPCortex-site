@@ -158,7 +158,7 @@ ntp sync -s           # silent — no output unless error (ideal for startup tas
         <li><strong><code>dht</code></strong> &mdash; read temperature &amp; humidity from a DHT11/DHT22 sensor: <code>dht read 15</code>.</li>
         <li><strong><code>speedtest</code></strong> &mdash; measure WiFi latency and download throughput.</li>
         <li><strong><code>backup</code></strong> &mdash; snapshot and restore the registry, accounts, WiFi, aliases, and tasks.</li>
-        <li><strong><code>sysmon</code></strong> &mdash; a live htop-style dashboard with a configurable refresh rate (default 750&nbsp;ms, adjustable with <code>+</code>/<code>-</code>).</li>
+        <li><strong><code>sysmon</code></strong> &mdash; a live htop-style dashboard with a configurable refresh rate (default 750&nbsp;ms, adjustable with <code>+</code>/<code>-</code>) and a rough CPU-load estimate alongside the RAM/flash bars.</li>
         <li><strong><code>ask</code></strong> &mdash; ask an AI from the shell (Ollama, Groq, Claude, OpenAI).</li>
       </ul>
 
@@ -304,5 +304,6 @@ reg set System.TZ_Offset -5</code></pre>
     sections.forEach(s => obs.observe(s));
   </script>
 
+  <script src="js/nav.js"></script>
 </body>
 </html>
