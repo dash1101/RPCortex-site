@@ -8,7 +8,7 @@
         "version": "v0.9.1",
         "subversion": "Beta",
         "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc",
-        "tag": "stable",
+        "tag": "Beta",
         "default": true
       }
     ]

@@ -109,17 +109,17 @@
               </label>
             </div>
 
-            <div class="install-warning-box">
-              <strong>&#9888; This will wipe your device.</strong>
-              <p>All files on the device will be permanently deleted before installation. User accounts, WiFi settings, and installed packages will be lost. This cannot be undone.</p>
+            <div class="install-info-box">
+              <strong>&#10003; Your data is kept.</strong>
+              <p>This installs or updates the OS and removes only the old OS code (<code>/Core</code>). Your accounts, WiFi networks, settings, and installed packages are preserved.</p>
               <label class="wipe-confirm-label">
                 <input type="checkbox" id="wipeConfirmCheck">
-                I understand this will erase everything on the device.
+                Clean install &mdash; erase <em>everything</em> first (accounts, settings, packages). Can't be undone.
               </label>
             </div>
 
             <div class="gap-btn">
-              <button class="btn-primary" id="installBtn" disabled>Install Now</button>
+              <button class="btn-primary" id="installBtn">Install Now</button>
             </div>
             <button class="disconnect-link" id="disconnectLink">Disconnect</button>
           </div>
@@ -151,7 +151,7 @@
             <ol class="done-next">
               <li><strong>Disconnect and reconnect</strong> your device from USB.</li>
               <li>Open <strong>PuTTY</strong> (or any serial terminal) at <strong>115200 baud</strong>.</li>
-              <li>Complete the <strong>first-run setup wizard</strong> &mdash; you'll set the root password and optionally add the package repo.</li>
+              <li><strong>Fresh or clean install:</strong> complete the first-run setup wizard (root password, WiFi, timezone, clock). <strong>Kept your data:</strong> just log in as usual &mdash; your accounts and settings are intact.</li>
             </ol>
             <div style="margin-top:28px;">
               <button class="btn-secondary" id="installAgainBtn">Install Again</button>

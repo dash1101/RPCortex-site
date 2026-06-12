@@ -1177,13 +1177,29 @@ footer {
 }
 .install-warning-box strong { color: var(--red); font-size: 0.97rem; }
 .install-warning-box p { margin: 6px 0 12px; }
+
+/* Preserve-by-default info box (neutral/positive, not alarming) */
+.install-info-box {
+  background: rgba(0,200,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  padding: 14px 18px;
+  margin: 20px 0 12px;
+  line-height: 1.55;
+}
+.install-info-box strong { color: var(--green); font-size: 0.97rem; }
+.install-info-box p { margin: 6px 0 12px; }
+.install-info-box code { font-size: 0.82rem; }
+
 .wipe-confirm-label {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   cursor: pointer;
-  font-size: 0.85rem;
-  color: #ff9070;
+  font-size: 0.82rem;
+  color: var(--text-muted);
   line-height: 1.4;
 }
 .wipe-confirm-label input[type="checkbox"] {
@@ -1193,6 +1209,7 @@ footer {
   width: 15px;
   height: 15px;
 }
+.wipe-confirm-label em { color: #ff9070; font-style: normal; font-weight: 600; }
 
 /* Disconnect link */
 .disconnect-link {

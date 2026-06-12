@@ -148,25 +148,48 @@
     })();
   }
 
-  /* ── Device wipe ──────────────────────────────────────────────── */
-  async function wipeDevice(device, onLog) {
-    onLog('[:] Wiping device filesystem...');
-    await device.execRaw(
-      'import uos\n' +
-      'def _d(p):\n' +
-      ' for n in uos.listdir(p):\n' +
-      '  f=p.rstrip("/")+"/"+n\n' +
-      '  try:_d(f);uos.rmdir(f)\n' +
-      '  except:uos.remove(f)\n' +
-      '_d("/")\n'
-    );
-    onLog('[@] Device filesystem cleared.');
+  /* ── Prepare device ───────────────────────────────────────────────
+     Default (fullWipe=false): remove only the OS code (/Core) so stale
+     modules can't linger, then let the install overwrite the built-in
+     packages and main.py. User data is PRESERVED — /Users, /Pulsar
+     (registry, WiFi, accounts, logs, pkg cache) and any installed
+     packages are left untouched.
+     fullWipe=true: erase the entire filesystem (factory clean install). */
+  async function prepareDevice(device, onLog, fullWipe) {
+    if (fullWipe) {
+      onLog('[:] Clean install — wiping entire filesystem...');
+      await device.execRaw(
+        'import uos\n' +
+        'def _d(p):\n' +
+        ' for n in uos.listdir(p):\n' +
+        '  f=p.rstrip("/")+"/"+n\n' +
+        '  try:_d(f);uos.rmdir(f)\n' +
+        '  except:uos.remove(f)\n' +
+        '_d("/")\n'
+      );
+      onLog('[@] Device filesystem cleared.');
+    } else {
+      onLog('[:] Removing old OS code (/Core) — keeping your data...');
+      await device.execRaw(
+        'import uos\n' +
+        'def _d(p):\n' +
+        ' try:\n' +
+        '  for n in uos.listdir(p):\n' +
+        '   f=p.rstrip("/")+"/"+n\n' +
+        '   try:_d(f);uos.rmdir(f)\n' +
+        '   except:uos.remove(f)\n' +
+        ' except OSError:\n' +
+        '  pass\n' +
+        '_d("/Core")\n'
+      );
+      onLog('[@] Old OS code removed.  Kept: /Users, /Pulsar, installed packages.');
+    }
   }
 
   /* ── Main install function ────────────────────────────────────── */
   var _cancelInstall = false;
 
-  async function runInstall(device, getZipData, onLog, onProgress, onDone, onError) {
+  async function runInstall(device, getZipData, onLog, onProgress, onDone, onError, fullWipe) {
     _cancelInstall = false;
     _createdDirs.clear();
 
@@ -227,8 +250,7 @@
       }
 
       onLog('[@] ' + toInstall.length + ' files to install.');
-      onLog('[:] Wiping existing filesystem...');
-      await wipeDevice(device, onLog);
+      await prepareDevice(device, onLog, fullWipe);
 
       for (var i = 0; i < toInstall.length; i++) {
         if (_cancelInstall) { onLog('[?] Installation cancelled.'); return; }
@@ -354,12 +376,13 @@
     });
   }
 
-  /* ── Wipe confirmation checkbox ───────────────────────────────── */
+  /* ── Optional clean-install (full wipe) toggle ────────────────────
+     Default install preserves user data; this opt-in erases everything. */
+  var fullWipe = false;
   var wipeConfirmCheck = document.getElementById('wipeConfirmCheck');
   if (wipeConfirmCheck) {
-    installBtn.disabled = true;
     wipeConfirmCheck.addEventListener('change', function () {
-      installBtn.disabled = !wipeConfirmCheck.checked;
+      fullWipe = wipeConfirmCheck.checked;
     });
   }
 
@@ -463,7 +486,8 @@
       },
       function (frac) { setProgress(frac); },
       function () { activeDevice = null; showState('Done'); },
-      function (msg) { activeDevice = null; errorMsg.textContent = msg; showState('Error'); }
+      function (msg) { activeDevice = null; errorMsg.textContent = msg; showState('Error'); },
+      fullWipe
     );
   });
 
