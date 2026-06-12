@@ -1033,6 +1033,80 @@ footer {
 .inst-state { display: none; }
 .inst-state.active { display: block; }
 
+/* Copy-a-file panel (shown only while a device is connected) */
+.transfer-panel {
+  display: none;
+  max-width: 680px;
+  margin: 20px auto 0;
+  padding: 28px 32px;
+  background:      var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+}
+.transfer-panel.visible { display: block; }
+.transfer-panel .panel-h { margin: 0 0 4px; }
+.transfer-panel .panel-sub { margin: 0 0 18px; }
+.transfer-pick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+.transfer-pick input[type="file"] { display: none; }
+.transfer-pick-btn {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  background: rgba(6,14,30,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: border-color 0.15s, color 0.15s;
+}
+.transfer-pick:hover .transfer-pick-btn { border-color: rgba(0,200,255,0.32); color: var(--cyan); }
+.transfer-file-name {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.transfer-path-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+.transfer-path-input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(6,14,30,0.6);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+}
+.transfer-path-input:focus { outline: none; border-color: rgba(0,200,255,0.4); }
+.transfer-log {
+  margin-top: 16px;
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.transfer-log:empty { display: none; }
+
 /* Connected status row */
 .conn-status {
   display: flex;

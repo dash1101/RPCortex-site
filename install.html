@@ -168,6 +168,23 @@
 
         </div><!-- /.installer-panel -->
 
+        <!-- COPY A FILE (shown while connected; non-destructive) -->
+        <div id="transferPanel" class="transfer-panel">
+          <p class="panel-h">Copy a file to the device</p>
+          <p class="panel-sub">Push any file to the connected board over USB &mdash; nothing is wiped. Handy for staging a <code>.pkg</code>, a script, or a config file without dropping to the REPL.</p>
+          <label class="transfer-pick">
+            <span class="transfer-pick-btn">Choose file&hellip;</span>
+            <input type="file" id="transferFileInput">
+            <span class="transfer-file-name" id="transferFileName">No file selected</span>
+          </label>
+          <label class="transfer-path-label">
+            Destination path on device
+            <input type="text" id="transferPath" class="transfer-path-input" value="/" placeholder="/Packages/MyFile.pkg" spellcheck="false">
+          </label>
+          <button class="btn-primary" id="transferBtn">Send to device</button>
+          <div class="transfer-log" id="transferLog"></div>
+        </div>
+
         <!-- HOW IT WORKS -->
         <div class="how-box" style="margin-top:40px;">
           <h2>How it works</h2>

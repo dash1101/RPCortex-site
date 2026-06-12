@@ -5,7 +5,8 @@
  * Connects to a running RPCortex Launchpad shell and pushes OS files
  * one at a time via the _xfer shell command.  User data is preserved:
  *   /Users/          — home directories kept intact
- *   /Nebula/         — registry, package cache, logs kept intact
+ *   /Pulsar/         — registry, package cache, logs kept intact
+ *                      (/Nebula/ too, for devices not yet migrated)
  *
  * After all files are transferred the page sends `reboot` to restart
  * the device with the updated OS.
@@ -28,14 +29,14 @@
    * Return true if this relative path from the .rpc archive should
    * be pushed to the device during an OS update.
    *
-   * Skips:  website/, repo/, dev artifacts, AND all of /Nebula/ and
-   *         /Users/ to preserve user data and settings.
+   * Skips:  website/, repo/, dev artifacts, AND all of /Pulsar/, /Nebula/
+   *         and /Users/ to preserve user data and settings.
    */
   function shouldUpdate(relPath) {
     var skip = [
       'website/', 'repo/', '.git/', '.git',
       '__pycache__/', 'CLAUDE', 'temp/', 'tests/',
-      'Users/', 'Nebula/'
+      'Users/', 'Pulsar/', 'Nebula/'
     ];
     for (var i = 0; i < skip.length; i++) {
       var s = skip[i];
