@@ -1,6 +1,6 @@
 {
   "version": "v0.9.1",
   "url": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc",
-  "size": 179807,
+  "size": 173384,
   "notes": "Pulsar: persistent aliases, watch, date set (RTC), du, multi-file cat, streamed large-file cp/mv, configurable hostname"
 }
