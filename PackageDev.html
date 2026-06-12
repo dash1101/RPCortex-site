@@ -161,21 +161,32 @@ from RPCortex import ok, info, warn, error, multi, inpt</code></pre>
       <h2 id="building">Building a .pkg</h2>
       <p>Run <code>make_pkg.py</code> from your PC, pointing it at your package directory:</p>
       <pre><code>python make_pkg.py packages/MyPackage
-# or specify an output name:
-python make_pkg.py packages/MyPackage mypackage.pkg</code></pre>
+# put the output somewhere specific:
+python make_pkg.py packages/MyPackage -o dist/
+# build every package under a folder at once:
+python make_pkg.py packages/ -o dist/</code></pre>
 
-      <p>If no output path is given, the file is named after <code>pkg.name</code> from your <code>package.cfg</code> (lowercased).</p>
+      <p>The output file is named after <code>pkg.name</code> from your <code>package.cfg</code> (lowercased).</p>
+
+      <h3>Source vs. compiled (.mpy)</h3>
+      <p>By default <code>make_pkg.py</code> <strong>compiles your <code>.py</code> modules to <code>.mpy</code></strong> bytecode with <code>mpy-cross</code> &mdash; smaller on flash and faster to import, which matters on a 264&nbsp;KB Pico. The device's command loader imports a package's <code>.mpy</code> transparently when the <code>.py</code> is absent, so your <code>pkg.cmd</code> path in <code>package.cfg</code> stays the same (point it at the <code>.py</code> name either way).</p>
+      <ul>
+        <li><strong>Compiled (default):</strong> needs <code>mpy-cross</code> &mdash; <code>pip install mpy-cross</code>. The compiler is run without <code>-march</code>, so the bytecode is architecture-neutral and runs on RP2040, RP2350, and ESP32 from one build.</li>
+        <li><strong>Source:</strong> pass <code>--raw</code> to ship the <code>.py</code> files unchanged. Needs only the Python 3 standard library &mdash; no <code>mpy-cross</code>.</li>
+      </ul>
+      <pre><code># ship readable source instead of compiled bytecode:
+python make_pkg.py packages/MyPackage --raw</code></pre>
 
       <p>Example output:</p>
       <pre><code>  + MyPackage/package.cfg
-  + MyPackage/main.py
+  + MyPackage/main.mpy   (compiled from main.py)
 
-Created 'mypackage.pkg' (1842 bytes)
+Created 'mypackage.pkg' (1024 bytes)
 Compression: ZIP_STORED (Pico-compatible, no zlib needed)
 Install on device: pkg install /path/to/mypackage.pkg</code></pre>
 
       <div class="note-box">
-        <code>make_pkg.py</code> requires only the Python 3 standard library (<code>zipfile</code>, <code>os</code>, <code>sys</code>). No dependencies to install.
+        Compiled builds need <code>mpy-cross</code> (<code>pip install mpy-cross</code>). With <code>--raw</code>, <code>make_pkg.py</code> needs only the Python 3 standard library. Either way the archive is always <strong>ZIP_STORED</strong> &mdash; never deflate-compressed.
       </div>
 
       <!-- TESTING -->

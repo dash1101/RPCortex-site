@@ -1372,7 +1372,7 @@ footer {
 }
 .pkg-card-author { font-size: 0.80rem; color: var(--text-muted); }
 .pkg-card-desc   { font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
-.pkg-card-actions { display: flex; gap: 10px; margin-top: 6px; }
+.pkg-card-actions { display: flex; gap: 10px; margin-top: 6px; align-items: stretch; }
 
 /* Install-state indicators */
 .pkg-installed-badge {
@@ -1393,7 +1393,9 @@ footer {
   opacity: 0.55;
 }
 .pkg-install-btn {
-  padding: 8px 20px;
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 9px 20px;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 600;
@@ -1407,7 +1409,8 @@ footer {
 .pkg-install-btn:hover { opacity: 0.88; box-shadow: 0 0 24px rgba(0,180,255,0.35), inset 0 1px 0 rgba(255,255,255,0.18); }
 .pkg-install-btn:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
 .pkg-dl-btn {
-  padding: 8px 16px;
+  flex: 0 0 auto;
+  padding: 9px 16px;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 600;
@@ -1422,17 +1425,67 @@ footer {
 }
 .pkg-dl-btn:hover { border-color: rgba(0,200,255,0.32); color: var(--cyan); }
 .pkg-dl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.pkg-cli-hint {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  background: rgba(6,14,30,0.6);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 3px 10px;
+
+/* Click-to-copy install-command bar (replaces the old static CLI chip) */
+.pkg-cli-copy {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 7px 12px;
+  background: rgba(6,14,30,0.55);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s;
 }
+.pkg-cli-copy:hover { border-color: rgba(0,200,255,0.3); background: rgba(6,14,30,0.75); }
+.pkg-cli-cmd {
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pkg-cli-cmd::before { content: '$ '; color: var(--cyan); opacity: 0.7; }
+.pkg-cli-copy-label {
+  flex-shrink: 0;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color 0.15s;
+}
+.pkg-cli-copy:hover .pkg-cli-copy-label { color: var(--cyan); }
+.pkg-cli-copy.copied { border-color: rgba(0,220,150,0.4); }
+.pkg-cli-copy.copied .pkg-cli-copy-label { color: var(--green); }
+
+/* Package-developer call-to-action */
+.pkgdev-cta {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  padding: 26px 30px;
+}
+.pkgdev-cta-text { flex: 1 1 320px; }
+.pkgdev-cta-text h3 { margin: 0 0 6px; font-size: 1.15rem; color: var(--text); }
+.pkgdev-cta-text p  { margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; max-width: 60ch; }
+.pkgdev-cta-btn { flex: 0 0 auto; white-space: nowrap; }
 
 /* Connect bar */
 .connect-bar {

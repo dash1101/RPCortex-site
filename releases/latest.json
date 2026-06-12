@@ -1,6 +1,6 @@
 {
   "version": "v0.9.1",
   "url": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc",
-  "size": 173384,
-  "notes": "Pulsar: persistent aliases, watch, date set (RTC), du, multi-file cat, streamed large-file cp/mv, configurable hostname"
+  "size": 380028,
+  "notes": "Pulsar: shell pipes and && / || chaining, .rps scripting, startup + scheduled tasks, expanded recovery tools (fscheck/diag/logdump/regreset), wget progress bars, extended curl, owner/timezone personalisation, wifi autoconnect, ntp sync, idle-logout, calc/gpio/i2cscan packages."
 }

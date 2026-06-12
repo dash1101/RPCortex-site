@@ -142,7 +142,7 @@
 
       versionSelect.disabled = false;
     } catch (e) {
-      versionSelect.innerHTML = '<option value="releases/RPC-Nebula-b81-Beta.rpc">RPCortex Nebula v0.8.1-beta3 \u2014 latest</option>';
+      versionSelect.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc">RPCortex Pulsar v0.9.1-beta \u2014 latest</option>';
       versionSelect.disabled  = false;
     }
   }
@@ -255,13 +255,26 @@
 
       /* Build filtered list */
       var toSend = [];
+      var skippedMpy = 0;
       zip.forEach(function (zipPath, entry) {
         if (entry.dir) return;
         var rel = prefix ? zipPath.slice(prefix.length) : zipPath;
         if (rel && shouldUpdate(rel)) {
           toSend.push({ zipPath: zipPath, devicePath: '/' + rel, entry: entry });
+        } else if (rel && rel.endsWith('.mpy')) {
+          skippedMpy++;
         }
       });
+
+      // .rpc images are source-only; a compiled (.mpy) build would transfer
+      // almost nothing and leave a broken system. Refuse it clearly.
+      if (skippedMpy > 0) {
+        appendLog('[-] This archive contains ' + skippedMpy + ' compiled (.mpy) ' +
+                  'files. RPCortex .rpc images must be source-only (.py/.cfg/.lp). ' +
+                  'Download the source .rpc instead.');
+        _finish(false);
+        return;
+      }
 
       appendLog('[@] ' + toSend.length + ' file(s) to transfer.');
       if (toSend.length === 0) {

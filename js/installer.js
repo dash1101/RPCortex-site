@@ -14,7 +14,7 @@
 
   function getSelectedVersion() {
     var sel = document.getElementById('versionSelect');
-    if (!sel || !sel.value) return { file: 'releases/RPC-Nebula-b81-Beta.rpc', label: 'RPCortex Nebula v0.8.1-beta3' };
+    if (!sel || !sel.value) return { file: 'releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc', label: 'RPCortex Pulsar v0.9.1-beta' };
     var opt = sel.options[sel.selectedIndex];
     var label = opt ? opt.text.replace(/\s+\u2014.*$/, '').trim() : 'unknown';
     return { file: sel.value, label: label };
@@ -56,7 +56,7 @@
 
       sel.disabled = false;
     } catch (e) {
-      sel.innerHTML = '<option value="releases/RPC-Nebula-b81-Beta.rpc">RPCortex Nebula v0.8.1-beta3 \u2014 latest</option>';
+      sel.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc">RPCortex Pulsar v0.9.1-beta \u2014 latest</option>';
       sel.disabled  = false;
     }
   }
@@ -205,13 +205,26 @@
       if (prefix) onLog('[:] Stripping archive prefix: ' + prefix);
 
       var toInstall = [];
+      var skippedMpy = 0;
       zip.forEach(function (zipPath, entry) {
         if (entry.dir) return;
         var relPath = prefix ? zipPath.slice(prefix.length) : zipPath;
         if (relPath && shouldInstall(relPath)) {
           toInstall.push({ zipPath: zipPath, relPath: relPath, entry: entry });
+        } else if (relPath && relPath.endsWith('.mpy')) {
+          skippedMpy++;
         }
       });
+
+      // A .rpc must be a SOURCE archive (.py/.cfg/.lp). A compiled (.mpy)
+      // image filters down to almost nothing and would install a broken,
+      // unbootable filesystem. Refuse it with a clear message instead.
+      if (skippedMpy > 0) {
+        throw new Error(
+          'This archive contains ' + skippedMpy + ' compiled (.mpy) files. ' +
+          'RPCortex .rpc images must be source-only (.py/.cfg/.lp). ' +
+          'This looks like a compiled build - download the source .rpc instead.');
+      }
 
       onLog('[@] ' + toInstall.length + ' files to install.');
       onLog('[:] Wiping existing filesystem...');

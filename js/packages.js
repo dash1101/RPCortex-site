@@ -403,9 +403,13 @@
             ' title="' + esc(st.title) + '">' + esc(st.label) + '</button>' +
           '<button class="pkg-dl-btn" data-pkg-url="' + esc(ensureHttps(p.url)) + '"' +
             ' data-pkg-name="' + esc(p.name) + '" data-pkg-ver="' + esc(p.ver) + '"' +
-            ' title="Download .pkg file to your computer">Download .pkg</button>' +
-          '<span class="pkg-cli-hint">pkg install ' + esc(p.name) + '</span>' +
+            ' title="Download the .pkg file to your computer">Download</button>' +
         '</div>' +
+        '<button class="pkg-cli-copy" data-cli="pkg install ' + esc(p.name) + '"' +
+          ' title="Copy the shell install command">' +
+          '<code class="pkg-cli-cmd">pkg install ' + esc(p.name) + '</code>' +
+          '<span class="pkg-cli-copy-label">Copy</span>' +
+        '</button>' +
       '</div>';
     }
     html += '</div>';
@@ -440,9 +444,38 @@
             alert('Download failed: ' + (e.message || String(e)));
           }
           btn.disabled = false;
-          btn.textContent = 'Download .pkg';
+          btn.textContent = 'Download';
         };
       })(dlBtns[k]));
+    }
+
+    /* Bind click-to-copy on the CLI command bars */
+    var copyBtns = pkgContainer.querySelectorAll('.pkg-cli-copy');
+    for (var m = 0; m < copyBtns.length; m++) {
+      copyBtns[m].addEventListener('click', (function (btn) {
+        return async function () {
+          var cmd   = btn.getAttribute('data-cli');
+          var label = btn.querySelector('.pkg-cli-copy-label');
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(cmd);
+            } else {
+              var ta = document.createElement('textarea');
+              ta.value = cmd; ta.style.position = 'fixed'; ta.style.opacity = '0';
+              document.body.appendChild(ta); ta.select();
+              document.execCommand('copy'); document.body.removeChild(ta);
+            }
+            btn.classList.add('copied');
+            if (label) label.textContent = 'Copied!';
+          } catch (e) {
+            if (label) label.textContent = 'Press Ctrl+C';
+          }
+          setTimeout(function () {
+            btn.classList.remove('copied');
+            if (label) label.textContent = 'Copy';
+          }, 1400);
+        };
+      })(copyBtns[m]));
     }
   }
 
