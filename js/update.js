@@ -143,7 +143,7 @@
 
       versionSelect.disabled = false;
     } catch (e) {
-      versionSelect.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Stable.rpc">RPCortex Pulsar v0.9.1 \u2014 latest</option>';
+      versionSelect.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Release.rpc">RPCortex Pulsar v0.9.1 \u2014 latest</option>';
       versionSelect.disabled  = false;
     }
   }

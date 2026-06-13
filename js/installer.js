@@ -14,7 +14,7 @@
 
   function getSelectedVersion() {
     var sel = document.getElementById('versionSelect');
-    if (!sel || !sel.value) return { file: 'releases/download/v0.9.1/RPC-Pulsar-b9-Stable.rpc', label: 'RPCortex Pulsar v0.9.1' };
+    if (!sel || !sel.value) return { file: 'releases/download/v0.9.1/RPC-Pulsar-b9-Release.rpc', label: 'RPCortex Pulsar v0.9.1' };
     var opt = sel.options[sel.selectedIndex];
     var label = opt ? opt.text.replace(/\s+\u2014.*$/, '').trim() : 'unknown';
     return { file: sel.value, label: label };
@@ -56,7 +56,7 @@
 
       sel.disabled = false;
     } catch (e) {
-      sel.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Stable.rpc">RPCortex Pulsar v0.9.1 \u2014 latest</option>';
+      sel.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Release.rpc">RPCortex Pulsar v0.9.1 \u2014 latest</option>';
       sel.disabled  = false;
     }
   }
@@ -396,9 +396,37 @@
      Default install preserves user data; this opt-in erases everything. */
   var fullWipe = false;
   var wipeConfirmCheck = document.getElementById('wipeConfirmCheck');
+  var dataMsgTitle = document.getElementById('dataMsgTitle');
+  var dataMsgBody  = document.getElementById('dataMsgBody');
+  var installInfoBox = document.getElementById('installInfoBox');
   if (wipeConfirmCheck) {
     wipeConfirmCheck.addEventListener('change', function () {
       fullWipe = wipeConfirmCheck.checked;
+      // The message must reflect what actually happens: a clean install wipes
+      // EVERYTHING, so the "your data is kept" promise no longer holds.
+      if (fullWipe) {
+        if (dataMsgTitle) dataMsgTitle.innerHTML = '⚠ Your data will be ERASED.';
+        if (dataMsgBody)  dataMsgBody.innerHTML  = 'Clean install wipes the entire filesystem first — accounts, WiFi networks, settings, and installed packages are <strong>all removed</strong>. The device runs first-run setup again afterwards.';
+        if (installInfoBox) installInfoBox.classList.add('danger');
+      } else {
+        if (dataMsgTitle) dataMsgTitle.innerHTML = '✓ Your data is kept.';
+        if (dataMsgBody)  dataMsgBody.innerHTML  = 'This installs or updates the OS and removes only the old OS code (<code>/Core</code>). Your accounts, WiFi networks, settings, and installed packages are preserved.';
+        if (installInfoBox) installInfoBox.classList.remove('danger');
+      }
+    });
+  }
+
+  /* ── Download .rpc button — save the selected image to the computer ── */
+  var downloadRpcBtn = document.getElementById('downloadRpcBtn');
+  if (downloadRpcBtn) {
+    downloadRpcBtn.addEventListener('click', function () {
+      var sel = getSelectedVersion();
+      var a = document.createElement('a');
+      a.href = sel.file;
+      a.download = sel.file.split('/').pop();   // suggest the .rpc filename
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     });
   }
 
