@@ -6,9 +6,9 @@
       {
         "name": "RPCortex Pulsar",
         "version": "v0.9.1",
-        "subversion": "Beta",
-        "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc",
-        "tag": "Beta",
+        "subversion": "release",
+        "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-stable.rpc",
+        "tag": "stable",
         "default": true
       }
     ]
@@ -19,7 +19,7 @@
       {
         "name": "RPCortex Nebula",
         "version": "v0.8.1",
-        "subversion": "stable",
+        "subversion": "final",
         "file": "https://rpc.novalabs.app/releases/download/v0.8.1/RPC-Nebula-b81-Stable.rpc",
         "tag": "stable"
       }
