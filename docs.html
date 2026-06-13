@@ -440,9 +440,9 @@ reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</c
         <tbody>
           <tr><td>whoami</td><td>Current logged-in user</td></tr>
           <tr><td>users</td><td>List all accounts with <code>active</code> / <code>admin</code> / <code>nopass</code> tags</td></tr>
-          <tr><td>mkacct</td><td>Create a new account (prompts for username and password)</td></tr>
-          <tr><td>rmuser &lt;user&gt;</td><td>Delete an account. Non-root users must verify the target's password first.</td></tr>
-          <tr><td>chpswd &lt;user&gt;</td><td>Change a password</td></tr>
+          <tr><td>mkacct [name] [--nopass] [--admin]</td><td>Create a new account (optionally a no-password or admin account)</td></tr>
+          <tr><td>usermod &lt;user&gt; passwd|rename|admin|nopass</td><td>Change a password, rename, or toggle admin / no-password — all in one command</td></tr>
+          <tr><td>rmuser &lt;user&gt;</td><td>Delete an account (<code>root</code> and <code>guest</code> are protected). Non-root users must verify the target's password first.</td></tr>
           <tr><td>logout / exit</td><td>End session, return to login</td></tr>
         </tbody>
       </table>

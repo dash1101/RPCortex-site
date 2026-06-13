@@ -14,7 +14,7 @@
 
   function getSelectedVersion() {
     var sel = document.getElementById('versionSelect');
-    if (!sel || !sel.value) return { file: 'releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc', label: 'RPCortex Pulsar v0.9.1-beta' };
+    if (!sel || !sel.value) return { file: 'releases/download/v0.9.1/RPC-Pulsar-b9-Stable.rpc', label: 'RPCortex Pulsar v0.9.1' };
     var opt = sel.options[sel.selectedIndex];
     var label = opt ? opt.text.replace(/\s+\u2014.*$/, '').trim() : 'unknown';
     return { file: sel.value, label: label };
@@ -56,7 +56,7 @@
 
       sel.disabled = false;
     } catch (e) {
-      sel.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc">RPCortex Pulsar v0.9.1-beta \u2014 latest</option>';
+      sel.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Stable.rpc">RPCortex Pulsar v0.9.1 \u2014 latest</option>';
       sel.disabled  = false;
     }
   }
