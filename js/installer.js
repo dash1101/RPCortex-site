@@ -68,7 +68,7 @@
       var s = skip[i];
       if (relPath.startsWith(s) || relPath.includes('/' + s)) return false;
     }
-    var exts = ['.py', '.cfg', '.lp'];
+    var exts = ['.py', '.cfg', '.lp', '.mpy', '.json'];   // .mpy: compiled; .json: bundled repo index
     for (var j = 0; j < exts.length; j++) {
       if (relPath.endsWith(exts[j])) return true;
     }
@@ -227,27 +227,17 @@
       }
       if (prefix) onLog('[:] Stripping archive prefix: ' + prefix);
 
+      // .rpc images may be source (.py) OR compiled (.mpy) — both install fine
+      // (main.py and Core/rpc_stub.py always stay source). The device loader
+      // imports a module's .mpy transparently.
       var toInstall = [];
-      var skippedMpy = 0;
       zip.forEach(function (zipPath, entry) {
         if (entry.dir) return;
         var relPath = prefix ? zipPath.slice(prefix.length) : zipPath;
         if (relPath && shouldInstall(relPath)) {
           toInstall.push({ zipPath: zipPath, relPath: relPath, entry: entry });
-        } else if (relPath && relPath.endsWith('.mpy')) {
-          skippedMpy++;
         }
       });
-
-      // A .rpc must be a SOURCE archive (.py/.cfg/.lp). A compiled (.mpy)
-      // image filters down to almost nothing and would install a broken,
-      // unbootable filesystem. Refuse it with a clear message instead.
-      if (skippedMpy > 0) {
-        throw new Error(
-          'This archive contains ' + skippedMpy + ' compiled (.mpy) files. ' +
-          'RPCortex .rpc images must be source-only (.py/.cfg/.lp). ' +
-          'This looks like a compiled build - download the source .rpc instead.');
-      }
 
       onLog('[@] ' + toInstall.length + ' files to install.');
       await prepareDevice(device, onLog, fullWipe);

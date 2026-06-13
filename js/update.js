@@ -45,7 +45,7 @@
     }
     /* Preserve user-installed package entries (matches rpc_install.py behaviour) */
     if (relPath.endsWith('programs.lp')) return false;
-    var exts = ['.py', '.cfg', '.lp'];
+    var exts = ['.py', '.cfg', '.lp', '.mpy', '.json'];   // .mpy: compiled; .json: bundled repo index
     for (var j = 0; j < exts.length; j++) {
       if (relPath.endsWith(exts[j])) return true;
     }
@@ -254,28 +254,15 @@
       }
       if (prefix) appendLog('[:] Stripping prefix: ' + prefix);
 
-      /* Build filtered list */
+      /* Build filtered list — source (.py) or compiled (.mpy) both apply */
       var toSend = [];
-      var skippedMpy = 0;
       zip.forEach(function (zipPath, entry) {
         if (entry.dir) return;
         var rel = prefix ? zipPath.slice(prefix.length) : zipPath;
         if (rel && shouldUpdate(rel)) {
           toSend.push({ zipPath: zipPath, devicePath: '/' + rel, entry: entry });
-        } else if (rel && rel.endsWith('.mpy')) {
-          skippedMpy++;
         }
       });
-
-      // .rpc images are source-only; a compiled (.mpy) build would transfer
-      // almost nothing and leave a broken system. Refuse it clearly.
-      if (skippedMpy > 0) {
-        appendLog('[-] This archive contains ' + skippedMpy + ' compiled (.mpy) ' +
-                  'files. RPCortex .rpc images must be source-only (.py/.cfg/.lp). ' +
-                  'Download the source .rpc instead.');
-        _finish(false);
-        return;
-      }
 
       appendLog('[@] ' + toSend.length + ' file(s) to transfer.');
       if (toSend.length === 0) {
