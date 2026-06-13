@@ -109,9 +109,9 @@
               </label>
             </div>
 
-            <div class="install-info-box">
-              <strong>&#10003; Your data is kept.</strong>
-              <p>This installs or updates the OS and removes only the old OS code (<code>/Core</code>). Your accounts, WiFi networks, settings, and installed packages are preserved.</p>
+            <div class="install-info-box" id="installInfoBox">
+              <strong id="dataMsgTitle">&#10003; Your data is kept.</strong>
+              <p id="dataMsgBody">This installs or updates the OS and removes only the old OS code (<code>/Core</code>). Your accounts, WiFi networks, settings, and installed packages are preserved.</p>
               <label class="wipe-confirm-label">
                 <input type="checkbox" id="wipeConfirmCheck">
                 Clean install &mdash; erase <em>everything</em> first (accounts, settings, packages). Can't be undone.
@@ -120,6 +120,7 @@
 
             <div class="gap-btn">
               <button class="btn-primary" id="installBtn">Install Now</button>
+              <button class="btn-secondary" id="downloadRpcBtn" title="Save the selected .rpc image to your computer">Download .rpc</button>
             </div>
             <button class="disconnect-link" id="disconnectLink">Disconnect</button>
           </div>
