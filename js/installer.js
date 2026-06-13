@@ -242,6 +242,32 @@
       onLog('[@] ' + toInstall.length + ' files to install.');
       await prepareDevice(device, onLog, fullWipe);
 
+      // Drop any stale .py/.mpy counterpart of a module we're about to write.
+      // MicroPython imports X.py BEFORE X.mpy, so a leftover source file would
+      // shadow a freshly-installed compiled module (and vice-versa) — this is
+      // why a .py-install -> .mpy-update appeared to "do nothing". A clean wipe
+      // already cleared everything; this matters for the keep-data path (where
+      // /Packages built-ins are overwritten rather than removed).
+      if (!fullWipe) {
+        var counterparts = [];
+        for (var k = 0; k < toInstall.length; k++) {
+          var dp = '/' + toInstall[k].relPath, other = null;
+          if (dp.slice(-4) === '.mpy') other = dp.slice(0, -4) + '.py';
+          else if (dp.slice(-3) === '.py' && dp.slice(-7) !== 'main.py') other = dp.slice(0, -3) + '.mpy';
+          if (other) counterparts.push(other);
+        }
+        if (counterparts.length) {
+          var pyList = '[' + counterparts.map(function (p) { return JSON.stringify(p); }).join(',') + ']';
+          await device.execRaw(
+            'import uos\n' +
+            'for _f in ' + pyList + ':\n' +
+            ' try:uos.remove(_f)\n' +
+            ' except:pass\n'
+          );
+          onLog('[@] Cleared stale .py/.mpy counterparts.');
+        }
+      }
+
       for (var i = 0; i < toInstall.length; i++) {
         if (_cancelInstall) { onLog('[?] Installation cancelled.'); return; }
         var item       = toInstall[i];

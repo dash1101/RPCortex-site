@@ -150,20 +150,37 @@
   };
 
   Device.prototype.enterRawREPL = async function () {
-    // Ensure we're not trapped inside a running RPCortex session first.
-    await this.ensureREPL();
-    await this.write('\x03\x03');
-    await sleep(400);
-    this.clearBuffer();
-    await this.write('\x01');
-    await this.waitFor('raw REPL', 5000);
-    await sleep(120);          // let the trailing "> " prompt land
-    this.clearBuffer();
-    // Sync the raw-REPL protocol with a no-op before any real command. If
-    // exiting a running RPCortex (via rawrepl) left stray bytes in the pipe,
-    // this absorbs the desync here instead of corrupting the first file write
-    // (which previously caused files like Core/post.py to silently go missing).
-    try { await this.execRaw('0'); } catch (e) {}
+    // The Ctrl-A handshake can race boot output or RPCortex re-grabbing the
+    // line (the transient "Timeout waiting for raw REPL"), so retry the whole
+    // sequence — re-settling to >>> each time — before giving up.
+    var lastErr = null;
+    for (var attempt = 0; attempt < 3; attempt++) {
+      // Ensure we're not trapped inside a running RPCortex session first.
+      await this.ensureREPL();
+      await this.write('\r\x03\x03');
+      await sleep(300);
+      this.clearBuffer();
+      await this.write('\x01');            // Ctrl-A: enter raw REPL
+      try {
+        await this.waitFor('raw REPL', 4000);
+        await sleep(150);                  // let the trailing "> " prompt land
+        this.clearBuffer();
+        // Sync the raw-REPL protocol with a no-op before any real command. If
+        // exiting a running RPCortex (via rawrepl) left stray bytes in the
+        // pipe, this absorbs the desync here instead of corrupting the first
+        // file write (which previously made files silently go missing).
+        try { await this.execRaw('0'); } catch (e) {}
+        return;
+      } catch (e) {
+        lastErr = e;
+        await this.write('\r\x03\x03');     // interrupt + retry the handshake
+        await sleep(500);
+        this.clearBuffer();
+      }
+    }
+    throw new Error('Could not enter raw REPL after 3 tries. If RPCortex is ' +
+                    'running, type `rawrepl` at its prompt, then retry. (' +
+                    (lastErr ? lastErr.message : 'no banner') + ')');
   };
 
   Device.prototype.execRaw = async function (code, timeout) {
