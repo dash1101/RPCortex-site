@@ -1,7 +1,17 @@
 {
   "version": "v0.9.1",
   "url": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Beta.rpc",
-  "size": 390059,
-  "notes": "Pulsar: shell pipes and && / || chaining, .rps scripting, startup + scheduled tasks, expanded recovery tools (fscheck/diag/logdump/regreset), wget progress bars, extended curl, owner/timezone personalisation, wifi autoconnect, ntp sync, idle-logout, calc/gpio/i2cscan packages.",
-  "build": "20260612-123321"
+  "size": 411073,
+  "notes": "Pulsar \u2014 pipes, && / || chaining, .rps scripting, startup + scheduled tasks, recovery tools, OTA updates, wifi autoconnect, ntp sync, owner/timezone, FileExp explorer, admin users, compiled .mpy image option.",
+  "build": "20260612-203913",
+  "features": [
+    "Shell: pipes, && / || chaining, .rps scripting, persistent aliases, word-wise editing",
+    "Automation: startup tasks, scheduled tasks, headless autonomy mode",
+    "Filesystem: streamed cp/mv, du, multi-file cat, FileExp TUI explorer",
+    "Networking: wget progress bars, extended curl, wifi autoconnect, ntp sync",
+    "Updates: OTA check/online, preserve-data installs, source or compiled .mpy images",
+    "Recovery: fscheck, diag, logdump, regreset, pkgdisable",
+    "Personalisation: owner, timezone, device id, idle logout",
+    "Users: admin roles, nopass accounts, protected root/guest, admin-gated actions"
+  ]
 }
