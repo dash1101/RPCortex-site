@@ -7,7 +7,7 @@
         "name": "RPCortex Pulsar",
         "version": "v0.9.1",
         "subversion": "release",
-        "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-stable.rpc",
+        "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Stable.rpc",
         "tag": "stable",
         "default": true
       }
