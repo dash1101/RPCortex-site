@@ -1,9 +1,9 @@
 {
   "version": "v0.9.5",
   "url": "https://rpc.novalabs.app/releases/download/v0.9.5/RPC-Pulsar-b95-dev.rpc",
-  "size": 202766,
+  "size": 202959,
   "notes": "Pulsar 95 | Multitasking foundation \u2014 background tasks while idle, experimental async shell",
-  "build": "0.95.2",
+  "build": "0.95.3",
   "features": [
     "Background scheduled tasks fire while you're idle at the prompt (task background on)",
     "Experimental asyncio shell \u2014 tasks fire even while you type (asyncmode on; crash-guarded, opt-in)",
