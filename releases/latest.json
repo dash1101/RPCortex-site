@@ -1,9 +1,9 @@
 {
   "version": "v0.9.1",
   "url": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Release.rpc",
-  "size": 192647,
+  "size": 193942,
   "notes": "Pulsar \u2014 pipes, && / || chaining, .rps scripting, startup + scheduled tasks, recovery tools, OTA updates, wifi autoconnect, ntp sync, owner/timezone, FileExp explorer, admin users, compiled .mpy image option.",
-  "build": "0.91.112",
+  "build": "0.91.113",
   "features": [
     "Shell: pipes, && / || chaining, .rps scripting, persistent aliases, word-wise editing",
     "Automation: startup tasks, scheduled tasks, headless autonomy mode",
