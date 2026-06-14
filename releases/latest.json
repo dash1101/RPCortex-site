@@ -1,18 +1,15 @@
 {
-  "version": "v0.9.1",
-  "url": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Final.rpc",
-  "size": 193945,
-  "notes": "Pulsar \u2014 pipes, && / || chaining, .rps scripting, startup + scheduled tasks, recovery tools, OTA updates, wifi autoconnect, ntp sync, owner/timezone, FileExp explorer, admin users, compiled .mpy image option.",
-  "build": "0.91.114",
+  "version": "v0.9.5",
+  "url": "https://rpc.novalabs.app/releases/download/v0.9.5/RPC-Pulsar-b95-dev.rpc",
+  "size": 198310,
+  "notes": "Pulsar 95 | Multitasking foundation \u2014 background tasks while idle, experimental async shell",
+  "build": "0.95.1",
   "features": [
-    "Shell: pipes, && / || chaining, .rps scripting, persistent aliases, word-wise editing",
-    "Automation: startup tasks, scheduled tasks, headless autonomy mode",
-    "Filesystem: streamed cp/mv, du, multi-file cat, FileExp TUI explorer",
-    "Networking: wget progress bars, extended curl, wifi autoconnect, ntp sync",
-    "Updates: OTA check/online, preserve-data installs, source or compiled .mpy images",
-    "Recovery: fscheck, diag, logdump, regreset, pkgdisable",
-    "Personalisation: owner, timezone, device id, idle logout",
-    "Users: admin roles, nopass accounts, protected root/guest, admin-gated actions"
+    "Background scheduled tasks fire while you're idle at the prompt (task background on)",
+    "Experimental asyncio shell \u2014 tasks fire even while you type (asyncmode on; crash-guarded, opt-in)",
+    "Standard synchronous shell stays the default and fallback",
+    "Help flags across all packages; httpd control-panel TUI; WebSearch package (search / wiki)",
+    "Built-in package sources now version-controlled; assorted polish + QC"
   ],
-  "stage": "Release"
+  "stage": "dev"
 }
