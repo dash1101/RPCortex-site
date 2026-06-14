@@ -1,13 +1,27 @@
 [
   {
+    "group": "RPCortex Pulsar β95",
+    "groupLabel": "current",
+    "releases": [
+      {
+        "name": "RPCortex Pulsar 95",
+        "version": "v0.9.5",
+        "subversion": "dev",
+        "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-dev.rpc",
+        "tag": "latest",
+        "default": true
+      }
+    ]
+  },
+  {
     "group": "RPCortex Pulsar β9",
     "groupLabel": "current",
     "releases": [
       {
         "name": "RPCortex Pulsar",
         "version": "v0.9.1",
-        "subversion": "release",
-        "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Release.rpc",
+        "subversion": "final",
+        "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Final.rpc",
         "tag": "latest",
         "default": true
       }
