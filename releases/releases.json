@@ -1,13 +1,13 @@
 [
   {
-    "group": "RPCortex Pulsar β95",
+    "group": "RPCortex Vela",
     "groupLabel": "current",
     "releases": [
       {
-        "name": "RPCortex Pulsar 95",
-        "version": "v0.9.5",
+        "name": "RPCortex Vela",
+        "version": "v1.0.0",
         "subversion": "dev",
-        "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-dev.rpc",
+        "file": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
         "tag": "latest",
         "default": true
       }
@@ -15,7 +15,6 @@
   },
   {
     "group": "RPCortex Pulsar β9",
-    "groupLabel": "current",
     "releases": [
       {
         "name": "RPCortex Pulsar",
