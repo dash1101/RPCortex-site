@@ -207,15 +207,15 @@
           </div>
         </div>
 
-        <!-- v0.9.1 Pulsar — current/stable -->
+        <!-- v0.9.1 Pulsar — shipped / stable baseline -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot active">🔵</div>
+            <div class="roadmap-dot done">✓</div>
           </div>
-          <div class="roadmap-body active">
+          <div class="roadmap-body">
             <div class="roadmap-header">
               <span class="roadmap-ver">v0.9.1 &mdash; Pulsar</span>
-              <span class="roadmap-status testing">In Development &middot; Current</span>
+              <span class="roadmap-status future">Shipped &middot; Stable</span>
             </div>
             <p class="roadmap-desc">
               The definitive β9 "Pulsar" release &mdash; succeeds v0.8.1 directly.
@@ -269,74 +269,83 @@
             </ul>
 
             <div class="roadmap-note">
-              In developer testing on RP2040 / RP2350 / ESP32-S3 ahead of tagging.
+              Shipped as the stable baseline &mdash; the current Install / Update default.
             </div>
           </div>
         </div>
 
-        <!-- v0.9.5 — multitasking test -->
+        <!-- v0.9.5 — multitasking foundation, folded into v1.0 -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot planned" style="opacity:0.65;">🟡</div>
+            <div class="roadmap-dot done">✓</div>
           </div>
           <div class="roadmap-body" style="opacity:0.9;">
             <div class="roadmap-header">
               <span class="roadmap-ver">v0.9.5 &mdash; Pulsar</span>
-              <span class="roadmap-status future">Planned</span>
+              <span class="roadmap-status future">Folded into v1.0</span>
             </div>
             <p class="roadmap-desc">
-              A dedicated multitasking exploration release. The goal is to get
-              <code>uasyncio</code> working alongside the shell safely so that v1.0 can
-              build on a proven foundation &mdash; not to ship production features yet.
-              Expect breaking changes; this is an intentional stepping stone.
+              The multitasking exploration &mdash; getting <code>uasyncio</code> working
+              alongside the shell safely. It did its job as a stepping stone, so rather
+              than ship a throwaway incremental release it was <strong>folded directly
+              into v1.0</strong>; v0.9.1 stays the stable v0.9.x. The foundation below is
+              now the v1.0 base.
             </p>
             <ul class="roadmap-items">
-              <li><strong>First <code>uasyncio</code> integration</strong> &mdash; run background tasks while the shell stays interactive</li>
-              <li><strong>Concurrency safety audit</strong> &mdash; identify which modules need locking / re-entry guards</li>
-              <li><strong>Background <code>task run</code></strong> &mdash; scheduled tasks run async, no foreground blocker</li>
-              <li><strong>TCP shell listener</strong> (experimental) &mdash; first attempt at SSH-style access over WiFi</li>
+              <li class="done-item"><strong><code>uasyncio</code> integration</strong> &mdash; background services run while the shell stays interactive</li>
+              <li class="done-item"><strong>Concurrency safety</strong> &mdash; cooperative model, screen-ownership, crash-isolated services</li>
+              <li class="done-item"><strong>Background tasks</strong> &mdash; scheduled tasks fire while idle, no foreground blocker</li>
+              <li class="done-item"><strong>Supervised background services</strong> &mdash; <code>httpd --bg</code>, the <code>service</code> manager, <code>services.cfg</code></li>
             </ul>
           </div>
         </div>
 
-        <!-- v1.0 — future -->
+        <!-- v1.0 Vela — current / in development -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot planned" style="opacity:0.5;">⚪</div>
+            <div class="roadmap-dot active">🔵</div>
           </div>
-          <div class="roadmap-body" style="opacity:0.85;">
+          <div class="roadmap-body active">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v1.0</span>
-              <span class="roadmap-status future">Future</span>
+              <span class="roadmap-ver">v1.0 &mdash; Vela</span>
+              <span class="roadmap-status testing">In Development &middot; Current</span>
             </div>
             <p class="roadmap-desc">
-              The 1.0 milestone. Multitasking is stable (proven in v0.9.5),
-              the TUI framework lands, and RPCortex becomes a credible platform for
-              long-running embedded applications.
+              The 1.0 milestone &mdash; <strong>true multitasking</strong>. The shell is
+              now <strong>async by default</strong>: a foreground app (e.g. <code>sysmon</code>)
+              runs cooperatively alongside background services (e.g. <code>httpd&nbsp;--bg</code>)
+              on one event loop and one terminal. The classic synchronous shell stays as the
+              crash / recovery fallback so older setups never break.
             </p>
 
-            <div class="roadmap-section-label">Concurrency</div>
+            <div class="roadmap-section-label">Multitasking (done &mdash; proven on hardware)</div>
             <ul class="roadmap-items">
-              <li><strong>Stable <code>uasyncio</code> multitasking</strong> &mdash; production-grade, not experimental</li>
-              <li><strong>Multiple terminals &amp; tabbing</strong> &mdash; PowerShell-style session management</li>
-              <li><strong>SSH-style shell over TCP</strong> &mdash; a lightweight listener; needs stable <code>uasyncio</code></li>
+              <li class="done-item"><strong>Cooperative app framework</strong> (<code>appkit</code>) &mdash; screen ownership + non-blocking <code>read_key</code>; apps yield so services keep ticking</li>
+              <li class="done-item"><strong>Async by default</strong> &mdash; background services run while you keep using the prompt (<code>asyncmode off</code> returns the classic shell)</li>
+              <li class="done-item"><strong>Full async line editor</strong> &mdash; history, Tab completion, cursor + word navigation, shared with the classic shell</li>
+              <li class="done-item"><strong>SysMon runs concurrently</strong> with a background <code>httpd</code> &mdash; verified refreshing while a service keeps running</li>
             </ul>
 
-            <div class="roadmap-section-label">Apps &amp; Developer Tools</div>
+            <div class="roadmap-section-label">Still ahead for 1.0</div>
             <ul class="roadmap-items">
-              <li><strong>TUI framework</strong> &mdash; reusable adaptive box-draw components for terminal apps</li>
-              <li><strong>System apps on the TUI framework</strong> &mdash; rebuild <code>settings</code>, <code>edit</code>, and friends</li>
-              <li><strong>SD card support</strong> &mdash; init package, surfaced as a startup task</li>
-              <li><strong>Dev packages</strong> &mdash; <code>git</code>, <code>httpd</code>, <code>mqtt</code>, and more</li>
+              <li><strong>Async networking (Tier&nbsp;2)</strong> &mdash; <code>await</code> sockets so downloads stream without pausing services</li>
+              <li><strong>SSH-style shell over TCP</strong> &mdash; rides the async networking layer</li>
+              <li><strong>More TUIs cooperative</strong> &mdash; <code>settings</code> done; <code>edit</code>/<code>fileexp</code>/<code>desktop</code>/<code>ide</code> next, one at a time</li>
+              <li><strong>Multiple terminals &amp; a shell status bar</strong> &mdash; multiplexing on top of the loop</li>
+              <li><strong>SD card support</strong> &mdash; init package surfaced as a startup task</li>
             </ul>
 
             <div class="roadmap-section-label">Build &amp; Portability</div>
             <ul class="roadmap-items">
               <li>Frozen modules / custom <code>.uf2</code> firmware build (feasibility)</li>
               <li>Windows MicroPython port stubs for off-device debugging</li>
-              <li>Mouse support in the TUI (terminal-dependent)</li>
               <li>Viper / native optimisation &mdash; deferred until platform strategy settled</li>
             </ul>
+
+            <div class="roadmap-note">
+              A developer build is testable now; multitasking is proven on RP2350.
+              Remaining before tagging: on-hardware httpd-over-WiFi + RP2040 RAM checks.
+            </div>
           </div>
         </div>
 

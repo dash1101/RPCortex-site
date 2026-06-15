@@ -1,15 +1,16 @@
 {
   "version": "v1.0.0",
   "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
-  "size": 204823,
-  "notes": "Vela (v1.0 developer build) | True multitasking \u2014 cooperative foreground apps run alongside background services",
-  "build": "1.00.5",
+  "size": 211848,
+  "notes": "Vela (v1.0 developer build) | True multitasking \u2014 the shell is async by default, so foreground apps run alongside background services",
+  "build": "1.00.8",
   "features": [
-    "DEVELOPER BUILD \u2014 the v0.9.5 multitasking foundation generalized toward v1.0",
-    "Background services run while you keep using the prompt (httpd start --bg / status / stop; service)",
-    "Cooperative app framework (appkit) \u2014 a foreground app yields so it runs alongside background services",
-    "Background scheduled tasks fire while idle (task background on) and an experimental asyncio shell (asyncmode on)",
-    "Standard synchronous shell retained as the recovery / crash fallback"
+    "DEVELOPER BUILD \u2014 the v0.9.5 multitasking foundation, now the default experience",
+    "Multitasking shell is the DEFAULT \u2014 background services keep running while you work (classic sync shell stays as the recovery / crash fallback)",
+    "Background services: httpd start --bg / status / stop; service list/add/remove/test",
+    "Cooperative app framework (appkit) \u2014 a foreground app (e.g. sysmon) yields so it runs alongside background services",
+    "Full async line editor \u2014 history, Tab completion, cursor + word navigation (shared LineEditor with the classic shell)",
+    "Background scheduled tasks fire while idle (task background on); async-loop self-test (service test)"
   ],
   "stage": "dev"
 }
