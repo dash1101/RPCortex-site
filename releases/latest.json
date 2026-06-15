@@ -1,15 +1,15 @@
 {
-  "version": "v0.9.5",
-  "url": "https://rpc.novalabs.app/releases/download/v0.9.5/RPC-Pulsar-b95-dev.rpc",
-  "size": 202959,
-  "notes": "Pulsar 95 | Multitasking foundation \u2014 background tasks while idle, experimental async shell",
-  "build": "0.95.3",
+  "version": "v1.0.0",
+  "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
+  "size": 204837,
+  "notes": "Vela (v1.0 developer build) | True multitasking \u2014 cooperative foreground apps run alongside background services",
+  "build": "1.00.4",
   "features": [
-    "Background scheduled tasks fire while you're idle at the prompt (task background on)",
-    "Experimental asyncio shell \u2014 tasks fire even while you type (asyncmode on; crash-guarded, opt-in)",
-    "Standard synchronous shell stays the default and fallback",
-    "Help flags across all packages; httpd control-panel TUI; WebSearch package (search / wiki)",
-    "Built-in package sources now version-controlled; assorted polish + QC"
+    "DEVELOPER BUILD \u2014 the v0.9.5 multitasking foundation generalized toward v1.0",
+    "Background services run while you keep using the prompt (httpd start --bg / status / stop; service)",
+    "Cooperative app framework (appkit) \u2014 a foreground app yields so it runs alongside background services",
+    "Background scheduled tasks fire while idle (task background on) and an experimental asyncio shell (asyncmode on)",
+    "Standard synchronous shell retained as the recovery / crash fallback"
   ],
   "stage": "dev"
 }
