@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; Privacy Policy</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="docs">Docs</a>
+        <a href="packages">Packages</a>
+        <a href="roadmap">Roadmap</a>
+        <a href="install">Install</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Privacy Policy</h1>
+      <p>How RPCortex&rsquo;s software and this website handle your data &nbsp;&bull;&nbsp; Last updated: June&nbsp;17,&nbsp;2026</p>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="docs-page-layout">
+    <nav class="docs-toc">
+      <h4>Contents</h4>
+      <a href="#summary">Summary</a>
+      <a href="#scope">Scope</a>
+      <a href="#website">This website</a>
+      <a href="#os">The RPCortex OS</a>
+      <a href="#device-data">Data stored on your device</a>
+      <a href="#network">Network features &amp; third parties</a>
+      <a href="#not-collected">What we do not collect</a>
+      <a href="#security">Security</a>
+      <a href="#thirdparty">Third-party services</a>
+      <a href="#children">Children&rsquo;s privacy</a>
+      <a href="#changes">Changes</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <article class="docs-article">
+
+      <div class="note-box">
+        <strong>Template &mdash; review before production.</strong> This policy is provided
+        for transparency and is <strong>not legal advice</strong>. It uses
+        <code>[bracketed placeholders]</code> for details that depend on who operates the
+        project. Before shipping commercial hardware that runs RPCortex, have this
+        reviewed by a qualified professional and adapt it to your jurisdiction, your legal
+        entity, and the exact features your product ships with.
+      </div>
+
+      <h2 id="summary">Summary</h2>
+      <p>RPCortex is open-source software that runs <strong>locally on your own
+      microcontroller</strong>. By itself it is offline and collects no personal data and
+      sends nothing to us. It contacts the internet only when <em>you</em> run a feature
+      that needs to (an update check, the package manager, time sync, or an app you
+      install), and in those cases your device talks <strong>directly</strong> to the
+      relevant service &mdash; the data does not pass through us.</p>
+      <p>This website (<code>rpc.novalabs.app</code>) uses <strong>no cookies, no
+      analytics, no advertising, and no tracking scripts</strong>.</p>
+
+      <h2 id="scope">Scope</h2>
+      <p>This policy covers two things:</p>
+      <ul>
+        <li><strong>This website</strong> &mdash; <code>rpc.novalabs.app</code> and its
+          pages (docs, packages, install, update, etc.).</li>
+        <li><strong>The RPCortex operating system</strong> &mdash; the firmware you flash
+          onto a supported microcontroller (RP2040 / RP2350 / ESP32-S3).</li>
+      </ul>
+      <p>It is published by <code>[legal entity / operator name]</code>
+      (&ldquo;we&rdquo;, &ldquo;us&rdquo;), based in <code>[jurisdiction]</code>. RPCortex
+      is released under the MIT License; the source is public on GitHub.</p>
+
+      <h2 id="website">This website</h2>
+      <ul>
+        <li><strong>Hosting.</strong> The site is served as static files by
+          <strong>GitHub Pages</strong>. Like any web host, GitHub may record standard
+          server request data (such as your IP address and browser user-agent) in its own
+          logs; that processing is governed by
+          <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub&rsquo;s privacy statement</a>,
+          not by us.</li>
+        <li><strong>No cookies or analytics.</strong> We set no cookies, load no analytics
+          or advertising scripts, and do not use <code>localStorage</code> or
+          <code>sessionStorage</code> to profile you.</li>
+        <li><strong>Install / Update pages (Web Serial).</strong> Flashing uses your
+          browser&rsquo;s <em>Web Serial</em> API to talk to a device you physically plug
+          in. That communication is strictly between your browser and your board &mdash;
+          firmware files are sent to the device locally and are not transmitted to us.</li>
+        <li><strong>Packages page.</strong> To list available packages, your browser
+          fetches the package index and package files from
+          <strong>GitHub</strong> (<code>raw.githubusercontent.com</code>). No data about
+          you is sent beyond the normal request.</li>
+        <li><strong>Outbound links.</strong> Pages link to GitHub, Discord, and similar
+          services that have their own privacy policies.</li>
+      </ul>
+
+      <h2 id="os">The RPCortex OS</h2>
+      <p>The operating system runs entirely on your device and is <strong>offline by
+      default</strong>. It contains <strong>no telemetry</strong> and does not
+      &ldquo;phone home.&rdquo; It only reaches the network when you run a command or app
+      that explicitly does so (see
+      <a href="#network">Network features</a> below).</p>
+
+      <h2 id="device-data">Data stored on your device</h2>
+      <p>RPCortex keeps the following <strong>only on the device&rsquo;s own flash
+      storage</strong>. None of it is sent to us.</p>
+      <ul>
+        <li><strong>User accounts.</strong> Usernames and <strong>salted SHA-256 password
+          hashes</strong> (passwords are not stored in reversible form) in
+          <code>/Pulsar/Registry/user.cfg</code>.</li>
+        <li><strong>Wi-Fi credentials &mdash; stored in plaintext.</strong> Saved Wi-Fi
+          network names and passwords are written <strong>unencrypted</strong> to
+          <code>/Pulsar/Registry/networks.cfg</code>. Microcontrollers generally have no
+          secure enclave, so this is a hardware limitation: anyone with physical access to
+          the flash can read them. <strong>Treat the device like a key.</strong></li>
+        <li><strong>Settings &amp; personalization.</strong> Device name, owner name,
+          timezone, and preferences in the local registry.</li>
+        <li><strong>Logs.</strong> A local activity log (<code>/Pulsar/Logs/</code>) for
+          diagnostics, stored on-device only.</li>
+      </ul>
+
+      <h2 id="network">Network features &amp; third parties</h2>
+      <p>These features reach the internet <strong>only when you invoke them</strong>. In
+      every case your device connects <strong>directly</strong> to the service; we do not
+      sit in the middle and do not receive your data. Each third party has its own privacy
+      policy.</p>
+      <ul>
+        <li><strong>Over-the-air updates</strong> (<code>update check</code> /
+          <code>update online</code>) &mdash; downloads a version manifest and OS image
+          from the RPCortex update host (<code>rpc.novalabs.app</code>, served by GitHub
+          Pages). Standard server logs (e.g. IP, user-agent) may be recorded by the host.</li>
+        <li><strong>Package manager</strong> (<code>pkg</code>) &mdash; downloads the
+          package index and packages from <strong>GitHub</strong>.</li>
+        <li><strong>Time sync</strong> (<code>ntp sync</code>) &mdash; contacts an NTP time
+          server. The optional <code>ntp sync --auto</code> additionally sends your
+          <strong>public IP address to <code>ip-api.com</code></strong> to estimate your
+          timezone. This is off by default.</li>
+        <li><strong>Web search</strong> (optional <code>websearch</code> package) &mdash;
+          sends your query to <strong>DuckDuckGo</strong> and <strong>Wikipedia</strong>.</li>
+        <li><strong>AI assistant</strong> (optional <code>ask</code> package) &mdash; sends
+          your prompts to whatever AI backend <strong>you configure</strong> (for example a
+          local or remote Ollama server). Your prompts go to that endpoint; choose one you
+          trust.</li>
+        <li><strong>General networking</strong> (<code>wget</code>, <code>curl</code>,
+          <code>ping</code>, <code>runurl</code>) &mdash; contact whatever hosts you point
+          them at. <code>runurl</code> downloads and runs code and asks for confirmation
+          first.</li>
+        <li><strong>Built-in web server</strong> (optional <code>httpd</code> package)
+          &mdash; serves pages/files <strong>from your device to other clients on your
+          network</strong>. It hides known credential files, but when file browsing is
+          enabled it exposes the rest of the filesystem read-only &mdash; run it only on
+          networks you trust.</li>
+      </ul>
+
+      <h2 id="not-collected">What we do not collect</h2>
+      <ul>
+        <li>No analytics, no telemetry, no usage tracking.</li>
+        <li>No user accounts on our servers &mdash; accounts exist only on your device.</li>
+        <li>No advertising and no third-party ad/tracking networks.</li>
+        <li>We do not sell, rent, or share personal data &mdash; we don&rsquo;t collect it
+          to begin with.</li>
+      </ul>
+
+      <h2 id="security">Security</h2>
+      <ul>
+        <li>Account passwords are <strong>salted and hashed</strong> (SHA-256) on the
+          device; they are not stored or transmitted in plaintext.</li>
+        <li>Wi-Fi passwords <strong>are</strong> stored in plaintext on the device (see
+          above) &mdash; a hardware constraint, not a choice. Physical possession of the
+          board means access to those credentials.</li>
+        <li>No system is perfectly secure. For a device left on an untrusted network,
+          disable the web server&rsquo;s file browser and avoid storing secrets you
+          can&rsquo;t afford to expose.</li>
+      </ul>
+
+      <h2 id="thirdparty">Third-party services</h2>
+      <p>Depending on which features you use, your device or browser may interact with:</p>
+      <ul>
+        <li><a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub / GitHub Pages</a> &mdash; site hosting, OS images, package downloads.</li>
+        <li><a href="https://ip-api.com/docs/legal" target="_blank" rel="noopener">ip-api.com</a> &mdash; IP geolocation, only with <code>ntp sync --auto</code>.</li>
+        <li><a href="https://duckduckgo.com/privacy" target="_blank" rel="noopener">DuckDuckGo</a> and <a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy" target="_blank" rel="noopener">Wikipedia / Wikimedia</a> &mdash; the <code>websearch</code> package.</li>
+        <li>Your chosen <strong>AI backend</strong> (e.g. Ollama) &mdash; the <code>ask</code> package.</li>
+        <li>Public <strong>NTP servers</strong> &mdash; time sync.</li>
+      </ul>
+      <p>We are not responsible for the practices of these services; review their policies.</p>
+
+      <h2 id="children">Children&rsquo;s privacy</h2>
+      <p>RPCortex is a developer/maker tool and is not directed at children under
+      <code>[13 / 16, per your jurisdiction]</code>. We do not knowingly collect personal
+      information from children.</p>
+
+      <h2 id="changes">Changes to this policy</h2>
+      <p>We may update this policy as the software and website evolve. Material changes
+      will be reflected by the &ldquo;Last updated&rdquo; date at the top of this page.</p>
+
+      <h2 id="contact">Contact</h2>
+      <p>Questions about privacy or this policy can be raised via
+      <a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">GitHub Issues</a>,
+      or by contacting <code>[contact email]</code>
+      (<code>[legal entity / operator name]</code>, <code>[mailing address / jurisdiction]</code>).</p>
+
+      <div class="note-box">
+        <strong>Reminder:</strong> this is a transparency document, not legal advice. Fill
+        in the bracketed placeholders and obtain a professional review before relying on it
+        for a shipped product.
+      </div>
+
+    </article>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Pulsar</span>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="docs">Docs</a>
+          <a href="roadmap">Roadmap</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+          <a href="privacy">Privacy</a>
+        </div>
+      </div>
+      <p class="footer-note">Open source by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. MIT License.</p>
+    </div>
+  </footer>
+
+  <script>
+    const sections = document.querySelectorAll('.docs-article h2[id]');
+    const tocLinks = document.querySelectorAll('.docs-toc a');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const link = document.querySelector('.docs-toc a[href="#' + e.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => obs.observe(s));
+  </script>
+  <script src="js/nav.js"></script>
+</body>
+</html>
