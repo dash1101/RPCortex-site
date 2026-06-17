@@ -1,6 +1,6 @@
 # RPCortex — Website
 
-Source for [rpc.novalabs.app](https://rpc.novalabs.app) — the official website for [RPCortex Pulsar](https://github.com/dash1101/RPCortex).
+Source for [rpc.novalabs.app](https://rpc.novalabs.app) — the official website for [RPCortex Vela](https://github.com/dash1101/RPCortex).
 
 ---
 
