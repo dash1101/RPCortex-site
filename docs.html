@@ -51,6 +51,7 @@
       <a href="#text-commands">Text Processing</a>
       <a href="#system-commands">System Commands</a>
       <a href="#automation">Automation &amp; Scripting</a>
+      <a href="#multitasking">Multitasking</a>
       <a href="#recovery">Recovery &amp; Diagnostics</a>
       <a href="#os-management">OS Management</a>
       <a href="#user-management">User Management</a>
@@ -344,6 +345,43 @@ while exists /run.flag
   gpio set $pin low
   sleep 0.5
 end</code></pre>
+
+      <!-- MULTITASKING -->
+      <h2 id="multitasking">Multitasking <span style="font-size:0.6em;color:var(--cyan);">v1.0</span></h2>
+      <p>This is the headline of v1.0 &ldquo;Vela.&rdquo; The shell runs on an asyncio event loop <strong>by default</strong>, so the device can genuinely do more than one thing at once &mdash; a background service keeps serving while you keep working at the prompt.</p>
+
+      <h3>Background services</h3>
+      <p>A service is a long-running task (like a web server) that runs in the background of the async shell. Start one and carry on using the shell:</p>
+      <pre><code>httpd start --bg     # start the web server in the background
+httpd status         # check it (uptime, requests served)
+# ... keep using the shell normally; httpd keeps serving ...
+httpd stop           # stop it</code></pre>
+      <p>Manage which services start automatically with the <code>service</code> command. The list is saved to <code>/Vela/Registry/services.cfg</code> and seeded once per session.</p>
+      <table>
+        <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>service</code> / <code>service list</code></td><td>Show running services and the auto-start list</td></tr>
+          <tr><td><code>service add "&lt;command&gt;"</code></td><td>Add an auto-start command, e.g. <code>service add "httpd start --bg"</code></td></tr>
+          <tr><td><code>service remove &lt;n&gt;</code></td><td>Remove line <em>n</em> from the list</td></tr>
+          <tr><td><code>service clear</code></td><td>Empty the auto-start list</td></tr>
+          <tr><td><code>service test [start|stop]</code></td><td>Async-loop self-test &mdash; a heartbeat counter that proves the loop is interleaving</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Cooperative foreground apps</h3>
+      <p>Full-screen apps cooperate too. <code>sysmon</code> redraws while a background <code>httpd --bg</code> keeps serving &mdash; the app yields at each refresh instead of hogging the loop. This is the <code>Core/appkit.py</code> framework: one terminal, one event loop, shared safely (only the app that owns the screen draws to it).</p>
+
+      <h3>Async networking</h3>
+      <p><code>ping</code>, <code>wget</code>, and <code>curl</code> yield to the loop, so a download or a ping doesn't freeze a running service. Each falls back to its synchronous version automatically if anything goes wrong, so the commands always work.</p>
+
+      <h3>Turning it off</h3>
+      <p>The multitasking shell is the default. If you ever want the classic synchronous shell, <code>asyncmode off</code> switches back at the next login (it's also the automatic recovery/crash fallback &mdash; a crash sentinel reverts to it on its own, so async can never lock you out).</p>
+      <pre><code>asyncmode status     # show which shell is active
+asyncmode off        # use the classic synchronous shell
+asyncmode on         # back to multitasking (the default)</code></pre>
+      <div class="note-box">
+        <strong>The honest limit:</strong> one serial terminal shows one full-screen app at a time. Background <em>services</em> and the scheduler run concurrently, but two on-screen TUIs at once needs a multiplexer &mdash; that's a later feature, not this build.
+      </div>
 
       <!-- RECOVERY & DIAGNOSTICS -->
       <h2 id="recovery">Recovery &amp; Diagnostics <span style="font-size:0.6em;color:var(--cyan);">v0.9.1</span></h2>
