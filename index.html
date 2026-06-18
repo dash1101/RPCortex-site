@@ -40,36 +40,18 @@
     <div class="hero-inner">
       <div class="hero-pulse-ring"></div>
       <div class="hero-emblem">
-        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RPCortex">
-          <defs>
-            <linearGradient id="emblem-die" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"  stop-color="#5eead4"/>
-              <stop offset="50%" stop-color="#2dd4be"/>
-              <stop offset="100%" stop-color="#fb923c"/>
-            </linearGradient>
-            <linearGradient id="emblem-pin" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#5eead4"/>
-              <stop offset="100%" stop-color="#fb923c"/>
-            </linearGradient>
-          </defs>
-          <g class="emblem-star" fill="url(#emblem-pin)" opacity="0.9">
-            <rect x="86"  y="52" width="14" height="20" rx="4"/>
-            <rect x="121" y="52" width="14" height="20" rx="4"/>
-            <rect x="156" y="52" width="14" height="20" rx="4"/>
-            <rect x="86"  y="184" width="14" height="20" rx="4"/>
-            <rect x="121" y="184" width="14" height="20" rx="4"/>
-            <rect x="156" y="184" width="14" height="20" rx="4"/>
-            <rect x="52"  y="86"  width="20" height="14" rx="4"/>
-            <rect x="52"  y="121" width="20" height="14" rx="4"/>
-            <rect x="52"  y="156" width="20" height="14" rx="4"/>
-            <rect x="184" y="86"  width="20" height="14" rx="4"/>
-            <rect x="184" y="121" width="20" height="14" rx="4"/>
-            <rect x="184" y="156" width="20" height="14" rx="4"/>
+        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RPCortex"
+             style="filter: drop-shadow(0 0 16px rgba(255,255,255,0.22));">
+          <!-- red flag accent -->
+          <polygon points="196,42 230,42 214,76 180,76" fill="#f7262f"/>
+          <!-- bold italic R (outlined path — font-independent) -->
+          <g transform="skewX(-13) translate(79.158,176.0) scale(0.089844,-0.089844)"><path d="M735 831Q856 831 908.5 876.0Q961 921 961 1024Q961 1126 908.5 1170.0Q856 1214 735 1214H573V831ZM573 565V0H188V1493H776Q1071 1493 1208.5 1394.0Q1346 1295 1346 1081Q1346 933 1274.5 838.0Q1203 743 1059 698Q1138 680 1200.5 616.5Q1263 553 1327 424L1536 0H1126L944 371Q889 483 832.5 524.0Q776 565 682 565Z" fill="#ffffff"/></g>
+          <!-- red / blue / purple speed stripes (gently pulse) -->
+          <g class="emblem-star" transform="skewX(-13)">
+            <rect x="92" y="196" width="150" height="12" rx="2" fill="#f7262f"/>
+            <rect x="92" y="212" width="150" height="12" rx="2" fill="#2563ff"/>
+            <rect x="92" y="228" width="150" height="12" rx="2" fill="#a31ff0"/>
           </g>
-          <rect x="68" y="68" width="120" height="120" rx="30" fill="url(#emblem-die)"/>
-          <path d="M86 128 L106 128 L116 100 L132 158 L144 116 L152 128 L170 128"
-                fill="none" stroke="#040d11" stroke-width="11"
-                stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <div class="badge">v1.0.0 &mdash; Vela</div>
