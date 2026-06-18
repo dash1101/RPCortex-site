@@ -296,7 +296,7 @@
       var data = new Uint8Array(await resp.arrayBuffer());
       xferLogLine('[@] Downloaded ' + data.length + ' bytes.', 'xfer-log-ok');
       xferProgress.style.width = '10%';
-      var destPath = '/Pulsar/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
+      var destPath = '/Vela/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
       var ok = await _doXfer(data, destPath, pkgName);
       if (ok) await refreshInstalledAfterInstall();
     } catch (e) {
@@ -325,7 +325,7 @@
       xferLogLine('[@] Loaded ' + data.length + ' bytes from local file.', 'xfer-log-ok');
       xferProgress.style.width = '10%';
       var safeName = pkgName.toLowerCase().replace(/[^a-z0-9_]/g, '_').replace(/\.pkg$/, '');
-      var destPath = '/Pulsar/pkg/tmp_' + safeName + '.pkg';
+      var destPath = '/Vela/pkg/tmp_' + safeName + '.pkg';
       var okLocal = await _doXfer(data, destPath, pkgName);
       if (okLocal) await refreshInstalledAfterInstall();
     } catch (e) {

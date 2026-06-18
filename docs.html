@@ -18,7 +18,7 @@
         <a href="packages">Packages</a>
         <a href="roadmap">Roadmap</a>
         <a href="install">Install</a>
-        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/dash1101/RPCortex-OS" target="_blank" rel="noopener">GitHub</a>
         <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
       </div>
     </div>
@@ -400,15 +400,16 @@ update online --force          # reinstall even if already up to date</code></pr
         <li>Reboots into the first-run setup wizard</li>
       </ul>
 
-      <h3>reinstall</h3>
-      <p>Full OS wipe &mdash; deletes everything and writes a self-contained reinstall stub:</p>
-      <pre><code>reinstall                      # wipe and show Web Installer instructions
-reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</code></pre>
+      <h3>update reinstall</h3>
+      <p>Full OS wipe &mdash; deletes everything and writes a self-contained reinstall stub. (Folded into <code>update</code> in v1.0; the old standalone <code>reinstall</code> command is gone.)</p>
+      <pre><code>update reinstall               # wipe and show Web Installer instructions
+update reinstall online        # download the latest .rpc, then wipe + install
+update reinstall /path/os.rpc  # stage a local .rpc, then wipe + install on boot</code></pre>
       <ul>
         <li>Deletes <code>/Core/</code>, <code>/Packages/</code>, <code>/Vela/</code>, <code>/Users/</code></li>
         <li>Writes a minimal stub as <code>/main.py</code> that extracts <code>/update.rpc</code> on the next boot</li>
         <li>Prompts <code>WIPE</code> before proceeding</li>
-        <li>If a <code>.rpc</code> path is given, it is staged as <code>/update.rpc</code> and extracted automatically on the next boot</li>
+        <li>With <code>online</code> or a <code>.rpc</code> path, the archive is staged as <code>/update.rpc</code> and extracted automatically on the next boot</li>
       </ul>
 
       <h3>rawrepl</h3>
@@ -431,7 +432,7 @@ reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</c
           <tr><td>Update OS, keep all user data</td><td><code>update from-file /path/to/os.rpc</code> or <a href="update">browser update page</a></td></tr>
           <tr><td>Reset to clean factory state</td><td><code>factoryreset</code></td></tr>
           <tr><td>Use Web Installer without rebooting</td><td><code>rawrepl</code></td></tr>
-          <tr><td>Full wipe + re-flash</td><td><code>reinstall</code> or <code>rawrepl</code> + Web Installer</td></tr>
+          <tr><td>Full wipe + re-flash</td><td><code>update reinstall</code> or <code>rawrepl</code> + Web Installer</td></tr>
         </tbody>
       </table>
 
@@ -598,18 +599,18 @@ vi                         # scratch buffer, no file</code></pre>
 
       <!-- SETTINGS PANEL -->
       <h2 id="settings-panel">Settings Panel</h2>
-      <p>Run <code>settings</code> to open an interactive panel. As of v0.9.1 it uses the SysMon-style borderless layout and redraws efficiently &mdash; toggling a setting repaints only that row, not the whole screen:</p>
+      <p>Run <code>settings</code> to open an interactive panel. It uses a SysMon-style borderless layout with arrow-key navigation and redraws efficiently &mdash; toggling a setting repaints only that row, not the whole screen:</p>
       <pre><code>  RPCortex Settings                      125 MHz  27.4C  92 KB
 ══════════════════════════════════════════════════════════════
 
 ══ SYSTEM ════════════════════════════════════════════════════
-  [1] Verbose Boot         : OFF
+> [1] Verbose Boot         : OFF
   [2] Program Execution    : ON
 
 ══ HARDWARE ══════════════════════════════════════════════════
   [3] Boot Overclock       : OFF
-  [4] Beeper               : OFF
-  [5] SD Card Support      : OFF
+  [4] SD Card Support      : OFF
+  [5] Dynamic CPU Clock    : OFF      idle low / busy high
 
 ══ NETWORK ═══════════════════════════════════════════════════
   [6] WiFi Autoconnect     : ON
@@ -621,8 +622,9 @@ vi                         # scratch buffer, no file</code></pre>
   [i] Idle Logout          : 0        minutes (0 = off)
 
 ══════════════════════════════════════════════════════════════
-  [1-6] toggle   [o/t/d/i] edit   [r] refresh   [q] quit</code></pre>
-      <p><code>[1&ndash;6]</code> toggle a setting. <code>[o/t/d/i]</code> edit a personalization value (no more <code>reg set</code> needed). <code>[r]</code> refreshes the title-bar stats. <code>[q]</code> exits.</p>
+  Up/Down move   Enter change   letter/# jump   [r] refresh   [q] quit</code></pre>
+      <p>Use <strong>Up/Down</strong> to move the <code>&gt;</code> cursor and <strong>Enter</strong> to act on the highlighted row, or jump straight to a row with its number/letter. <code>[1&ndash;6]</code> toggle a setting; <code>[o/t/d/i]</code> edit a personalization value (no more <code>reg set</code> needed); <code>[r]</code> refreshes the title-bar stats; <code>[q]</code> (or Esc) saves and exits.</p>
+      <p>When the removable <strong>NTP</strong> package is installed, a <strong>TIME</strong> section also appears with <code>[n]</code> NTP Sync on Boot, <code>[s]</code> NTP Boot Silent, and <code>[a]</code> NTP Auto-Timezone &mdash; the panel adapts to whatever's installed.</p>
 
       <h3>Settings reference</h3>
       <table>
@@ -631,9 +633,12 @@ vi                         # scratch buffer, no file</code></pre>
           <tr><td>1</td><td>Verbose Boot</td><td><code>Settings.Verbose_Boot</code></td></tr>
           <tr><td>2</td><td>Program Execution</td><td><code>Features.Program_Execution</code></td></tr>
           <tr><td>3</td><td>Boot Overclock</td><td><code>Settings.OC_On_Boot</code></td></tr>
-          <tr><td>4</td><td>Beeper</td><td><code>Features.beeper</code></td></tr>
-          <tr><td>5</td><td>SD Card Support</td><td><code>Features.SD_Support</code></td></tr>
+          <tr><td>4</td><td>SD Card Support</td><td><code>Features.SD_Support</code></td></tr>
+          <tr><td>5</td><td>Dynamic CPU Clock</td><td><code>Settings.Dynamic_Clock</code></td></tr>
           <tr><td>6</td><td>WiFi Autoconnect</td><td><code>Settings.Network_Autoconnect</code></td></tr>
+          <tr><td>n</td><td>NTP Sync on Boot <span style="color:var(--text-muted);">(NTP pkg)</span></td><td><code>Apps.NTP_On_Boot</code></td></tr>
+          <tr><td>s</td><td>NTP Boot Silent <span style="color:var(--text-muted);">(NTP pkg)</span></td><td><code>Apps.NTP_Boot_Silent</code></td></tr>
+          <tr><td>a</td><td>NTP Auto-Timezone <span style="color:var(--text-muted);">(NTP pkg)</span></td><td><code>Apps.NTP_Boot_Auto</code></td></tr>
           <tr><td>o</td><td>Owner</td><td><code>System.Owner</code></td></tr>
           <tr><td>t</td><td>Timezone Offset</td><td><code>System.TZ_Offset</code></td></tr>
           <tr><td>d</td><td>Device ID</td><td><code>System.Device_ID</code></td></tr>
@@ -680,7 +685,7 @@ vi                         # scratch buffer, no file</code></pre>
           <tr><td>Min_Clock</td><td>Minimum safe CPU clock (e.g. <code>30.0MHz</code>)</td></tr>
           <tr><td>Max_Clock</td><td>Maximum safe CPU clock (e.g. <code>220.0MHz</code>)</td></tr>
           <tr><td>Boot_Clock</td><td>Specific boot clock override (blank = use Max_Clock)</td></tr>
-          <tr><td>beeper_pin</td><td>GPIO pin for beeper, or <code>None</code></td></tr>
+          <tr><td>Min_Clock</td><td>Minimum CPU clock (dynamic-clock idle floor; e.g. <code>80.0MHz</code>)</td></tr>
         </tbody>
       </table>
 
@@ -714,8 +719,8 @@ env Settings                        # dump one section</code></pre>
           <tr><td>CPU arithmetic</td><td>Yes</td><td>Float, int, comparison, bitwise</td></tr>
           <tr><td>RAM</td><td>Yes</td><td>Allocates a buffer and verifies a write pattern</td></tr>
           <tr><td>Clock calibration</td><td>No</td><td>Runs once; RP2 gets 220 MHz max without probing</td></tr>
+          <tr><td>Storage migration</td><td>No</td><td>Renames an older <code>/Pulsar</code> (or <code>/Nebula</code>) data dir to <code>/Vela</code> when upgrading</td></tr>
           <tr><td>WLAN</td><td>No</td><td>Checks for WiFi hardware; autoconnects if configured</td></tr>
-          <tr><td>Beeper</td><td>No</td><td>Initializes GPIO beeper if configured</td></tr>
         </tbody>
       </table>
       <ul>
@@ -794,10 +799,10 @@ settings           # toggle via settings panel</code></pre>
       <div class="footer-row">
         <span class="footer-brand">RPCortex Vela</span>
         <div class="footer-links">
-          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
-          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="https://github.com/dash1101/RPCortex-OS" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/releases" target="_blank">Releases</a>
           <a href="docs">Docs</a>
-          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/issues" target="_blank">Issues</a>
           <a href="privacy">Privacy</a>
         </div>
       </div>

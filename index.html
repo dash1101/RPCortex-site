@@ -29,7 +29,7 @@
         <a href="packages">Packages</a>
         <a href="roadmap">Roadmap</a>
         <a href="install">Install</a>
-        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/dash1101/RPCortex-OS" target="_blank" rel="noopener">GitHub</a>
         <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
       </div>
     </div>
@@ -60,13 +60,14 @@
       <h1>A real OS. On your microcontroller.</h1>
       <p class="hero-sub">
         RPCortex is a full CLI operating system built in MicroPython for the RP2 family and ESP32.
-        User accounts, WiFi networking, a package manager, a text editor, POST, and a
-        complete interactive shell &mdash; all running in 264&nbsp;KB of RAM.
+        User accounts, WiFi, a package manager, a text editor, POST, and a complete interactive
+        shell that <strong>truly multitasks</strong> &mdash; background services keep running while
+        you work. All in 264&nbsp;KB of RAM.
       </p>
       <div class="hero-actions">
         <a class="btn-primary" href="install">Web Installer</a>
         <a class="btn-secondary" href="docs">Documentation</a>
-        <a class="btn-secondary" href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+        <a class="btn-secondary" href="https://github.com/dash1101/RPCortex-OS" target="_blank">GitHub</a>
       </div>
       <div class="hero-term">
         <div class="term-bar">
@@ -78,7 +79,7 @@
       <div class="stat-band">
         <div class="stat-chip"><div class="stat-num" data-target="264" data-suffix=" KB">0</div><div class="stat-cap">RAM footprint</div></div>
         <div class="stat-chip"><div class="stat-num" data-target="60"  data-suffix="+">0</div><div class="stat-cap">Shell commands</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="12">0</div><div class="stat-cap">Packages</div></div>
+        <div class="stat-chip"><div class="stat-num" id="statPackages" data-target="19">0</div><div class="stat-cap">Packages</div></div>
         <div class="stat-chip"><div class="stat-num" data-target="100" data-suffix="%">0</div><div class="stat-cap">MicroPython</div></div>
       </div>
     </div>
@@ -93,6 +94,11 @@
           <div class="feature-icon">⌨</div>
           <h3>Interactive Shell</h3>
           <p>Colored prompt, full cursor navigation, command history, and session logging. Pipe commands (<code>cat log | grep ERR</code>) and chain them with <code>&amp;&amp;</code> / <code>||</code>. Commands load once and stay cached.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔀</div>
+          <h3>True Multitasking</h3>
+          <p>The shell is async by default. Start a background service like <code>httpd --bg</code>, then keep right on working &mdash; foreground apps cooperatively yield, so a web server (or a download, or a ping) runs while you use the prompt.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🤖</div>
@@ -132,7 +138,7 @@
         <div class="feature-card">
           <div class="feature-icon">🎛</div>
           <h3>Settings Panel</h3>
-          <p>An ANSI box-drawing settings panel accessible via <code>settings</code>. Toggle boot overclock, WiFi autoconnect, verbose boot, the beeper, and more. No registry editing needed.</p>
+          <p>An interactive settings panel accessible via <code>settings</code>. Toggle boot overclock, WiFi autoconnect, verbose boot, dynamic CPU clocking, and more &mdash; with arrow-key navigation. No registry editing needed.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">⚡</div>
@@ -155,13 +161,13 @@
         </div>
         <div class="docs-card">
           <h3>Release Notes</h3>
-          <p>Everything in v0.9.1 &mdash; pipes, scripting, automation, OTA updates, new packages, and all the shell improvements.</p>
+          <p>What's new in each release &mdash; from pipes, scripting, and OTA updates through to v1.0's true multitasking.</p>
           <a href="release">Release Notes &rarr;</a>
         </div>
         <div class="docs-card">
           <h3>Issue Tracker</h3>
           <p>Found a bug or have a feature request? Open an issue on GitHub.</p>
-          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">GitHub Issues &rarr;</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/issues" target="_blank">GitHub Issues &rarr;</a>
         </div>
         <div class="docs-card">
           <h3>Build a Package</h3>
@@ -239,7 +245,7 @@ nslookup example.com</pre>
           <div class="cmd-block-label">System</div>
           <pre>fetch           <span class="dim"># system info display</span>
 sysinfo         <span class="dim"># OS + hardware overview</span>
-pulse oc 220    <span class="dim"># overclock to 220 MHz</span>
+pulse set 220   <span class="dim"># overclock to 220 MHz</span>
 bench           <span class="dim"># run RPCMark</span>
 freeup          <span class="dim"># compact heap, report RAM</span>
 settings        <span class="dim"># open settings panel</span></pre>
@@ -273,7 +279,7 @@ logout          <span class="dim"># back to login</span></pre>
           <div class="step-num">2</div>
           <div class="step-text">
             <strong>Copy files</strong>
-            <p>Download the latest <code>.zip</code> release from <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">GitHub</a> and copy all files to the root of the board's filesystem using Thonny or <code>mpremote</code>.</p>
+            <p>Download the latest <code>.zip</code> release from <a href="https://github.com/dash1101/RPCortex-OS/releases" target="_blank">GitHub</a> and copy all files to the root of the board's filesystem using Thonny or <code>mpremote</code>.</p>
           </div>
         </div>
         <div class="step">
@@ -333,11 +339,11 @@ pkg remove  &lt;name&gt;</pre>
       <div class="footer-row">
         <span class="footer-brand">RPCortex Vela</span>
         <div class="footer-links">
-          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
-          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="https://github.com/dash1101/RPCortex-OS" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/releases" target="_blank">Releases</a>
           <a href="docs">Docs</a>
           <a href="roadmap">Roadmap</a>
-          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/issues" target="_blank">Issues</a>
           <a href="privacy">Privacy</a>
         </div>
       </div>

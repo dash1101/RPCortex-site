@@ -14,6 +14,29 @@
   var reduced = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ── Live package count ───────────────────────────────────────────
+     Pull the real number of packages from the same repo index the
+     Packages page uses, so the homepage stat never drifts from reality.
+     The hardcoded data-target is a fallback if the fetch fails (offline,
+     GitHub hiccup) — we only ever raise the number, never blank it. */
+  (function syncPackageCount() {
+    var el = document.getElementById('statPackages');
+    if (!el || !window.fetch) return;
+    var REPO_INDEX =
+      'https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json';
+    fetch(REPO_INDEX)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.packages) return;
+        var n = data.packages.length;
+        if (!n) return;
+        el.setAttribute('data-target', String(n));
+        // If the count-up already ran, update the displayed number too.
+        if (el._done) el.textContent = String(n);
+      })
+      .catch(function () { /* keep the fallback target */ });
+  })();
+
   /* ── Count-up stat band ───────────────────────────────────────── */
   function animateValue(el) {
     var target   = parseFloat(el.getAttribute('data-target'));
