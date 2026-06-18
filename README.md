@@ -5,4 +5,4 @@ Source for [rpc.novalabs.app](https://rpc.novalabs.app) — the official website
 ---
 
 
-*RPCortex by [dash1101](https://github.com/dash1101). Licensed under [GPL-3.0](LICENSE).*
+*RPCortex by [dash1101](https://github.com/dash1101). Proprietary, source-available &mdash; &copy; 2026, all rights reserved. See [LICENSE](LICENSE).*
