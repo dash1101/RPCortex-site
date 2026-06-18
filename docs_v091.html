@@ -28,12 +28,12 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Documentation</h1>
-      <p>RPCortex Vela v1.0.0 &nbsp;&bull;&nbsp; Full reference for the shell, commands, registry, and hardware</p>
+      <p>RPCortex Pulsar v0.9.1 &nbsp;&bull;&nbsp; Full reference for the shell, commands, registry, and hardware</p>
       <div class="version-switcher">
         <span>Version:</span>
         <a href="docs_v081">v0.8.1</a>
-        <a href="docs_v091">v0.9.1</a>
-        <a href="docs" class="version-active">v1.0.0</a>
+        <a href="docs_v091" class="version-active">v0.9.1</a>
+        <a href="docs">v1.0.0</a>
       </div>
     </div>
   </header>
@@ -112,9 +112,9 @@
       <!-- THE SHELL -->
       <h2 id="the-shell">The Shell</h2>
       <p>The shell prompt format is:</p>
-      <pre><code>username@vela:~&gt;
-username@vela:~/docs&gt;
-username@vela:/Core&gt;</code></pre>
+      <pre><code>username@pulsar:~&gt;
+username@pulsar:~/docs&gt;
+username@pulsar:/Core&gt;</code></pre>
       <p><code>~</code> is shorthand for the user's home directory (<code>/Users/&lt;username&gt;/</code>). The shell starts there on login. <code>cd ~</code> and bare <code>cd</code> both return home.</p>
 
       <h3>Keyboard shortcuts</h3>
@@ -138,7 +138,7 @@ username@vela:/Core&gt;</code></pre>
       <h3>Critical commands</h3>
       <p><code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, <code>gc</code>, <code>alias</code>, <code>unalias</code>, and <code>rawrepl</code> are implemented as inline functions that bypass the loader entirely. They always work regardless of heap state.</p>
       <h3>Aliases</h3>
-      <p>Aliases let you define shorthand for any command. They <strong>persist across reboots</strong> &mdash; saved to <code>/Vela/Registry/aliases.cfg</code> and reloaded at shell start. Critical built-ins can't be shadowed.</p>
+      <p>Aliases let you define shorthand for any command. They <strong>persist across reboots</strong> &mdash; saved to <code>/Pulsar/Registry/aliases.cfg</code> and reloaded at shell start. Critical built-ins can't be shadowed.</p>
       <pre><code>alias ll=ls
 alias cls=clear
 alias              # list all aliases
@@ -152,7 +152,7 @@ ls; pwd; whoami</code></pre>
 
       <h3>Pipes and conditional chaining <span style="font-size:0.7em;color:var(--cyan);">(v0.9.1)</span></h3>
       <p>Commands can be piped together with <code>|</code> &mdash; the left command's output becomes the right command's input. The consumers <code>grep</code>, <code>wc</code>, <code>sort</code>, <code>uniq</code>, <code>cat</code>, <code>head</code>, and <code>tail</code> read piped input when given no file argument.</p>
-      <pre><code>cat /Vela/Logs/latest.log | grep ERROR | wc
+      <pre><code>cat /Pulsar/Logs/latest.log | grep ERROR | wc
 ls /Core | sort | head 5</code></pre>
       <p>Commands can also be chained on exit status: <code>&amp;&amp;</code> runs the next command only if the previous one succeeded, <code>||</code> only if it failed. A command "fails" if it reported an error.</p>
       <pre><code>wifi connect && pkg update          # update only if WiFi connected
@@ -201,7 +201,7 @@ ping novalabs.app || echo offline</code></pre>
           <tr><td>dirname &lt;path&gt;</td><td>Directory portion of a path</td></tr>
         </tbody>
       </table>
-      <pre><code>grep error /Vela/Logs/session.log
+      <pre><code>grep error /Pulsar/Logs/session.log
 wc /Users/root/notes.txt
 find /Core .py
 sort /Users/root/list.txt | uniq
@@ -263,7 +263,7 @@ dirname /Core/Launchpad/sys_sys.py</code></pre>
       <p>RPCortex can run on its own. Combine these with pipes and <code>&amp;&amp;</code> / <code>||</code> chaining to build real device behaviour without a host computer.</p>
 
       <h3>Startup tasks</h3>
-      <p>Commands listed in <code>/Vela/Registry/startup.cfg</code> run once automatically after login, before the prompt opens.</p>
+      <p>Commands listed in <code>/Pulsar/Registry/startup.cfg</code> run once automatically after login, before the prompt opens.</p>
       <table>
         <thead><tr><th>Command</th><th>Description</th></tr></thead>
         <tbody>
@@ -276,7 +276,7 @@ dirname /Core/Launchpad/sys_sys.py</code></pre>
       </table>
 
       <h3>Scheduled tasks</h3>
-      <p>Run commands on a repeating interval (timed by software uptime &mdash; no battery RTC needed). Stored in <code>/Vela/Registry/tasks.cfg</code>.</p>
+      <p>Run commands on a repeating interval (timed by software uptime &mdash; no battery RTC needed). Stored in <code>/Pulsar/Registry/tasks.cfg</code>.</p>
       <table>
         <thead><tr><th>Command</th><th>Description</th></tr></thead>
         <tbody>
@@ -380,7 +380,7 @@ update online --force          # reinstall even if already up to date</code></pr
       <p>Extracts a <code>.rpc</code> release archive to the running OS:</p>
       <pre><code>update from-file /path/to/os.rpc</code></pre>
       <ul>
-        <li>Preserves <code>/Users/</code>, <code>/Vela/</code> (accounts, WiFi credentials, package config)</li>
+        <li>Preserves <code>/Users/</code>, <code>/Pulsar/</code> (accounts, WiFi credentials, package config)</li>
         <li>Sets a crash sentinel before writing files &mdash; if the device loses power mid-update, the sentinel is detected on the next boot</li>
         <li>Reboots automatically on success; shows "Now running RPCortex vX.Y.Z" at next login</li>
       </ul>
@@ -405,7 +405,7 @@ update online --force          # reinstall even if already up to date</code></pr
       <pre><code>reinstall                      # wipe and show Web Installer instructions
 reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</code></pre>
       <ul>
-        <li>Deletes <code>/Core/</code>, <code>/Packages/</code>, <code>/Vela/</code>, <code>/Users/</code></li>
+        <li>Deletes <code>/Core/</code>, <code>/Packages/</code>, <code>/Pulsar/</code>, <code>/Users/</code></li>
         <li>Writes a minimal stub as <code>/main.py</code> that extracts <code>/update.rpc</code> on the next boot</li>
         <li>Prompts <code>WIPE</code> before proceeding</li>
         <li>If a <code>.rpc</code> path is given, it is staged as <code>/update.rpc</code> and extracted automatically on the next boot</li>
@@ -451,7 +451,7 @@ reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</c
 
       <h3>Account details</h3>
       <ul>
-        <li>Profiles stored in <code>/Vela/Registry/user.cfg</code> as CSV</li>
+        <li>Profiles stored in <code>/Pulsar/Registry/user.cfg</code> as CSV</li>
         <li>Each account gets <code>/Users/&lt;username&gt;/</code> created on account creation</li>
         <li>Passwords stored as <strong>salted SHA256</strong> &mdash; unique salt per account</li>
         <li><code>guest</code> uses the <code>NOPASS</code> marker &mdash; any password, including blank, is accepted</li>
@@ -617,7 +617,7 @@ vi                         # scratch buffer, no file</code></pre>
 ══ PERSONALIZATION ═══════════════════════════════════════════
   [o] Owner                : Dash
   [t] Timezone Offset      : -5       hrs from UTC
-  [d] Device ID            : vela     hostname
+  [d] Device ID            : pulsar   hostname
   [i] Idle Logout          : 0        minutes (0 = off)
 
 ══════════════════════════════════════════════════════════════
@@ -643,13 +643,13 @@ vi                         # scratch buffer, no file</code></pre>
 
       <!-- REGISTRY -->
       <h2 id="registry">Registry</h2>
-      <p>The registry lives at <code>/Vela/Registry/registry.cfg</code> as a plain INI file. It's created from an embedded template on first boot if missing.</p>
+      <p>The registry lives at <code>/Pulsar/Registry/registry.cfg</code> as a plain INI file. It's created from an embedded template on first boot if missing.</p>
 
       <h3>[System]</h3>
       <table>
         <thead><tr><th>Key</th><th>Values</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td>Codename</td><td>string</td><td>Release codename (e.g. <code>RPCortex Vela</code>); re-synced from the running code every boot</td></tr>
+          <tr><td>Codename</td><td>string</td><td>Release codename (e.g. <code>RPCortex B9 - Pulsar</code>); re-synced from the running code every boot</td></tr>
           <tr><td>Device_ID</td><td>string</td><td>Hostname shown in the shell prompt (<code>user@&lt;Device_ID&gt;</code>). Change it: <code>reg set System.Device_ID mypico</code></td></tr>
           <tr><td>Owner <span style="color:var(--cyan);">(v0.9.1)</span></td><td>string</td><td>Device owner name, shown in <code>sysinfo</code>; prompted at first-run setup. <code>reg set System.Owner Dash</code></td></tr>
           <tr><td>TZ_Offset <span style="color:var(--cyan);">(v0.9.1)</span></td><td>integer</td><td>Timezone offset in whole hours (e.g. <code>-5</code>), applied to <code>date</code> output. Default 0 (UTC).</td></tr>
@@ -685,7 +685,7 @@ vi                         # scratch buffer, no file</code></pre>
       </table>
 
       <h3>[Networks]</h3>
-      <p>Saved WiFi networks are stored separately in <code>/Vela/Registry/networks.cfg</code> (tab-separated SSID/password, unlimited entries) &mdash; not in the registry. <code>wifi connect</code> saves automatically and reuses saved passwords.</p>
+      <p>Saved WiFi networks are stored separately in <code>/Pulsar/Registry/networks.cfg</code> (tab-separated SSID/password, unlimited entries) &mdash; not in the registry. <code>wifi connect</code> saves automatically and reuses saved passwords.</p>
 
       <h3>[Features]</h3>
       <table>
@@ -726,10 +726,10 @@ env Settings                        # dump one section</code></pre>
 
       <!-- SESSION LOGGING -->
       <h2 id="session-logging">Session Logging</h2>
-      <p>Every session is logged to <code>/Vela/Logs/latest.log</code>. The log captures everything printed through the OS output functions (<code>ok</code>, <code>info</code>, <code>warn</code>, <code>error</code>, <code>fatal</code>).</p>
+      <p>Every session is logged to <code>/Pulsar/Logs/latest.log</code>. The log captures everything printed through the OS output functions (<code>ok</code>, <code>info</code>, <code>warn</code>, <code>error</code>, <code>fatal</code>).</p>
       <p>Log rotation on each boot:</p>
       <pre><code>latest.log -&gt; log_1.log -&gt; log_2.log -&gt; ... -&gt; log_9.log (dropped)</code></pre>
-      <p>Up to 10 logs are kept. The <code>/Vela/Logs/</code> directory is created automatically by POST on first boot. You don't need to create it manually.</p>
+      <p>Up to 10 logs are kept. The <code>/Pulsar/Logs/</code> directory is created automatically by POST on first boot. You don't need to create it manually.</p>
 
       <!-- HARDWARE & PERFORMANCE -->
       <h2 id="hardware-performance">Hardware &amp; Performance</h2>
@@ -783,7 +783,7 @@ settings           # toggle via settings panel</code></pre>
         <li><strong>SD card support</strong> &mdash; registry key exists, implementation pending</li>
       </ul>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela v1.0.0 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
 
     </article>
   </div>
@@ -792,7 +792,7 @@ settings           # toggle via settings panel</code></pre>
   <footer>
     <div class="inner">
       <div class="footer-row">
-        <span class="footer-brand">RPCortex Vela</span>
+        <span class="footer-brand">RPCortex Pulsar</span>
         <div class="footer-links">
           <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
           <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>

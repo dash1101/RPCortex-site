@@ -151,7 +151,7 @@
   /* ── Prepare device ───────────────────────────────────────────────
      Default (fullWipe=false): remove only the OS code (/Core) so stale
      modules can't linger, then let the install overwrite the built-in
-     packages and main.py. User data is PRESERVED — /Users, /Pulsar
+     packages and main.py. User data is PRESERVED — /Users, /Vela
      (registry, WiFi, accounts, logs, pkg cache) and any installed
      packages are left untouched.
      fullWipe=true: erase the entire filesystem (factory clean install). */
@@ -182,7 +182,7 @@
         '  pass\n' +
         '_d("/Core")\n'
       );
-      onLog('[@] Old OS code removed.  Kept: /Users, /Pulsar, installed packages.');
+      onLog('[@] Old OS code removed.  Kept: /Users, /Vela, installed packages.');
     }
   }
 

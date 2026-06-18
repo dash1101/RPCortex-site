@@ -8,7 +8,7 @@
   var body = document.getElementById('term-body');
   if (!body) return;
 
-  var PROMPT = 'root@pulsar:~';
+  var PROMPT = 'root@vela:~';
 
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
@@ -21,11 +21,11 @@
     if (text.startsWith('[@]')) return '<span class="ok">[@]</span>' + esc(text.slice(3));
     if (text.startsWith('[:]')) return '<span class="info">[:]</span>' + esc(text.slice(3));
     if (text.startsWith('[?]')) return '<span class="twarn">[?]</span>' + esc(text.slice(3));
-    var ri = text.indexOf('root@pulsar');
+    var ri = text.indexOf('root@vela');
     if (ri !== -1) {
       return esc(text.slice(0, ri)) +
-        '<span style="color:var(--text);font-weight:700">root@pulsar</span>' +
-        esc(text.slice(ri + 10));
+        '<span style="color:var(--text);font-weight:700">root@vela</span>' +
+        esc(text.slice(ri + 9));
     }
     return esc(text);
   }
@@ -88,9 +88,9 @@
         { t: '' },
         { t: '' },
         { t: '      :::::::::  :::::::::   ::::::::    ', w: 40 },
-        { t: '     :+:    :+: :+:    :+: :+:    :+:    root@pulsar', w: 40 },
+        { t: '     :+:    :+: :+:    :+: :+:    :+:    root@vela', w: 40 },
         { t: '    +:+    +:+ +:+    +:+ +:+            \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500', w: 40 },
-        { t: '   +#++:++#:  +#++:++#+  +#+                   OS : RPCortex v0.8.1-beta4 (rp2)', w: 40 },
+        { t: '   +#++:++#:  +#++:++#+  +#+                   OS : RPCortex v1.0.0 (rp2)', w: 40 },
         { t: '  +#+    +#+ +#+        +#+                 Board : Raspberry Pi Pico 2 W', w: 40 },
         { t: ' #+#    #+# #+#        #+#    #+#             CPU : RP2350', w: 40 },
         { t: '###    ### ###         ########              Freq : 150 MHz', w: 40 },
@@ -101,7 +101,7 @@
         { t: '                                           Uptime : 3m 47s', w: 40 },
         { t: '                                             WiFi : Connected  (192.168.1.42)', w: 40 },
         { t: '                                              UID : e6:63:b0:02:a3:c5:d4:1c', w: 40 },
-        { t: '                                            Shell : Launchpad  (RPCortex Nebula)', w: 40 },
+        { t: '                                            Shell : Launchpad  (RPCortex Vela)', w: 40 },
         { t: '' },
       ]}
     ],
