@@ -115,7 +115,7 @@
 
           <div class="warn-box" style="margin:20px 0 24px;">
             <strong>What gets updated:</strong> All OS files in <code>/Core/</code>, <code>/Packages/</code> (built-in stubs), and <code>main.py</code>.<br>
-            <strong>What is preserved:</strong> <code>/Users/</code> (home dirs), <code>/Pulsar/</code> (registry, WiFi credentials, package cache, logs). Your accounts and settings are not touched. Devices running v0.8.x will have <code>/Pulsar/</code> auto-migrated from <code>/Nebula/</code> on first boot after update.
+            <strong>What is preserved:</strong> <code>/Users/</code> (home dirs), <code>/Vela/</code> (registry, WiFi credentials, package cache, logs). Your accounts and settings are not touched. Devices running v0.9.x will have <code>/Pulsar/</code> auto-renamed to <code>/Vela/</code> on first boot after the v1.0 update; v0.8.x devices migrate from <code>/Nebula/</code> in the same way.
           </div>
 
           <button class="btn-primary" id="startBtn" disabled style="width:100%;padding:14px;">
@@ -168,11 +168,10 @@
           <pre><span style="color:var(--text-muted)"># Option A — download and apply directly (WiFi required)</span>
 update online
 <span style="color:var(--text-muted)"># — or manually specify a file:</span>
-wget https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Release.rpc /update.rpc
-update from-file /update.rpc
+update from-file /path/to/RPC-Vela-v1.0-dev.rpc
 
 <span style="color:var(--text-muted)"># Option B — full wipe and reinstall from a staged .rpc</span>
-reinstall /path/to/os.rpc</pre>
+update reinstall /path/to/os.rpc</pre>
         </div>
       </div>
 
