@@ -259,14 +259,15 @@ reg set System.TZ_Offset -5</code></pre>
       </ul>
 
       <h2 id="whats-next">What&rsquo;s Next</h2>
-      <p><strong>v0.9.5</strong> is a dedicated multitasking exploration release. The goal is to prove <code>uasyncio</code> alongside the shell before v1.0 builds on it:</p>
+      <p><strong>v1.0 &ldquo;Vela&rdquo;</strong> (in development) delivers true multitasking as the default experience &mdash; v0.9.5 was folded in rather than shipped separately. The async shell is now the primary shell:</p>
       <ul>
-        <li><strong>First <code>uasyncio</code> integration</strong> &mdash; background tasks while the shell stays interactive</li>
-        <li><strong>Background <code>task run</code></strong> &mdash; scheduled tasks no longer block the prompt</li>
-        <li><strong>Concurrency safety audit</strong> &mdash; identify which modules need re-entry guards</li>
-        <li><strong>TCP shell listener</strong> (experimental) &mdash; SSH-style access over WiFi</li>
+        <li><strong>Multitasking shell is the default</strong> &mdash; background services (e.g. <code>httpd --bg</code>) keep running while you work at the prompt</li>
+        <li><strong>Cooperative app framework (<code>appkit</code>)</strong> &mdash; any foreground TUI app (e.g. <code>sysmon</code>) yields so it runs alongside background services</li>
+        <li><strong>Async <code>ping</code> / <code>wget</code> / <code>curl</code></strong> &mdash; network commands yield to the loop, so the httpd dashboard stays responsive during a download</li>
+        <li><strong>Async httpd streaming</strong> &mdash; large file downloads from the device no longer freeze the event loop</li>
+        <li><strong>Full async line editor</strong> &mdash; history, Tab completion, cursor navigation, word-wise editing; parity with the classic shell</li>
       </ul>
-      <p>v1.0 builds on the stable multitasking foundation: TUI framework, SD card support, multiple terminals, and more. See the <a href="roadmap">roadmap</a> for the full plan.</p>
+      <p>After v1.0: TUI framework, SD card support, SSH-over-TCP, multiple terminals. See the <a href="roadmap">roadmap</a> for the full plan.</p>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
 
