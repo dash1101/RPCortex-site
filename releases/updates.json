@@ -14,6 +14,20 @@
     ]
   },
   {
+    "group": "RPCortex Vela",
+    "groupLabel": "current",
+    "releases": [
+      {
+        "name": "RPCortex Vela",
+        "version": "v1.0.0",
+        "subversion": "dev",
+        "file": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
+        "tag": "latest",
+        "default": true
+      }
+    ]
+  },
+  {
     "group": "RPCortex Nebula β81",
     "releases": [
       {
