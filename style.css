@@ -1,28 +1,37 @@
 /* RPCortex — rpc.novalabs.app */
-/* Liquid Glass Design System                                    */
+/* ─────────────────────────────────────────────────────────────────────────
+   NOVALABS DESIGN LANGUAGE — RPCortex edition
+   One shared visual language across novalabs.app and rpc.novalabs.app:
+   a deep cool "space" background, frosted glass surfaces, and a cyan→blue→
+   indigo accent family. RPCortex's signature within that family is TEAL
+   (--cyan) plus a developer/terminal texture (mono logo + badges, richer
+   liquid-glass depth) — unified with NovaLabs, not a 1:1 copy.
+   Accent via tokens: re-value --cyan / --accent / --accent-gradient to retone.
+   ───────────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* ── Summer palette — warm teal / amber / coral ── */
-  --bg:          #040d11;
-  --bg-alt:      #071018;
+  /* ── Nova-family palette — teal signature, cool cyan / blue / indigo ── */
+  --bg:          #050e1a;
+  --bg-alt:      #081323;
   --bg-card:     linear-gradient(157deg, rgba(6,26,36,0.62) 0%, rgba(3,16,24,0.46) 52%, rgba(4,14,22,0.56) 100%);
   --bg-card-solid: rgba(4, 14, 24, 0.54);
   --border:      rgba(45, 212, 190, 0.09);
-  --border-hi:   rgba(251, 146, 60, 0.30);
-  --text:        #dff0ec;
-  --text-muted:  #4a7a72;
+  --border-hi:   rgba(96, 165, 250, 0.30);
+  --text:        #e3f1f6;
+  --text-muted:  #7d93a8;
   --cyan:        #2dd4be;    /* warm teal — primary colour */
   --cyan-dim:    #14b8a6;
   --cyan-glow:   rgba(45,212,190,0.13);
+  --accent-gradient: linear-gradient(135deg, #2dd4be, #38bdf8, #60a5fa); /* teal->cyan->blue: RPCortex within the nova family */
   --green:       #34d399;
   --yellow:      #fbbf24;    /* amber */
   --red:         #f87171;
-  --accent:      #fb923c;    /* warm orange — badges, highlights, hover accents */
+  --accent:      #60a5fa;    /* nova blue — badges, highlights, hover accents (teal stays primary) */
   --radius:      18px;
   --radius-sm:   11px;
   --ease:        cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* ── Liquid-glass system — frosted summer frost: slightly warmer specular ── */
+  /* ── Liquid-glass system — frosted nova glass ── */
   --glass-blur:     blur(36px) saturate(1.85) brightness(1.07);
   --glass-specular: inset 0 1px 0 rgba(255, 255, 255, 0.14);
   --glass-shadow:
@@ -53,11 +62,11 @@ body {
   background-image:
     /* Mica grain — fine fractal noise gives glass surfaces a material texture */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E"),
-    /* Top-left: warm amber orb — summer sunrise */
-    radial-gradient(ellipse 65% 55% at 10% 16%,  rgba(251, 146, 60, 0.10) 0%, transparent 60%),
-    /* Bottom-right: coral/rose orb — tropical sunset */
-    radial-gradient(ellipse 56% 50% at 92% 82%,  rgba(244, 114, 182, 0.08) 0%, transparent 55%),
-    /* Center-right: warm teal orb — ocean shimmer */
+    /* Top-left: cyan orb */
+    radial-gradient(ellipse 65% 55% at 10% 16%,  rgba(56, 189, 248, 0.10) 0%, transparent 60%),
+    /* Bottom-right: indigo orb */
+    radial-gradient(ellipse 56% 50% at 92% 82%,  rgba(99, 102, 241, 0.08) 0%, transparent 55%),
+    /* Center-right: teal orb (signature) */
     radial-gradient(ellipse 48% 40% at 76% 24%,  rgba(45, 212, 190, 0.07) 0%, transparent 50%),
     /* Center: deep ocean ambient fill */
     radial-gradient(ellipse 80% 70% at 50% 50%,  rgba(0, 60, 70, 0.07) 0%, transparent 65%),
@@ -86,7 +95,7 @@ a:hover { color: var(--cyan); }
 ::-webkit-scrollbar-thumb:hover { background: rgba(45,212,190,0.34); background-clip: padding-box; }
 html { scrollbar-color: rgba(45,212,190,0.26) transparent; scrollbar-width: thin; }
 
-/* ── Animated summer orbs — fixed, blurred, pointer-events:none ──────────
+/* ── Animated nova orbs — fixed, blurred, pointer-events:none ──────────
    Two slow-drifting radial glows behind all content. The body background
    provides static orbs; these add subtle parallax motion.
    Frozen by prefers-reduced-motion below.                                  */
@@ -98,7 +107,7 @@ body::before {
   width: 580px;
   height: 580px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(251,146,60,0.075) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(56,189,248,0.075) 0%, transparent 70%);
   top: -140px;
   left: -100px;
   filter: blur(55px);
@@ -112,7 +121,7 @@ body::after {
   width: 480px;
   height: 480px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(244,114,182,0.065) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(99,102,241,0.065) 0%, transparent 70%);
   bottom: -110px;
   right: -90px;
   filter: blur(48px);
@@ -208,8 +217,8 @@ nav {
 }
 @keyframes logo-glow {
   0%, 100% { text-shadow: 0 0 22px rgba(45,212,190,0.50); }
-  40%       { text-shadow: 0 0 36px rgba(45,212,190,0.72), 0 0 14px rgba(251,146,60,0.20); }
-  70%       { text-shadow: 0 0 28px rgba(45,212,190,0.58), 0 0 10px rgba(244,114,182,0.15); }
+  40%       { text-shadow: 0 0 36px rgba(45,212,190,0.72), 0 0 14px rgba(56,189,248,0.20); }
+  70%       { text-shadow: 0 0 28px rgba(45,212,190,0.58), 0 0 10px rgba(99,102,241,0.15); }
 }
 .nav-logo:hover { opacity: 0.85; color: var(--cyan); }
 .nav-links { display: flex; gap: 28px; }
@@ -227,15 +236,15 @@ nav {
   position: relative;
   overflow: hidden;
 }
-/* Animated ambient burst behind hero content — warm summer sunrise */
+/* Animated ambient burst behind hero content — cool nova glow */
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
     radial-gradient(ellipse 75% 65% at 50% -5%, rgba(45,212,190,0.10) 0%, transparent 65%),
-    radial-gradient(ellipse 55% 45% at 20% 100%, rgba(251,146,60,0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 35% at 85% 10%,  rgba(244,114,182,0.05) 0%, transparent 50%);
+    radial-gradient(ellipse 55% 45% at 20% 100%, rgba(56,189,248,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 85% 10%,  rgba(99,102,241,0.05) 0%, transparent 50%);
   pointer-events: none;
   animation: hero-orb-breathe 14s ease-in-out infinite alternate;
 }
@@ -266,8 +275,8 @@ nav {
   font-weight: 800;
   line-height: 1.12;
   margin-bottom: 22px;
-  /* Summer gradient: cool teal → warm coral → amber */
-  background: linear-gradient(115deg, #d4fdf8 0%, #5eead4 26%, #2dd4be 44%, #f9a8d4 64%, #fde68a 82%, #d4fdf8 100%);
+  /* Nova gradient: teal -> cyan -> blue */
+  background: linear-gradient(115deg, #d4fdf8 0%, #5eead4 26%, #2dd4be 44%, #38bdf8 64%, #60a5fa 82%, #d4fdf8 100%);
   background-size: 220% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -316,7 +325,7 @@ nav {
 .btn-primary:hover {
   opacity: 0.94;
   transform: translateY(-2px);
-  box-shadow: 0 0 40px rgba(45,212,190,0.36), 0 0 18px rgba(251,146,60,0.12), inset 0 1px 0 rgba(255,255,255,0.2);
+  box-shadow: 0 0 40px rgba(45,212,190,0.36), 0 0 18px rgba(56,189,248,0.12), inset 0 1px 0 rgba(255,255,255,0.2);
   color: #ffffff;
 }
 .btn-primary:disabled {
@@ -451,7 +460,7 @@ nav {
 .feature-card:hover {
   border-color: rgba(45,212,190,0.28);
   transform: translateY(-5px);
-  box-shadow: 0 18px 52px rgba(0,0,0,0.46), 0 0 30px rgba(45,212,190,0.09), 0 0 18px rgba(251,146,60,0.06), inset 0 1px 0 rgba(255,255,255,0.12);
+  box-shadow: 0 18px 52px rgba(0,0,0,0.46), 0 0 30px rgba(45,212,190,0.09), 0 0 18px rgba(56,189,248,0.06), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 .feature-icon { font-size: 1.7rem; margin-bottom: 14px; }
 .feature-card h3 { font-size: 0.975rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
@@ -1835,12 +1844,12 @@ nav.scrolled {
 }
 .scene-orb-1 {
   width: 440px; height: 440px; top: -8%; left: -6%;
-  background: radial-gradient(circle, rgba(251,146,60,0.55), rgba(251,146,60,0));
+  background: radial-gradient(circle, rgba(56,189,248,0.55), rgba(56,189,248,0));
   animation-delay: 0s;
 }
 .scene-orb-2 {
   width: 380px; height: 380px; bottom: -10%; right: -6%;
-  background: radial-gradient(circle, rgba(244,114,182,0.42), rgba(244,114,182,0));
+  background: radial-gradient(circle, rgba(99,102,241,0.42), rgba(99,102,241,0));
   animation-delay: -8s;
 }
 .scene-orb-3 {
@@ -1893,7 +1902,7 @@ nav.scrolled {
 
 /* Animated gradient shimmer for the hero accent word */
 .hero h1 .grad {
-  background: linear-gradient(110deg, #d4fdf8, #5eead4, #2dd4be, #f9a8d4, #fde68a, #d4fdf8);
+  background: linear-gradient(110deg, #d4fdf8, #5eead4, #2dd4be, #38bdf8, #60a5fa, #d4fdf8);
   background-size: 280% 280%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -1932,7 +1941,7 @@ nav.scrolled {
   font-size: clamp(1.6rem, 4vw, 2.3rem);
   font-weight: 800;
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  background: linear-gradient(135deg, #5eead4, #2dd4be 45%, #fb923c);
+  background: linear-gradient(135deg, #5eead4, #2dd4be 45%, #60a5fa);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: transparent;
   line-height: 1.1;
@@ -1952,7 +1961,7 @@ nav.scrolled {
   font-size: 1.55rem;
   margin-bottom: 16px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(45,212,190,0.18), rgba(251,146,60,0.16));
+  background: linear-gradient(135deg, rgba(45,212,190,0.18), rgba(56,189,248,0.16));
   border: 1px solid var(--border);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 18px rgba(0,0,0,0.3);
   transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
