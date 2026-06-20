@@ -221,7 +221,7 @@ reg set System.TZ_Offset -5</code></pre>
       <p>Log writes are batched: flushed every 8 lines, or immediately on a WARNING or ERROR. Previously every log write flushed to LittleFS (<em>~10&nbsp;ms each</em>), causing bursts of output to stall visibly. Warnings and errors still flush immediately for crash-log safety.</p>
 
       <h3>Portable compiled image</h3>
-      <p>A precompiled <code>.mpy</code> image now ships alongside the source build. It&rsquo;s architecture-neutral &mdash; one image for RP2040, RP2350, and ESP32 (RPCortex uses no <code>@native</code>/<code>@viper</code> code). About 44% smaller than source and imports faster. Deploy with <code>mpremote</code> or <code>deploy.bat --compiled</code>.</p>
+      <p>A precompiled <code>.mpy</code> image now ships alongside the source build. It&rsquo;s architecture-neutral &mdash; one image for RP2040, RP2350, and ESP32 (RPCortex uses no <code>@native</code>/<code>@viper</code> code). About 44% smaller than source and imports faster. Deploy with <code>mpremote</code> or <code>python deploy.py --compiled</code>.</p>
 
       <h2 id="bugfixes">Bug Fixes (since v0.8.1)</h2>
 
@@ -237,7 +237,7 @@ reg set System.TZ_Offset -5</code></pre>
       <h3>Every password prompt is masked</h3>
       <p>Account creation (<code>mkacct</code>), password change (<code>chpswd</code>), account removal (<code>rmuser</code>), and <code>wifi add</code> all now echo <code>&bull;</code> bullets. Login always did; the rest didn&rsquo;t.</p>
 
-      <h3>compile.bat ships the full OS</h3>
+      <h3>compile.py ships the full OS</h3>
       <p>The PicoFetch and NebulaMark package directories were silently omitted from compiled builds. Fixed &mdash; the compiled image now matches the source image.</p>
 
       <h2 id="installation">Installation</h2>
