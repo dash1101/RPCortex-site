@@ -1980,3 +1980,90 @@ nav.scrolled {
   z-index: 9999;
   will-change: transform, opacity;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NOVALABS DESIGN LANGUAGE — ported components (nav.js injects the markup)
+   Shared chrome with novalabs.app, retoned to RPCortex's teal + kept techy.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Floating glass background: orbs + stars (NovaLabs, in teal/cyan/indigo) ──
+   Replaces the old drifting body orbs; the techy grid + grain stays underneath. */
+body::before, body::after { display: none; }   /* retire the legacy drift orbs */
+
+.background {
+  position: fixed; inset: 0; z-index: -1;
+  overflow: hidden; pointer-events: none;
+}
+.gradient-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); opacity: 0.42;
+  animation: nl-float 22s ease-in-out infinite;
+}
+.orb-1 { width: 480px; height: 480px; background: radial-gradient(circle, #2dd4be, #14b8a6); top: -8%;  left: -8%;  animation-delay: 0s; }
+.orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #6366f1, #3b82f6); bottom: -10%; right: -8%; animation-delay: -7s; }
+.orb-3 { width: 340px; height: 340px; background: radial-gradient(circle, #38bdf8, #2563eb); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
+@keyframes nl-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(34px, -52px) scale(1.10); }
+  66%      { transform: translate(-22px, 22px) scale(0.92); }
+}
+.stars {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px,  rgba(223,240,236,0.85), transparent),
+    radial-gradient(2px 2px at 60px 70px,  rgba(160,235,225,0.70), transparent),
+    radial-gradient(1px 1px at 50px 50px,  rgba(223,240,236,0.70), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(223,240,236,0.65), transparent),
+    radial-gradient(2px 2px at 90px 10px,  rgba(160,235,225,0.70), transparent),
+    radial-gradient(1px 1px at 160px 120px, rgba(223,240,236,0.55), transparent);
+  background-size: 200px 200px;
+  animation: nl-twinkle 4s ease-in-out infinite;
+  opacity: 0.32;
+}
+@keyframes nl-twinkle { 0%, 100% { opacity: 0.32; } 50% { opacity: 0.16; } }
+@media (prefers-reduced-motion: reduce) {
+  .gradient-orb, .stars { animation: none; }
+}
+
+/* ── Nav logo: chip mark + mono wordmark ───────────────────────────────── */
+.nav-logo { display: inline-flex; align-items: center; gap: 10px; }
+.nav-logo-svg {
+  width: 26px; height: 26px;
+  filter: drop-shadow(0 0 10px rgba(45,212,190,0.55));
+}
+.nav-title { line-height: 1; }   /* inherits mono + teal glow from .nav-logo */
+
+/* ── Nav links: NovaLabs hover-underline + active state (kept teal) ─────── */
+.nav-links a.nav-link { position: relative; padding: 6px 1px; }
+.nav-links a.nav-link::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -3px;
+  height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--accent));
+  transform: scaleX(0); transform-origin: center;
+  transition: transform 0.25s var(--ease);
+}
+.nav-links a.nav-link:hover::after,
+.nav-links a.nav-link.active::after { transform: scaleX(1); }
+.nav-links a.nav-link.active { color: var(--cyan); }
+
+/* ── glass-card utility — NovaLabs parity for floating glass panels ─────── */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.glass-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-hi);
+  box-shadow: var(--glass-shadow-lg);
+}
+
+/* On mobile the underline would sit oddly under full-width drawer links —
+   drop it there; the .active colour + row hover already give feedback. */
+@media (max-width: 768px) {
+  .nav-links a.nav-link::after { display: none; }
+}
