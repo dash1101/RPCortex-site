@@ -51,4 +51,9 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  // Modular announcement popup (loads on every page since nav.js is universal).
+  var ann = document.createElement('script');
+  ann.src = 'js/announce.js';
+  document.head.appendChild(ann);
 })();
