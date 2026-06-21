@@ -2067,3 +2067,18 @@ body::before, body::after { display: none; }   /* retire the legacy drift orbs *
 @media (max-width: 768px) {
   .nav-links a.nav-link::after { display: none; }
 }
+
+/* ── Modular docs (js/docs.js loads per-version partials into #docs-mount) ── */
+.docs-loading {
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  grid-column: 1 / -1;   /* span the docs-page-layout grid while loading */
+}
+.version-switcher a small {
+  font-size: 0.68em;
+  font-weight: 400;
+  opacity: 0.65;
+  letter-spacing: 0.2px;
+}

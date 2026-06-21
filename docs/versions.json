@@ -1,0 +1,24 @@
+[
+  {
+    "version": "v1.0.0",
+    "label": "v1.0.0",
+    "tag": "Vela · beta",
+    "file": "v1.0.0.html",
+    "default": true,
+    "heroSub": "RPCortex Vela v1.0.0 (beta) &mdash; full reference for the shell, commands, registry, and hardware"
+  },
+  {
+    "version": "v0.9.1",
+    "label": "v0.9.1",
+    "tag": "Pulsar · stable",
+    "file": "v0.9.1.html",
+    "heroSub": "RPCortex Pulsar v0.9.1 &mdash; full reference for the shell, commands, registry, and hardware"
+  },
+  {
+    "version": "v0.8.1",
+    "label": "v0.8.1",
+    "tag": "Nebula",
+    "file": "v0.8.1.html",
+    "heroSub": "RPCortex Nebula v0.8.1 &mdash; full reference for the shell, commands, registry, and hardware"
+  }
+]

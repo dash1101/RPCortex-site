@@ -1,0 +1,745 @@
+<!-- SIDEBAR TOC -->
+    <nav class="docs-toc">
+      <h4>Contents</h4>
+      <a href="#getting-started">Getting Started</a>
+      <a href="#boot-sequence">Boot Sequence</a>
+      <a href="#the-shell">The Shell</a>
+      <a href="#filesystem">Filesystem Commands</a>
+      <a href="#text-commands">Text Processing</a>
+      <a href="#system-commands">System Commands</a>
+      <a href="#automation">Automation &amp; Scripting</a>
+      <a href="#recovery">Recovery &amp; Diagnostics</a>
+      <a href="#os-management">OS Management</a>
+      <a href="#user-management">User Management</a>
+      <a href="#networking">Networking</a>
+      <a href="#package-manager">Package Manager</a>
+      <a href="#web-tools">Web Tools</a>
+      <a href="#editor">Editor</a>
+      <a href="#settings-panel">Settings Panel</a>
+      <a href="#registry">Registry</a>
+      <a href="#post">POST</a>
+      <a href="#session-logging">Session Logging</a>
+      <a href="#hardware-performance">Hardware &amp; Performance</a>
+      <a href="#supported-hardware">Supported Hardware</a>
+      <a href="#security">Security</a>
+      <a href="#known-limitations">Known Limitations</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <article class="docs-article">
+
+      <!-- GETTING STARTED -->
+      <h2 id="getting-started">Getting Started</h2>
+      <p><strong>What you need:</strong></p>
+      <ul>
+        <li>Raspberry Pi Pico, Pico W, Pico 2, or a compatible ESP32 board</li>
+        <li>MicroPython firmware v1.25 or newer (v1.28 recommended)</li>
+        <li>A serial terminal at <strong>115200 baud</strong> &mdash; PuTTY on Windows, minicom or screen on Linux/macOS</li>
+      </ul>
+      <div class="note-box">
+        <strong>Thonny note:</strong> Thonny's built-in REPL works for basic use, but arrow key navigation, history, and the editor all require a proper terminal emulator. Use PuTTY for the full experience.
+      </div>
+
+      <h3>Installation</h3>
+      <ol>
+        <li>Flash MicroPython to your board</li>
+        <li>Copy all files from the repo to the root of the board's filesystem</li>
+        <li>Connect your serial terminal at 115200 baud</li>
+        <li>Reboot &mdash; <code>main.py</code> starts automatically on power-up</li>
+      </ol>
+
+      <h3>First boot</h3>
+      <p>A setup wizard runs on first boot:</p>
+      <ol>
+        <li>You set the <code>root</code> password (the administrator account)</li>
+        <li>You choose whether to enable verbose boot (detailed POST messages on each startup)</li>
+        <li>A <code>guest</code> account is created automatically &mdash; it accepts any password including blank</li>
+      </ol>
+      <p>The official package repo is added automatically. Run <code>pkg update</code> after first boot to fetch the package list.</p>
+      <p>After that, log in and you're at the shell prompt. The wizard only runs once.</p>
+
+      <!-- BOOT SEQUENCE -->
+      <h2 id="boot-sequence">Boot Sequence</h2>
+      <pre><code>main.py
+  └── Core/post.py              POST: hardware checks, registry, WiFi
+       └── Core/initialization.py   reads startup mode, runs login loop
+            └── Core/launchpad.py   launchpad_init -- the interactive shell</code></pre>
+      <p>If initialization fails, <code>recovery_init()</code> starts an unauthenticated shell so you can diagnose the problem. The recovery shell has access to all the same commands.</p>
+
+      <!-- THE SHELL -->
+      <h2 id="the-shell">The Shell</h2>
+      <p>The shell prompt format is:</p>
+      <pre><code>username@pulsar:~&gt;
+username@pulsar:~/docs&gt;
+username@pulsar:/Core&gt;</code></pre>
+      <p><code>~</code> is shorthand for the user's home directory (<code>/Users/&lt;username&gt;/</code>). The shell starts there on login. <code>cd ~</code> and bare <code>cd</code> both return home.</p>
+
+      <h3>Keyboard shortcuts</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Up / Down</td><td>Scroll command history (last 50)</td></tr>
+          <tr><td>Left / Right</td><td>Move cursor within the line</td></tr>
+          <tr><td>Home / Ctrl+A</td><td>Jump to beginning of line</td></tr>
+          <tr><td>End / Ctrl+E</td><td>Jump to end of line</td></tr>
+          <tr><td>Delete</td><td>Delete character under cursor</td></tr>
+          <tr><td>Backspace</td><td>Delete character before cursor</td></tr>
+          <tr><td>Ctrl+C</td><td>Cancel current input</td></tr>
+        </tbody>
+      </table>
+      <p>Characters are inserted at the cursor position &mdash; you can edit anywhere in the line, not just at the end.</p>
+
+      <h3>Command loading</h3>
+      <p>Built-in commands (<code>sys_fs</code>, <code>sys_sys</code>, <code>sys_net</code>, <code>sys_user</code>, <code>wifi</code>, <code>settings</code>) are loaded via <code>__import__()</code> and live in <code>sys.modules</code> permanently. After a cache clear they reload for free &mdash; no re-reading or recompiling. Package-installed commands use a separate exec-based path.</p>
+
+      <h3>Critical commands</h3>
+      <p><code>reboot</code>, <code>sreboot</code>, <code>freeup</code>, <code>gc</code>, <code>alias</code>, <code>unalias</code>, and <code>rawrepl</code> are implemented as inline functions that bypass the loader entirely. They always work regardless of heap state.</p>
+      <h3>Aliases</h3>
+      <p>Aliases let you define shorthand for any command. They <strong>persist across reboots</strong> &mdash; saved to <code>/Pulsar/Registry/aliases.cfg</code> and reloaded at shell start. Critical built-ins can't be shadowed.</p>
+      <pre><code>alias ll=ls
+alias cls=clear
+alias              # list all aliases
+unalias ll</code></pre>
+
+      <h3>Multi-command lines</h3>
+      <p>Multiple commands can be run on a single line separated by <code>;</code>. Commands execute left-to-right; if the shell exits (<code>logout</code>) mid-line the remaining commands are skipped.</p>
+      <pre><code>mkdir /data; cd /data; touch notes.txt
+ls; pwd; whoami</code></pre>
+      <p>Single and double quotes protect <code>;</code> inside arguments (e.g., <code>echo "a;b"</code> prints <code>a;b</code>, not two commands).</p>
+
+      <h3>Pipes and conditional chaining <span style="font-size:0.7em;color:var(--cyan);">(v0.9.1)</span></h3>
+      <p>Commands can be piped together with <code>|</code> &mdash; the left command's output becomes the right command's input. The consumers <code>grep</code>, <code>wc</code>, <code>sort</code>, <code>uniq</code>, <code>cat</code>, <code>head</code>, and <code>tail</code> read piped input when given no file argument.</p>
+      <pre><code>cat /Pulsar/Logs/latest.log | grep ERROR | wc
+ls /Core | sort | head 5</code></pre>
+      <p>Commands can also be chained on exit status: <code>&amp;&amp;</code> runs the next command only if the previous one succeeded, <code>||</code> only if it failed. A command "fails" if it reported an error.</p>
+      <pre><code>wifi connect && pkg update          # update only if WiFi connected
+ping novalabs.app || echo offline</code></pre>
+
+      <h3>Heap management</h3>
+      <p>The RP2040 has 264 KB of RAM. After loading several commands or running HTTPS requests, the heap may become fragmented &mdash; <code>gc.mem_free()</code> can show 90 KB free while a <code>MemoryError</code> still occurs, because no single contiguous block is large enough for a new allocation. Run <code>freeup</code> to compact the heap. The shell also automatically retries after a cache clear on <code>MemoryError</code>.</p>
+
+      <!-- FILESYSTEM COMMANDS -->
+      <h2 id="filesystem">Filesystem Commands</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>ls [path]</td><td>List directory &mdash; type, size, modification time, name</td></tr>
+          <tr><td>cd &lt;path&gt;</td><td>Change directory. <code>cd</code>, <code>cd ~</code>, and <code>cd ~/sub</code> all work</td></tr>
+          <tr><td>pwd</td><td>Print working directory</td></tr>
+          <tr><td>mkdir &lt;path&gt;</td><td>Create directory</td></tr>
+          <tr><td>rm &lt;path&gt;</td><td>Remove file or directory (recursive for directories)</td></tr>
+          <tr><td>touch &lt;file&gt;</td><td>Create an empty file</td></tr>
+          <tr><td>read / cat &lt;file&gt;...</td><td>Print file contents; accepts multiple files (header per file)</td></tr>
+          <tr><td>head &lt;file&gt; [n]</td><td>First n lines (default 10)</td></tr>
+          <tr><td>tail &lt;file&gt; [n]</td><td>Last n lines (default 10)</td></tr>
+          <tr><td>mv &lt;src&gt; &lt;dst&gt;</td><td>Move or rename (relative or absolute; instant same-FS rename, streamed across FS)</td></tr>
+          <tr><td>cp &lt;src&gt; &lt;dst&gt;</td><td>Copy file (relative or absolute; streamed in 1&nbsp;KB chunks &mdash; large-file safe)</td></tr>
+          <tr><td>rename &lt;old&gt; &lt;new&gt;</td><td>Rename in place (relative or absolute)</td></tr>
+          <tr><td>df</td><td>Flash usage: total, used, free</td></tr>
+          <tr><td>du [path]</td><td>Total size of a file or directory tree (recursive)</td></tr>
+          <tr><td>tree [path]</td><td>Recursive directory listing</td></tr>
+          <tr><td>exec &lt;file&gt;</td><td>Run a Python file directly</td></tr>
+        </tbody>
+      </table>
+
+      <!-- TEXT PROCESSING COMMANDS -->
+      <h2 id="text-commands">Text Processing Commands</h2>
+      <p>Line-by-line text utilities tuned for low RAM usage. All I/O is streamed where possible &mdash; files are not loaded in full unless the command requires it (<code>sort</code> being the exception).</p>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>grep &lt;pattern&gt; &lt;file&gt;</td><td>Search file for pattern (substring); shows line numbers in gray and a match count</td></tr>
+          <tr><td>wc &lt;file&gt;</td><td>Count lines, words, and bytes</td></tr>
+          <tr><td>find [dir] [pattern]</td><td>Recursive file search by name substring; max depth 8; omit pattern to list all files</td></tr>
+          <tr><td>sort &lt;file&gt;</td><td>Print lines sorted alphabetically; warns if the file is larger than 8 KB before loading</td></tr>
+          <tr><td>uniq &lt;file&gt;</td><td>Filter consecutive duplicate lines (pair with <code>sort</code> for full dedup)</td></tr>
+          <tr><td>hex &lt;file&gt; [n]</td><td>Hexdump first n bytes (default 256) &mdash; address, hex, and ASCII columns</td></tr>
+          <tr><td>basename &lt;path&gt;</td><td>File name portion of a path</td></tr>
+          <tr><td>dirname &lt;path&gt;</td><td>Directory portion of a path</td></tr>
+        </tbody>
+      </table>
+      <pre><code>grep error /Pulsar/Logs/session.log
+wc /Users/root/notes.txt
+find /Core .py
+sort /Users/root/list.txt | uniq
+hex /Core/launchpad.py 64
+basename /Core/Launchpad/sys_sys.py
+dirname /Core/Launchpad/sys_sys.py</code></pre>
+
+      <!-- SYSTEM COMMANDS -->
+      <h2 id="system-commands">System Commands</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>sysinfo</td><td>OS version, user, CPU, RAM, flash summary</td></tr>
+          <tr><td>meminfo</td><td>Detailed RAM breakdown</td></tr>
+          <tr><td>uptime</td><td>Time since last boot</td></tr>
+          <tr><td>date</td><td>Current date/time from RTC</td></tr>
+          <tr><td>date set &lt;Y-M-D [H:M:S]&gt;</td><td>Set the hardware RTC (so log timestamps are correct)</td></tr>
+          <tr><td>watch [-n &lt;secs&gt;] &lt;cmd&gt;</td><td>Re-run a command periodically (default 2&nbsp;s) until Ctrl+C</td></tr>
+          <tr><td>ver</td><td>OS version string</td></tr>
+          <tr><td>clear / cls</td><td>Clear the terminal</td></tr>
+          <tr><td>fetch / neofetch</td><td>System info display with ASCII logo</td></tr>
+          <tr><td>reboot</td><td>Hard reset</td></tr>
+          <tr><td>sreboot / softreset</td><td>Soft reset (faster, keeps filesystem)</td></tr>
+          <tr><td>freeup / gc</td><td>Clear command cache, run GC, report RAM freed</td></tr>
+          <tr><td>sleep &lt;secs&gt;</td><td>Pause the shell for the given number of seconds (e.g. <code>sleep 2.5</code>)</td></tr>
+          <tr><td>which &lt;cmd&gt;</td><td>Show where a command is defined: built-in, .lp registry path, or alias</td></tr>
+          <tr><td>rawrepl</td><td>Exit the OS and return to MicroPython REPL &mdash; use to re-flash via Web Installer</td></tr>
+          <tr><td>alias [name=cmd]</td><td>Define or list aliases &mdash; persisted to <code>aliases.cfg</code>, survive reboots</td></tr>
+          <tr><td>unalias &lt;name&gt;</td><td>Remove an alias (and update the persisted file)</td></tr>
+          <tr><td>echo &lt;text&gt;</td><td>Print text</td></tr>
+          <tr><td>history</td><td>Show command history</td></tr>
+          <tr><td>env [section]</td><td>Dump registry contents</td></tr>
+          <tr><td>reg get &lt;key&gt;</td><td>Read a registry key</td></tr>
+          <tr><td>reg set &lt;key&gt; &lt;val&gt;</td><td>Write a registry key</td></tr>
+          <tr><td>settings</td><td>Open the settings panel</td></tr>
+          <tr><td>edit [file]</td><td>Open the built-in editor</td></tr>
+          <tr><td>bench</td><td>Run the RPCMark benchmark</td></tr>
+        </tbody>
+      </table>
+
+      <h3>pulse subcommands</h3>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>pulse status</td><td>Show clock info (current freq, boot OC state)</td></tr>
+          <tr><td>pulse set &lt;MHz&gt;</td><td>Set CPU frequency for this session (e.g. <code>pulse set 220</code>)</td></tr>
+          <tr><td>pulse min &lt;MHz&gt;</td><td>Save minimum clock value (e.g. <code>pulse min 30</code>)</td></tr>
+          <tr><td>pulse max &lt;MHz&gt;</td><td>Save maximum clock value (e.g. <code>pulse max 220</code>)</td></tr>
+          <tr><td>pulse boot &lt;MHz&gt;</td><td>Set boot clock and enable OC on boot (e.g. <code>pulse boot 200</code>)</td></tr>
+          <tr><td>pulse boot on|off</td><td>Enable or disable boot overclock</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        <strong>Overclock note:</strong> POST calibration stores 220 MHz as the safe max for RP2040/RP2350. You can set any value manually with <code>pulse set &lt;MHz&gt;</code> &mdash; a warning is shown above 220 MHz, but the clock is set regardless. Stability beyond 220 MHz is not guaranteed.
+      </div>
+
+      <!-- AUTOMATION & SCRIPTING -->
+      <h2 id="automation">Automation &amp; Scripting <span style="font-size:0.6em;color:var(--cyan);">v0.9.1</span></h2>
+      <p>RPCortex can run on its own. Combine these with pipes and <code>&amp;&amp;</code> / <code>||</code> chaining to build real device behaviour without a host computer.</p>
+
+      <h3>Startup tasks</h3>
+      <p>Commands listed in <code>/Pulsar/Registry/startup.cfg</code> run once automatically after login, before the prompt opens.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>startup</td><td>List configured startup tasks</td></tr>
+          <tr><td>startup add &lt;command&gt;</td><td>Append a command (e.g. <code>startup add wifi connect</code>)</td></tr>
+          <tr><td>startup remove &lt;n&gt;</td><td>Remove task number n</td></tr>
+          <tr><td>startup clear</td><td>Remove all startup tasks</td></tr>
+          <tr><td>startup run</td><td>Run the tasks now, without rebooting</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Scheduled tasks</h3>
+      <p>Run commands on a repeating interval (timed by software uptime &mdash; no battery RTC needed). Stored in <code>/Pulsar/Registry/tasks.cfg</code>.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>task</td><td>List scheduled tasks</td></tr>
+          <tr><td>task add &lt;secs&gt; &lt;command&gt;</td><td>Run <code>&lt;command&gt;</code> every <code>&lt;secs&gt;</code> seconds</td></tr>
+          <tr><td>task remove &lt;n&gt;</td><td>Remove task number n</td></tr>
+          <tr><td>task clear</td><td>Remove all scheduled tasks</td></tr>
+          <tr><td>task run</td><td>Start the scheduler loop (press <code>q</code> / Ctrl+C to stop)</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        <strong>Headless autonomy:</strong> <code>startup add task run</code> makes the device boot straight into the scheduler &mdash; an unattended controller with no terminal needed. (Concurrent background tasks <em>alongside</em> an interactive prompt arrive with uasyncio in v1.0; the shell's input read is blocking by design.)
+      </div>
+
+      <h3>Scripts (<code>.rps</code>)</h3>
+      <p>Run a script with <code>script &lt;file.rps&gt;</code>. Scripts run through the live shell, so every command (and pipes / chaining) is available. Variables are untyped text; <code>$NAME</code> expands anywhere on a line.</p>
+      <table>
+        <thead><tr><th>Statement</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code># comment</code></td><td>Comment line (ignored)</td></tr>
+          <tr><td><code>set NAME VALUE</code></td><td>Define a variable; <code>$NAME</code> expands it anywhere</td></tr>
+          <tr><td><code>inc NAME [n]</code> / <code>dec NAME [n]</code></td><td>Add / subtract <code>n</code> (default 1) on a numeric variable</td></tr>
+          <tr><td><code>prompt NAME [text]</code></td><td>Read a line of input from the user into <code>NAME</code></td></tr>
+          <tr><td><code>capture NAME &lt;command&gt;</code></td><td>Run a command and store its output in <code>NAME</code></td></tr>
+          <tr><td><code>if COND … else … end</code></td><td>Conditional block (<code>else</code> optional)</td></tr>
+          <tr><td><code>while COND … end</code></td><td>Loop while COND is true</td></tr>
+          <tr><td><code>break</code> / <code>continue</code></td><td>Exit / skip the current <code>while</code> iteration</td></tr>
+          <tr><td><code>stop</code></td><td>End the script early</td></tr>
+          <tr><td><code>&lt;any command&gt;</code></td><td>Run a shell command (pipes, <code>&amp;&amp;</code>, <code>||</code> all work)</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Conditions.</strong> A <code>COND</code> is a builtin test, or any shell command (true when it exits without error):</p>
+      <table>
+        <thead><tr><th>Test</th><th>True when</th></tr></thead>
+        <tbody>
+          <tr><td><code>eq A B</code> / <code>ne A B</code></td><td>A equals / does not equal B</td></tr>
+          <tr><td><code>gt A B</code> / <code>lt A B</code></td><td>A &gt; B / A &lt; B (numeric when both look like numbers, else text)</td></tr>
+          <tr><td><code>ge A B</code> / <code>le A B</code></td><td>A &ge; B / A &le; B</td></tr>
+          <tr><td><code>contains A B</code></td><td>B is a substring of A</td></tr>
+          <tr><td><code>exists PATH</code></td><td>The file or directory exists</td></tr>
+          <tr><td><code>empty A</code></td><td>A is empty</td></tr>
+          <tr><td><code>not COND</code></td><td>Negates any of the above (or a command)</td></tr>
+        </tbody>
+      </table>
+      <p>A counted loop, using <code>inc</code> and a numeric test:</p>
+      <pre><code># countdown.rps
+set i 5
+while gt $i 0
+  echo $i...
+  dec i
+  sleep 1
+end
+echo liftoff!</code></pre>
+      <p>Command output capture and interactive input:</p>
+      <pre><code># greet.rps
+prompt name What is your name?
+capture me whoami
+echo Hello $name, you are logged in as $me.</code></pre>
+      <p>A GPIO blink loop that stops when a flag file is removed:</p>
+      <pre><code># blink.rps
+set pin 25
+while exists /run.flag
+  gpio set $pin high
+  sleep 0.5
+  gpio set $pin low
+  sleep 0.5
+end</code></pre>
+
+      <!-- RECOVERY & DIAGNOSTICS -->
+      <h2 id="recovery">Recovery &amp; Diagnostics <span style="font-size:0.6em;color:var(--cyan);">v0.9.1</span></h2>
+      <p>Diagnostic and repair tools, available from the normal shell or recovery mode. They're registered through their own <code>recovery.lp</code>, so they still load even if the main command registry is damaged.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>fscheck</td><td>Verify core OS files exist and are non-empty</td></tr>
+          <tr><td>diag</td><td>Health snapshot: free RAM, free flash, registry, version</td></tr>
+          <tr><td>logdump [n]</td><td>Print the session log (last n lines if given)</td></tr>
+          <tr><td>regreset</td><td>Delete <code>registry.cfg</code> so POST rebuilds defaults &mdash; keeps user accounts and saved WiFi</td></tr>
+          <tr><td>pkgdisable &lt;name&gt;</td><td>Disable a package without removing it</td></tr>
+          <tr><td>pkgenable &lt;name&gt;</td><td>Re-enable a disabled package</td></tr>
+          <tr><td>recovery</td><td>Enter recovery mode (limited shell, no auth)</td></tr>
+        </tbody>
+      </table>
+
+      <!-- OS MANAGEMENT -->
+      <h2 id="os-management">OS Management</h2>
+      <p>These commands manage the OS itself &mdash; over-the-air updates, file-based updates, factory reset, and full reinstall.</p>
+
+      <h3>update check / update online</h3>
+      <p>Over-the-air updates over WiFi. <code>update check</code> fetches the release manifest and tells you whether a newer version exists; <code>update online</code> downloads and installs it, then reboots:</p>
+      <pre><code>update check                   # is there a newer release?
+update online                  # download + install the latest, then reboot
+update online --force          # reinstall even if already up to date</code></pre>
+      <ul>
+        <li>Requires a WiFi connection (<code>wifi connect</code> first)</li>
+        <li>Preserves all user data &mdash; accounts, WiFi, settings, and installed packages</li>
+        <li>The running version and codename are re-synced from the new code on the next boot, so they can never drift</li>
+      </ul>
+
+      <h3>update from-file</h3>
+      <p>Extracts a <code>.rpc</code> release archive to the running OS:</p>
+      <pre><code>update from-file /path/to/os.rpc</code></pre>
+      <ul>
+        <li>Preserves <code>/Users/</code>, <code>/Pulsar/</code> (accounts, WiFi credentials, package config)</li>
+        <li>Sets a crash sentinel before writing files &mdash; if the device loses power mid-update, the sentinel is detected on the next boot</li>
+        <li>Reboots automatically on success; shows "Now running RPCortex vX.Y.Z" at next login</li>
+      </ul>
+      <div class="note-box">
+        <strong>Browser update:</strong> You can also update from the browser at <a href="https://rpc.novalabs.app/update" target="_blank">rpc.novalabs.app/update</a> &mdash; no WiFi required on the device. The page transfers the archive over the serial connection.
+      </div>
+
+      <h3>factoryreset</h3>
+      <p>Soft reset &mdash; restores the OS to a clean first-run state while keeping core files intact:</p>
+      <pre><code>factoryreset</code></pre>
+      <ul>
+        <li>Restores registry defaults</li>
+        <li>Wipes all user accounts and home directories</li>
+        <li>Removes non-builtin packages</li>
+        <li>Clears logs</li>
+        <li>Prompts <code>CONFIRM</code> before proceeding</li>
+        <li>Reboots into the first-run setup wizard</li>
+      </ul>
+
+      <h3>reinstall</h3>
+      <p>Full OS wipe &mdash; deletes everything and writes a self-contained reinstall stub:</p>
+      <pre><code>reinstall                      # wipe and show Web Installer instructions
+reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</code></pre>
+      <ul>
+        <li>Deletes <code>/Core/</code>, <code>/Packages/</code>, <code>/Pulsar/</code>, <code>/Users/</code></li>
+        <li>Writes a minimal stub as <code>/main.py</code> that extracts <code>/update.rpc</code> on the next boot</li>
+        <li>Prompts <code>WIPE</code> before proceeding</li>
+        <li>If a <code>.rpc</code> path is given, it is staged as <code>/update.rpc</code> and extracted automatically on the next boot</li>
+      </ul>
+
+      <h3>rawrepl</h3>
+      <p>Cleanly exit the OS and return to the MicroPython <code>&gt;&gt;&gt;</code> REPL without rebooting:</p>
+      <pre><code>rawrepl</code></pre>
+      <p>Use this when RPCortex is already installed but you want a <strong>completely fresh flash</strong> via the Web Installer &mdash; no full wipe required. After running <code>rawrepl</code>:</p>
+      <ol>
+        <li>The shell exits and the MicroPython REPL becomes active (<code>&gt;&gt;&gt;</code> prompt visible in your terminal).</li>
+        <li>Open <a href="install">rpc.novalabs.app/install</a> in Chrome or Edge.</li>
+        <li>Click <strong>Connect Device</strong> and flash normally.</li>
+      </ol>
+      <div class="note-box">
+        <strong>How it works:</strong> <code>rawrepl</code> raises <code>SystemExit(0)</code> — a <code>BaseException</code>, not caught by any <code>except Exception</code> block. It propagates through all OS layers (<code>launchpad.py</code>, <code>initialization.py</code>, <code>main.py</code>) and MicroPython drops to the REPL after <code>main.py</code> returns.
+      </div>
+
+      <h3>OS update workflow overview</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th>Command / Tool</th></tr></thead>
+        <tbody>
+          <tr><td>Update OS, keep all user data</td><td><code>update from-file /path/to/os.rpc</code> or <a href="update">browser update page</a></td></tr>
+          <tr><td>Reset to clean factory state</td><td><code>factoryreset</code></td></tr>
+          <tr><td>Use Web Installer without rebooting</td><td><code>rawrepl</code></td></tr>
+          <tr><td>Full wipe + re-flash</td><td><code>reinstall</code> or <code>rawrepl</code> + Web Installer</td></tr>
+        </tbody>
+      </table>
+
+      <!-- USER MANAGEMENT -->
+      <h2 id="user-management">User Management</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>whoami</td><td>Current logged-in user</td></tr>
+          <tr><td>users</td><td>List all accounts with <code>active</code> / <code>admin</code> / <code>nopass</code> tags</td></tr>
+          <tr><td>mkacct [name] [--nopass] [--admin]</td><td>Create a new account (optionally a no-password or admin account)</td></tr>
+          <tr><td>usermod &lt;user&gt; passwd|rename|admin|nopass</td><td>Change a password, rename, or toggle admin / no-password — all in one command</td></tr>
+          <tr><td>rmuser &lt;user&gt;</td><td>Delete an account (<code>root</code> and <code>guest</code> are protected). Non-root users must verify the target's password first.</td></tr>
+          <tr><td>logout / exit</td><td>End session, return to login</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Account details</h3>
+      <ul>
+        <li>Profiles stored in <code>/Pulsar/Registry/user.cfg</code> as CSV</li>
+        <li>Each account gets <code>/Users/&lt;username&gt;/</code> created on account creation</li>
+        <li>Passwords stored as <strong>salted SHA256</strong> &mdash; unique salt per account</li>
+        <li><code>guest</code> uses the <code>NOPASS</code> marker &mdash; any password, including blank, is accepted</li>
+        <li><code>root</code> is created during first-run setup and is the administrator account</li>
+      </ul>
+
+      <!-- NETWORKING -->
+      <h2 id="networking">Networking</h2>
+      <p>WiFi works on any board with a <code>network</code> module: Pico W, Pico 2 W, and most ESP32 variants.</p>
+
+      <h3>WiFi commands</h3>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>wifi status</td><td>Connection state, SSID, IP</td></tr>
+          <tr><td>wifi scan</td><td>Nearby networks with signal strength</td></tr>
+          <tr><td>wifi connect [ssid]</td><td>Connect (prompts for password; uses saved if available)</td></tr>
+          <tr><td>wifi disconnect</td><td>Drop the current connection</td></tr>
+          <tr><td>wifi list</td><td>Saved networks</td></tr>
+          <tr><td>wifi add &lt;ssid&gt;</td><td>Save a network</td></tr>
+          <tr><td>wifi forget &lt;ssid&gt;</td><td>Remove a saved network</td></tr>
+        </tbody>
+      </table>
+      <p>Any number of networks can be saved (stored in <code>networks.cfg</code>). Enable autoconnect on boot:</p>
+      <pre><code>reg set Settings.Network_Autoconnect true</code></pre>
+      <p>Or toggle it in <code>settings</code>.</p>
+
+      <h3>Download commands</h3>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>wget &lt;url&gt; [file]</td><td>Download to flash &mdash; streams directly, with a progress bar <span style="color:var(--cyan);">(v0.9.1)</span></td></tr>
+          <tr><td>curl &lt;url&gt; [flags]</td><td>Fetch a URL (see flags below)</td></tr>
+          <tr><td>runurl &lt;url&gt; [--keep]</td><td>Fetch and execute a Python file; deletes after unless <code>--keep</code></td></tr>
+          <tr><td>ping &lt;host&gt; [n]</td><td>TCP connectivity test</td></tr>
+          <tr><td>nslookup &lt;host&gt;</td><td>DNS lookup</td></tr>
+        </tbody>
+      </table>
+      <p><strong><code>curl</code> flags <span style="color:var(--cyan);">(v0.9.1)</span>:</strong> <code>-v</code> verbose, <code>-s</code> silent, <code>-I</code> headers only, <code>-X &lt;method&gt;</code>, <code>-d &lt;data&gt;</code> (sends a body; implies POST), <code>-H '&lt;header&gt;'</code>, <code>-o &lt;file&gt;</code> (save to file), <code>--timeout &lt;secs&gt;</code>. Quotes group flag values: <code>curl api.x/v1 -X POST -H 'Authorization: Bearer t' -d '{"q":1}'</code>.</p>
+      <p>Both HTTP and HTTPS are supported. The client follows redirects iteratively (for GET) with a configurable socket timeout (default 15&nbsp;s).</p>
+      <div class="warn-box">
+        <strong>HTTPS on Pico 1 W:</strong> TLS needs ~9.5 KB contiguous heap. Run <code>freeup</code> before network-heavy work, or use HTTPS from a fresh boot. If your host uses Cloudflare's "Always Use HTTPS" redirect, HTTP requests will be 301'd and may hit this limit. Use <code>https://</code> URLs directly or disable that Cloudflare setting for your repo host.
+      </div>
+
+      <!-- PACKAGE MANAGER -->
+      <h2 id="package-manager">Package Manager</h2>
+      <p>Packages are <code>.pkg</code> files: standard ZIP archives with a <code>package.cfg</code> metadata file inside.</p>
+
+      <h3>Package metadata (<code>package.cfg</code>)</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>pkg.name</td><td>Display name</td></tr>
+          <tr><td>pkg.dev</td><td>Author</td></tr>
+          <tr><td>pkg.ver</td><td>Version string</td></tr>
+          <tr><td>pkg.dir</td><td>Install path (e.g. <code>/Packages/HelloWorld</code>)</td></tr>
+          <tr><td>pkg.desc</td><td>Short description</td></tr>
+          <tr><td>pkg.cmd</td><td>Shell command: <code>name:/path/handler.py:function</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Commands</h3>
+      <table>
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>pkg available</td><td>List all packages in the repo cache</td></tr>
+          <tr><td>pkg search &lt;query&gt;</td><td>Search cache by name or description</td></tr>
+          <tr><td>pkg install &lt;name&gt;</td><td>Install from repo cache</td></tr>
+          <tr><td>pkg install &lt;file.pkg&gt;</td><td>Install a local archive</td></tr>
+          <tr><td>pkg remove &lt;name&gt;</td><td>Uninstall</td></tr>
+          <tr><td>pkg list</td><td>Installed packages</td></tr>
+          <tr><td>pkg info &lt;name&gt;</td><td>Details for an installed package</td></tr>
+          <tr><td>pkg update</td><td>Refresh repo indexes from the network</td></tr>
+          <tr><td>pkg upgrade</td><td>Upgrade installed packages that have newer versions in cache</td></tr>
+          <tr><td>pkg repo list</td><td>Configured repo URLs</td></tr>
+          <tr><td>pkg repo add &lt;url&gt;</td><td>Add a repo</td></tr>
+          <tr><td>pkg repo remove &lt;url&gt;</td><td>Remove a repo</td></tr>
+        </tbody>
+      </table>
+      <p>Commands installed by packages are available immediately after install. They vanish immediately after removal. No reboot required either way.</p>
+
+      <h3>Quick start</h3>
+      <pre><code>pkg repo add https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json
+pkg update
+pkg available
+pkg install HelloWorld</code></pre>
+
+      <h3>Repo index format</h3>
+      <p>Repos are JSON files hosted anywhere (GitHub raw URLs work):</p>
+      <pre><code>{
+  "name": "My Repo",
+  "packages": [
+    {
+      "name": "HelloWorld",
+      "ver": "1.0.0",
+      "author": "dash1101",
+      "desc": "Sample package",
+      "url": "https://..."
+    }
+  ]
+}</code></pre>
+
+      <h3>Building packages</h3>
+      <p><code>repo/make_pkg.py</code> is a PC-side script that builds a <code>.pkg</code> from a source directory:</p>
+      <pre><code>python make_pkg.py MyPackage/</code></pre>
+      <p>Packages must use <code>ZIP_STORED</code> (no compression) &mdash; <code>make_pkg.py</code> handles this automatically. If you build with a standard ZIP tool using deflate, install will fail unless the target firmware has <code>zlib</code>.</p>
+      <p><a href="PackageDev">Full package development guide &rarr;</a></p>
+
+      <!-- WEB TOOLS -->
+      <h2 id="web-tools">Web Tools</h2>
+      <p>Three browser-based tools let you interact with a connected device over USB &mdash; no WiFi, no raw REPL required. All use the Web Serial API (Chromium-based browsers: Chrome, Edge).</p>
+
+      <h3><a href="install">Web Installer</a></h3>
+      <p>Flash MicroPython and copy RPCortex to the board directly from your browser. No software to install.</p>
+
+      <h3><a href="packages">Package Browser</a></h3>
+      <p>Browse and install packages while the device is running the shell. Files are pushed via the <code>_xfer</code> serial protocol. One-click install, no reboot needed, no WiFi required on the device. Each package card also has a <strong>Download .pkg</strong> button to save the package file to your computer.</p>
+
+      <h3><a href="update">OS Update</a></h3>
+      <p>Update RPCortex from a browser tab while the shell is running. Load a <code>.rpc</code> archive from your computer or pick a version from the server. The page reads the archive with JSZip, skips user data paths, pushes each file via <code>_xfer</code>, and sends <code>reboot</code> when done.</p>
+
+      <!-- EDITOR -->
+      <h2 id="editor">Editor</h2>
+      <p>The built-in terminal editor is invoked with:</p>
+      <pre><code>edit myfile.py
+nano /Core/somefile.py
+vi                         # scratch buffer, no file</code></pre>
+
+      <h3>Controls</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Arrow keys</td><td>Move cursor</td></tr>
+          <tr><td>Ctrl+S</td><td>Save</td></tr>
+          <tr><td>Ctrl+Q</td><td>Quit</td></tr>
+          <tr><td>Ctrl+X</td><td>Save and quit</td></tr>
+          <tr><td>Ctrl+K</td><td>Cut line</td></tr>
+          <tr><td>Ctrl+U</td><td>Paste line</td></tr>
+          <tr><td>Ctrl+F</td><td>Find</td></tr>
+          <tr><td>Ctrl+G</td><td>Go to line number</td></tr>
+        </tbody>
+      </table>
+      <div class="warn-box">Requires a real terminal emulator. Thonny's REPL doesn't render ANSI escape sequences correctly.</div>
+
+      <!-- SETTINGS PANEL -->
+      <h2 id="settings-panel">Settings Panel</h2>
+      <p>Run <code>settings</code> to open an interactive panel. As of v0.9.1 it uses the SysMon-style borderless layout and redraws efficiently &mdash; toggling a setting repaints only that row, not the whole screen:</p>
+      <pre><code>  RPCortex Settings                      125 MHz  27.4C  92 KB
+══════════════════════════════════════════════════════════════
+
+══ SYSTEM ════════════════════════════════════════════════════
+  [1] Verbose Boot         : OFF
+  [2] Program Execution    : ON
+
+══ HARDWARE ══════════════════════════════════════════════════
+  [3] Boot Overclock       : OFF
+  [4] Beeper               : OFF
+  [5] SD Card Support      : OFF
+
+══ NETWORK ═══════════════════════════════════════════════════
+  [6] WiFi Autoconnect     : ON
+
+══ PERSONALIZATION ═══════════════════════════════════════════
+  [o] Owner                : Dash
+  [t] Timezone Offset      : -5       hrs from UTC
+  [d] Device ID            : pulsar   hostname
+  [i] Idle Logout          : 0        minutes (0 = off)
+
+══════════════════════════════════════════════════════════════
+  [1-6] toggle   [o/t/d/i] edit   [r] refresh   [q] quit</code></pre>
+      <p><code>[1&ndash;6]</code> toggle a setting. <code>[o/t/d/i]</code> edit a personalization value (no more <code>reg set</code> needed). <code>[r]</code> refreshes the title-bar stats. <code>[q]</code> exits.</p>
+
+      <h3>Settings reference</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Setting</th><th>Registry key</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Verbose Boot</td><td><code>Settings.Verbose_Boot</code></td></tr>
+          <tr><td>2</td><td>Program Execution</td><td><code>Features.Program_Execution</code></td></tr>
+          <tr><td>3</td><td>Boot Overclock</td><td><code>Settings.OC_On_Boot</code></td></tr>
+          <tr><td>4</td><td>Beeper</td><td><code>Features.beeper</code></td></tr>
+          <tr><td>5</td><td>SD Card Support</td><td><code>Features.SD_Support</code></td></tr>
+          <tr><td>6</td><td>WiFi Autoconnect</td><td><code>Settings.Network_Autoconnect</code></td></tr>
+          <tr><td>o</td><td>Owner</td><td><code>System.Owner</code></td></tr>
+          <tr><td>t</td><td>Timezone Offset</td><td><code>System.TZ_Offset</code></td></tr>
+          <tr><td>d</td><td>Device ID</td><td><code>System.Device_ID</code></td></tr>
+          <tr><td>i</td><td>Idle Logout (minutes; 0 = off)</td><td><code>Settings.Idle_Logout</code></td></tr>
+        </tbody>
+      </table>
+
+      <!-- REGISTRY -->
+      <h2 id="registry">Registry</h2>
+      <p>The registry lives at <code>/Pulsar/Registry/registry.cfg</code> as a plain INI file. It's created from an embedded template on first boot if missing.</p>
+
+      <h3>[System]</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Values</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Codename</td><td>string</td><td>Release codename (e.g. <code>RPCortex B9 - Pulsar</code>); re-synced from the running code every boot</td></tr>
+          <tr><td>Device_ID</td><td>string</td><td>Hostname shown in the shell prompt (<code>user@&lt;Device_ID&gt;</code>). Change it: <code>reg set System.Device_ID mypico</code></td></tr>
+          <tr><td>Owner <span style="color:var(--cyan);">(v0.9.1)</span></td><td>string</td><td>Device owner name, shown in <code>sysinfo</code>; prompted at first-run setup. <code>reg set System.Owner Dash</code></td></tr>
+          <tr><td>TZ_Offset <span style="color:var(--cyan);">(v0.9.1)</span></td><td>integer</td><td>Timezone offset in whole hours (e.g. <code>-5</code>), applied to <code>date</code> output. Default 0 (UTC).</td></tr>
+        </tbody>
+      </table>
+
+      <h3>[Settings]</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Values</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Setup</td><td>true/false</td><td>First-run wizard completed</td></tr>
+          <tr><td>OC_On_Boot</td><td>true/false</td><td>Apply max clock on every boot</td></tr>
+          <tr><td>Verbose_Boot</td><td>true/false</td><td>Show POST info messages</td></tr>
+          <tr><td>Network_Autoconnect</td><td>true/false</td><td>WiFi autoconnect on boot</td></tr>
+          <tr><td>Idle_Logout <span style="color:var(--cyan);">(v0.9.1)</span></td><td>integer</td><td>Auto-logout after this many minutes of shell inactivity. <code>0</code> (default) disables it; read live, so it applies without re-login.</td></tr>
+          <tr><td>Active_User</td><td>string</td><td>Current session user</td></tr>
+          <tr><td>Startup</td><td>0 / 1 / 3 / 6 / 7</td><td>Boot state sentinel. 0 = clean, 1 = session active, 3 = update crashed, 6 = clock calibration crashed, 7 = boot clock crashed</td></tr>
+          <tr><td>Version</td><td>string</td><td>OS version; re-synced from the running code every boot (can't drift after an update)</td></tr>
+          <tr><td>Note</td><td>string</td><td>One-shot post-action notification. Set to <code>"update_ok"</code> after a successful update; displayed at next login then cleared.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>[Hardware]</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Clockable</td><td><code>true</code> after clock calibration completes</td></tr>
+          <tr><td>Min_Clock</td><td>Minimum safe CPU clock (e.g. <code>30.0MHz</code>)</td></tr>
+          <tr><td>Max_Clock</td><td>Maximum safe CPU clock (e.g. <code>220.0MHz</code>)</td></tr>
+          <tr><td>Boot_Clock</td><td>Specific boot clock override (blank = use Max_Clock)</td></tr>
+          <tr><td>beeper_pin</td><td>GPIO pin for beeper, or <code>None</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>[Networks]</h3>
+      <p>Saved WiFi networks are stored separately in <code>/Pulsar/Registry/networks.cfg</code> (tab-separated SSID/password, unlimited entries) &mdash; not in the registry. <code>wifi connect</code> saves automatically and reuses saved passwords.</p>
+
+      <h3>[Features]</h3>
+      <table>
+        <thead><tr><th>Key</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Program_Execution</td><td>true</td><td>Allow running scripts with <code>exec</code></td></tr>
+          <tr><td>Serial</td><td>true</td><td>Serial interface active</td></tr>
+          <tr><td>SD_Support</td><td>false</td><td>SD card (not yet implemented)</td></tr>
+          <tr><td>Nova</td><td>false</td><td>Nova GUI (future)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Shell access</h3>
+      <pre><code>reg get Settings.OC_On_Boot        # read a key
+reg set Settings.OC_On_Boot true   # write a key
+env                                 # dump all sections
+env Settings                        # dump one section</code></pre>
+
+      <!-- POST -->
+      <h2 id="post">POST</h2>
+      <p>POST runs on every boot before the login prompt. It prints status for each check and stops if a critical check fails.</p>
+      <table>
+        <thead><tr><th>Check</th><th>Critical</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Registry</td><td>Yes</td><td>Creates registry from template if missing</td></tr>
+          <tr><td>CPU arithmetic</td><td>Yes</td><td>Float, int, comparison, bitwise</td></tr>
+          <tr><td>RAM</td><td>Yes</td><td>Allocates a buffer and verifies a write pattern</td></tr>
+          <tr><td>Clock calibration</td><td>No</td><td>Runs once; RP2 gets 220 MHz max without probing</td></tr>
+          <tr><td>WLAN</td><td>No</td><td>Checks for WiFi hardware; autoconnects if configured</td></tr>
+          <tr><td>Beeper</td><td>No</td><td>Initializes GPIO beeper if configured</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><strong>Boot clock:</strong> if <code>Settings.OC_On_Boot = true</code>, POST reads <code>Hardware.Boot_Clock</code> (falls back to <code>Hardware.Max_Clock</code>) and applies it via <code>machine.freq()</code>. A crash sentinel (<code>7</code>) is written before the clock is applied &mdash; if the device crashes here, boot clock is disabled automatically on the next boot.</li>
+        <li><strong>Verbose boot:</strong> <code>Settings.Verbose_Boot = false</code> by default. POST only prints warnings and errors. Enable it to see all informational messages.</li>
+        <li><strong>Crash sentinels:</strong> <code>6</code> is written before clock calibration, <code>7</code> before applying the boot clock. If the device crashes during either, the sentinel disables the relevant feature on the next boot.</li>
+      </ul>
+
+      <!-- SESSION LOGGING -->
+      <h2 id="session-logging">Session Logging</h2>
+      <p>Every session is logged to <code>/Pulsar/Logs/latest.log</code>. The log captures everything printed through the OS output functions (<code>ok</code>, <code>info</code>, <code>warn</code>, <code>error</code>, <code>fatal</code>).</p>
+      <p>Log rotation on each boot:</p>
+      <pre><code>latest.log -&gt; log_1.log -&gt; log_2.log -&gt; ... -&gt; log_9.log (dropped)</code></pre>
+      <p>Up to 10 logs are kept. The <code>/Pulsar/Logs/</code> directory is created automatically by POST on first boot. You don't need to create it manually.</p>
+
+      <!-- HARDWARE & PERFORMANCE -->
+      <h2 id="hardware-performance">Hardware &amp; Performance</h2>
+
+      <h3>Overclocking</h3>
+      <p>RPCortex detects the CPU's safe clock range on first boot. For RP2040/RP2350 the stored max is 220 MHz.</p>
+      <pre><code>pulse set 220      # set CPU to 220 MHz for this session
+pulse set 240      # overclock beyond safe default (warning shown)
+pulse boot on      # apply on every boot
+settings           # toggle via settings panel</code></pre>
+      <p>Manual overclock beyond 220 MHz is allowed. A warning is shown but the clock is set to whatever you specify. The RP2040 is generally stable up to around 240&ndash;250 MHz with the right flash timing.</p>
+
+      <h3>RPCMark</h3>
+      <p><code>bench</code> runs the RPCMark suite: integer ops, floating-point ops, Mandelbrot iteration, and Pi approximation. Results are printed as calculation times in milliseconds. (Formerly &ldquo;NebulaMark&rdquo; / &ldquo;PulseMark&rdquo; &mdash; RPCMark is the permanent name.)</p>
+
+      <h3>Heap and fragmentation</h3>
+      <p><code>freeup</code> clears the command cache and runs garbage collection. Use it before heavy network operations or when you get a <code>MemoryError</code> despite apparent free RAM. <code>meminfo</code> shows the current heap state.</p>
+
+      <!-- SUPPORTED HARDWARE -->
+      <h2 id="supported-hardware">Supported Hardware</h2>
+      <table>
+        <thead><tr><th>Board</th><th>Status</th><th>RAM</th></tr></thead>
+        <tbody>
+          <tr><td>Raspberry Pi Pico 2 W (RP2350 + WiFi)</td><td><span class="tag cyan-tag">Recommended</span></td><td>520 KB</td></tr>
+          <tr><td>ESP32-S3</td><td><span class="tag cyan-tag">Recommended</span></td><td>Varies</td></tr>
+          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">Supported</span></td><td>264 KB</td></tr>
+          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">Supported</span></td><td>264 KB</td></tr>
+          <tr><td>Raspberry Pi Pico 2 (RP2350)</td><td><span class="tag green">Supported</span></td><td>520 KB</td></tr>
+          <tr><td>ESP32 / ESP32-S2</td><td><span class="tag green">Supported</span></td><td>Varies</td></tr>
+        </tbody>
+      </table>
+      <p class="note">MicroPython v1.25+ &nbsp;&bull;&nbsp; 4 MB flash recommended &nbsp;&bull;&nbsp; 256 KB+ RAM &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
+
+      <!-- SECURITY -->
+      <h2 id="security">Security</h2>
+      <ul>
+        <li><strong>Passwords</strong> use salted SHA256. Each account has a unique random salt, so rainbow tables don't apply. Accounts created before v0.8.0-rc used unsalted SHA256 and upgrade on the next password change.</li>
+        <li><strong>WiFi credentials</strong> are stored in plaintext in <code>networks.cfg</code>. There is no secure storage mechanism on this hardware.</li>
+        <li><strong>Home directories</strong> provide logical separation at <code>/Users/&lt;username&gt;/</code>. There is no kernel-enforced permission model.</li>
+      </ul>
+
+      <!-- KNOWN LIMITATIONS -->
+      <h2 id="known-limitations">Known Limitations</h2>
+      <ul>
+        <li><strong>MemoryError in the shell</strong> &mdash; may occur after heavy use due to heap fragmentation. Run <code>freeup</code> to compact the heap. If it persists, <code>reboot</code> clears it. Being actively worked on.</li>
+        <li><strong>ESP32-S3 temperature sensor</strong> &mdash; the onboard temperature sensor on ESP32-S3 is not calibrated in the same way as the RP2040. <code>fetch</code> will show unrealistic values (typically 300&ndash;450 &deg;C). This is a hardware/firmware limitation, not a bug in RPCortex. RP2040/RP2350 temperature is accurate.</li>
+        <li><strong>No real-time clock on base Pico</strong> &mdash; <code>date</code> shows time since boot epoch until the RTC is set manually</li>
+        <li><strong>HTTPS on Pico 1 W</strong> &mdash; TLS needs ~9.5 KB contiguous heap; run <code>freeup</code> first if the heap is fragmented</li>
+        <li><strong>WiFi passwords stored plaintext</strong> &mdash; no secure enclave on this hardware</li>
+        <li><strong>Editor requires a real terminal</strong> &mdash; Thonny REPL won't render it</li>
+        <li><strong>SD card support</strong> &mdash; registry key exists, implementation pending</li>
+      </ul>
+
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
+
+    </article>
