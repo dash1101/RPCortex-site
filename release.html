@@ -268,18 +268,18 @@ reg set System.TZ_Offset -5</code></pre>
         <li><strong>Full async line editor</strong> &mdash; history, Tab completion, cursor navigation, word-wise editing; parity with the classic shell</li>
       </ul>
 
-      <h3>Trying the v1.0 beta</h3>
-      <p>v1.0 &ldquo;Vela&rdquo; ships as an <strong>opt-in developer beta</strong>, separate from the stable v0.9.1 channel. Stable devices are never auto-updated to it.</p>
+      <h3>Trying the v1.0 pre-release</h3>
+      <p>v1.0 &ldquo;Vela&rdquo; is available as an <strong>opt-in pre-release</strong>, on its own channel separate from the stable v0.9.1 line. Stable devices are never auto-updated to it.</p>
       <ul>
-        <li><strong>Fresh install:</strong> pick <em>RPCortex Vela &mdash; Developer Beta</em> in the <a href="install">Web Installer</a>.</li>
-        <li><strong>On-device OTA:</strong> run <code>update channel beta</code>, then <code>update check</code> / <code>update online</code>. Switch back any time with <code>update channel stable</code> (it won&rsquo;t downgrade an existing install).</li>
+        <li><strong>Fresh install:</strong> pick <em>RPCortex Vela &mdash; Pre-release</em> in the <a href="install">Web Installer</a>.</li>
+        <li><strong>On-device OTA:</strong> run <code>update channel beta</code> (the pre-release channel), then <code>update check</code> / <code>update online</code>. Switch back any time with <code>update channel stable</code> (it won&rsquo;t downgrade an existing install).</li>
       </ul>
 
       <div class="note-box">
-        <p><strong>Note</strong> &mdash; this is a developer beta. The core is hardware-verified (boots, multitasking, async networking, and the editor all work on the Pico 2W), but it's still an early build that may change &mdash; please report anything rough. If you ever want the classic synchronous shell, <code>asyncmode off</code> switches to it (it's also the automatic crash fallback).</p>
+        <p><strong>Note</strong> &mdash; this is a pre-release. The core is hardware-verified (boots, multitasking, async networking, and the editor all work on the Pico 2W), but it's still pre-1.0 and may change &mdash; please report anything rough. If you ever want the classic synchronous shell, <code>asyncmode off</code> switches to it (it's also the automatic crash fallback).</p>
       </div>
 
-      <p>After v1.0: TUI framework, SD card support, SSH-over-TCP, multiple terminals. See the <a href="roadmap">roadmap</a> for the full plan.</p>
+      <p>Looking further ahead: <strong>v1.1</strong> brings SSH-over-TCP, SD-card support, multiple terminals + a shell status bar, a TUI framework, and per-device optimized builds. See the <a href="roadmap">roadmap</a> for the full plan.</p>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
 

@@ -1,9 +1,9 @@
 {
   "version": "v1.0.0",
   "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
-  "size": 221208,
-  "notes": "Vela v1.0 beta (opt-in). True multitasking \u2014 async shell by default, so foreground apps run alongside background services. Hardware-verified on the Pico 2W (boots, multitasking, async networking, editor). Early build \u2014 please report bugs.",
-  "build": "1.00.16",
+  "size": 221241,
+  "notes": "Vela v1.0 Pre-release (opt-in). True multitasking \u2014 async shell by default, so foreground apps run alongside background services. Hardware-verified on the Pico 2W (boots, multitasking, async networking, editor). Pre-release \u2014 please report bugs.",
+  "build": "1.00.17",
   "features": [
     "DEVELOPER BUILD \u2014 the v0.9.5 multitasking foundation, now the default experience",
     "Multitasking shell is the DEFAULT \u2014 background services keep running while you work (classic sync shell stays as the recovery / crash fallback)",
@@ -12,5 +12,5 @@
     "Full async line editor \u2014 history, Tab completion, cursor + word navigation (shared LineEditor with the classic shell)",
     "Background scheduled tasks fire while idle (task background on); async-loop self-test (service test)"
   ],
-  "stage": "beta"
+  "stage": "Pre-release"
 }

@@ -14,14 +14,14 @@
   },
   {
     "group": "RPCortex Vela",
-    "groupLabel": "Developer Beta",
+    "groupLabel": "Pre-release",
     "releases": [
       {
         "name": "RPCortex Vela",
         "version": "v1.0.0",
-        "subversion": "dev",
+        "subversion": "pre",
         "file": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
-        "tag": "beta",
+        "tag": "pre-release",
         "default": false
       }
     ]
