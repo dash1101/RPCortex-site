@@ -267,6 +267,22 @@ reg set System.TZ_Offset -5</code></pre>
         <li><strong>Async httpd streaming</strong> &mdash; large file downloads from the device no longer freeze the event loop</li>
         <li><strong>Full async line editor</strong> &mdash; history, Tab completion, cursor navigation, word-wise editing; parity with the classic shell</li>
       </ul>
+
+      <h3>Trying the v1.0 beta</h3>
+      <p>v1.0 &ldquo;Vela&rdquo; ships as an <strong>opt-in developer beta</strong>, separate from the stable v0.9.1 channel. Stable devices are never auto-updated to it.</p>
+      <ul>
+        <li><strong>Fresh install:</strong> pick <em>RPCortex Vela &mdash; Developer Beta</em> in the <a href="install">Web Installer</a>.</li>
+        <li><strong>On-device OTA:</strong> run <code>update channel beta</code>, then <code>update check</code> / <code>update online</code>. Switch back any time with <code>update channel stable</code> (it won&rsquo;t downgrade an existing install).</li>
+      </ul>
+
+      <div class="note-box" style="border-left:3px solid var(--yellow);">
+        <p><strong>&#9888; Beta known issues</strong></p>
+        <ul>
+          <li>In the multitasking (async) shell, the <code>edit</code> command and the file-manager TUIs (<code>files</code>/<code>desktop</code>/<code>ide</code>) can hang the device. Workaround: run <code>asyncmode off</code> to use the classic shell for those, or power-cycle if stuck.</li>
+          <li>This beta build has been static-checked and built from the verified v1.0 base, but the current build has <strong>not yet been re-verified on hardware</strong>. Treat it as early beta and please report bugs.</li>
+        </ul>
+      </div>
+
       <p>After v1.0: TUI framework, SD card support, SSH-over-TCP, multiple terminals. See the <a href="roadmap">roadmap</a> for the full plan.</p>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>

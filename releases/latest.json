@@ -1,16 +1,18 @@
 {
-  "version": "v1.0.0",
-  "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
-  "size": 219873,
-  "notes": "Vela (v1.0 developer build) | True multitasking \u2014 the shell is async by default, so foreground apps run alongside background services",
-  "build": "1.00.15",
+  "version": "v0.9.1",
+  "url": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Final.rpc",
+  "size": 193945,
+  "notes": "Pulsar \u2014 pipes, && / || chaining, .rps scripting, startup + scheduled tasks, recovery tools, OTA updates, wifi autoconnect, ntp sync, owner/timezone, FileExp explorer, admin users, compiled .mpy image option.",
+  "build": "0.91.114",
   "features": [
-    "DEVELOPER BUILD \u2014 the v0.9.5 multitasking foundation, now the default experience",
-    "Multitasking shell is the DEFAULT \u2014 background services keep running while you work (classic sync shell stays as the recovery / crash fallback)",
-    "Background services: httpd start --bg / status / stop; service list/add/remove/test",
-    "Cooperative app framework (appkit) \u2014 a foreground app (e.g. sysmon) yields so it runs alongside background services",
-    "Full async line editor \u2014 history, Tab completion, cursor + word navigation (shared LineEditor with the classic shell)",
-    "Background scheduled tasks fire while idle (task background on); async-loop self-test (service test)"
+    "Shell: pipes, && / || chaining, .rps scripting, persistent aliases, word-wise editing",
+    "Automation: startup tasks, scheduled tasks, headless autonomy mode",
+    "Filesystem: streamed cp/mv, du, multi-file cat, FileExp TUI explorer",
+    "Networking: wget progress bars, extended curl, wifi autoconnect, ntp sync",
+    "Updates: OTA check/online, preserve-data installs, source or compiled .mpy images",
+    "Recovery: fscheck, diag, logdump, regreset, pkgdisable",
+    "Personalisation: owner, timezone, device id, idle logout",
+    "Users: admin roles, nopass accounts, protected root/guest, admin-gated actions"
   ],
-  "stage": "dev"
+  "stage": "Release"
 }
