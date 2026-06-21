@@ -2025,18 +2025,34 @@ body::before, body::after { display: none; }   /* retire the legacy drift orbs *
   .gradient-orb, .stars { animation: none; }
 }
 
-/* ── Nav logo: chip mark + mono wordmark ───────────────────────────────── */
-.nav-logo { display: inline-flex; align-items: center; gap: 10px; }
+/* ── Nav logo: chip mark + gradient wordmark (NovaLabs lockup, RPCortex mono) ──
+   Matches NovaLabs' chip+gradient-wordmark; keeps the mono typeface as the techy
+   signature. The gradient (transparent fill) overrides the old teal glow. */
+.nav-logo { display: inline-flex; align-items: center; gap: 11px; }
 .nav-logo-svg {
-  width: 26px; height: 26px;
-  filter: drop-shadow(0 0 10px rgba(45,212,190,0.55));
+  width: 32px; height: 32px;
+  filter: drop-shadow(0 0 9px rgba(45,212,190,0.45));
 }
-.nav-title { line-height: 1; }   /* inherits mono + teal glow from .nav-logo */
+.nav-title {
+  line-height: 1;
+  background: linear-gradient(135deg, var(--cyan), #38bdf8 55%, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-/* ── Nav links: NovaLabs hover-underline + active state (kept teal) ─────── */
-.nav-links a.nav-link { position: relative; padding: 6px 1px; }
+/* ── Nav links: NovaLabs treatment — pill hover/active + hover-underline ──── */
+.nav-links { gap: 6px; align-items: center; }
+.nav-links a.nav-link {
+  position: relative;
+  padding: 7px 14px;
+  border-radius: 9px;
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.nav-links a.nav-link:hover { background: rgba(45,212,190,0.07); color: var(--text); }
+.nav-links a.nav-link.active { background: rgba(45,212,190,0.12); color: var(--cyan); }
 .nav-links a.nav-link::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: -3px;
+  content: ''; position: absolute; left: 14px; right: 14px; bottom: 2px;
   height: 2px; border-radius: 2px;
   background: linear-gradient(90deg, var(--cyan), var(--accent));
   transform: scaleX(0); transform-origin: center;
@@ -2044,7 +2060,8 @@ body::before, body::after { display: none; }   /* retire the legacy drift orbs *
 }
 .nav-links a.nav-link:hover::after,
 .nav-links a.nav-link.active::after { transform: scaleX(1); }
-.nav-links a.nav-link.active { color: var(--cyan); }
+/* keep the Discord link vertically aligned with the padded nav-links */
+.nav-links a.nav-discord { padding: 7px 14px; border-radius: 9px; }
 
 /* ── glass-card utility — NovaLabs parity for floating glass panels ─────── */
 .glass-card {
