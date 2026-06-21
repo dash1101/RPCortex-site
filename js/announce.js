@@ -18,13 +18,15 @@
 
   var ANNOUNCEMENT = {
     enabled: true,
-    id:      'construction-2026-06',
-    tag:     'Heads up',
-    title:   'Under construction',
-    body:    'NovaLabs and RPCortex are actively in development. Things may ' +
-             'change, break, or move around while we build toward the v1.0 ' +
-             'release — thanks for stopping by early!',
-    cta:     'Got it',
+    id:      'v1.0-prerelease-2026-06',
+    tag:     'New',
+    title:   'RPCortex v1.0 “Vela” — pre-release',
+    body:    'True multitasking has landed. v1.0 is available now as an opt-in ' +
+             'pre-release — grab it from the installer (pick “Pre-release”) or ' +
+             'run “update channel beta” on-device. v0.9.1 stays the recommended ' +
+             'stable build.',
+    cta:     'Check it out',
+    href:    'release',
     repeat:  'session'
   };
 
@@ -114,7 +116,10 @@
     }
     function onKey(e) { if (e.key === 'Escape') close(); }
 
-    ov.querySelector('.nl-ann-btn').addEventListener('click', close);
+    ov.querySelector('.nl-ann-btn').addEventListener('click', function () {
+      close();
+      if (A.href) window.location.href = A.href;   // optional CTA link
+    });
     ov.querySelector('.nl-ann-x').addEventListener('click', close);
     ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
     document.addEventListener('keydown', onKey);

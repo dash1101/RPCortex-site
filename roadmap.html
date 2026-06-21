@@ -308,7 +308,7 @@
           <div class="roadmap-body active">
             <div class="roadmap-header">
               <span class="roadmap-ver">v1.0 &mdash; Vela</span>
-              <span class="roadmap-status testing">Beta &middot; Opt-in</span>
+              <span class="roadmap-status testing">Pre-release &middot; Opt-in</span>
             </div>
             <p class="roadmap-desc">
               The 1.0 milestone &mdash; <strong>true multitasking</strong>. The shell is
@@ -329,25 +329,64 @@
               <li class="done-item"><strong>Opt-in beta updates</strong> &mdash; <code>update channel beta</code> + a separate OTA manifest; stable devices are never auto-moved</li>
             </ul>
 
-            <div class="roadmap-section-label">Still ahead for 1.0 / 1.0.x</div>
+            <div class="roadmap-note">
+              The v1.0 pre-release is live and opt-in &mdash; grab it from the <a href="install">installer</a>
+              (pick "Pre-release") or run <code>update channel beta</code> on-device. The core is
+              hardware-verified on the Pico&nbsp;2W and ESP32-S3; v0.9.1 stays the recommended stable.
+              What&rsquo;s next lands in <strong>v1.1</strong> (below).
+            </div>
+          </div>
+        </div>
+
+        <!-- v1.1 — next -->
+        <div class="roadmap-entry">
+          <div class="roadmap-dot-wrap">
+            <div class="roadmap-dot">🟡</div>
+          </div>
+          <div class="roadmap-body">
+            <div class="roadmap-header">
+              <span class="roadmap-ver">v1.1 &mdash; next</span>
+              <span class="roadmap-status planned">Planned</span>
+            </div>
+            <p class="roadmap-desc">
+              With the multitasking foundation shipped in v1.0, v1.1 builds on top of it &mdash;
+              the features that needed the async loop in place, plus broader system polish.
+            </p>
+
+            <div class="roadmap-section-label">Multitasking, finished</div>
             <ul class="roadmap-items">
-              <li><strong>SSH-style shell over TCP</strong> &mdash; rides the async networking layer</li>
-              <li><strong>Multiple terminals &amp; a shell status bar</strong> &mdash; multiplexing on top of the loop</li>
-              <li><strong>SD card support</strong> &mdash; init package surfaced as a startup task</li>
-              <li><strong>TUI polish</strong> &mdash; terminal-size adaptation, richer key handling</li>
+              <li><strong>SSH-style shell over TCP</strong> &mdash; log into the device over WiFi; rides the async networking layer</li>
+              <li><strong>Multiple terminals &amp; a shell status bar</strong> &mdash; multiplexing on the loop, with a persistent top bar (path, user, clock, temp, clock speed, WiFi, RAM/disk)</li>
+              <li><strong>Convert the last sync paths</strong> so background work never stalls, whatever the foreground is doing</li>
             </ul>
 
-            <div class="roadmap-section-label">Build &amp; Portability (post-1.0)</div>
+            <div class="roadmap-section-label">Storage &amp; hardware</div>
             <ul class="roadmap-items">
-              <li>Per-device optimised images &mdash; frozen modules / custom <code>.uf2</code>, esp. for the RAM-tight Pico 1/1W</li>
-              <li>Viper / native optimisation on hot paths</li>
-              <li>Windows MicroPython port stubs for off-device debugging</li>
+              <li><strong>SD-card support</strong> &mdash; an <code>sd</code> package auto-mounted via a startup task</li>
+              <li><strong>Per-device optimized builds</strong> &mdash; frozen modules / custom <code>.uf2</code> and <code>@native</code>/<code>@viper</code> hot paths, especially to bring the RAM-tight Pico&nbsp;1/1W back into play</li>
+              <li><strong>Bluetooth / BLE</strong> on the ESP32-S3 &mdash; a <code>ble</code> package (beacons, simple GATT)</li>
+              <li><strong>Power management</strong> &mdash; light/deep-sleep helpers for battery builds</li>
+            </ul>
+
+            <div class="roadmap-section-label">Shell, UI &amp; quality of life</div>
+            <ul class="roadmap-items">
+              <li><strong>TUI framework</strong> for package devs (adaptive, terminal-size-aware box drawing); rebuild <code>settings</code>/<code>edit</code> on it</li>
+              <li><strong>Adaptive TUI sizing</strong> &mdash; apps lay out to your real terminal size</li>
+              <li><strong>Richer line editing</strong> &mdash; word-wise keys across terminals + history search (Ctrl+R)</li>
+              <li><strong>Themes</strong> &mdash; a <code>theme</code> command to switch palettes (the design system already supports it)</li>
+              <li><strong>Home-changer</strong> &mdash; optionally boot into the desktop, with shortcuts to installed packages</li>
+              <li><strong>A <code>pkg</code> browser TUI</strong> &mdash; pick packages to install/remove from a list</li>
+            </ul>
+
+            <div class="roadmap-section-label">Networking &amp; security</div>
+            <ul class="roadmap-items">
+              <li><strong>WiFi extras</strong> &mdash; static IP / DNS, AP (hotspot) mode, captive-portal setup</li>
+              <li><strong>Encrypted credential storage</strong> &mdash; stop storing WiFi keys in plaintext</li>
+              <li><strong>New packages</strong> &mdash; <code>mqtt</code> (IoT messaging), <code>git</code> (clone/pull), a webhook/REST helper</li>
             </ul>
 
             <div class="roadmap-note">
-              The v1.0 beta is live and opt-in &mdash; grab it from the <a href="install">installer</a>
-              (pick "Developer Beta") or run <code>update channel beta</code> on-device. The core is
-              hardware-verified on the Pico&nbsp;2W and ESP32-S3; v0.9.1 stays the recommended stable.
+              Direction, not a contract &mdash; priorities shift with what people actually want. Ideas welcome.
             </div>
           </div>
         </div>
