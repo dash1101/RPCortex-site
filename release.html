@@ -275,12 +275,8 @@ reg set System.TZ_Offset -5</code></pre>
         <li><strong>On-device OTA:</strong> run <code>update channel beta</code>, then <code>update check</code> / <code>update online</code>. Switch back any time with <code>update channel stable</code> (it won&rsquo;t downgrade an existing install).</li>
       </ul>
 
-      <div class="note-box" style="border-left:3px solid var(--yellow);">
-        <p><strong>&#9888; Beta known issues</strong></p>
-        <ul>
-          <li>In the multitasking (async) shell, the <code>edit</code> command and the file-manager TUIs (<code>files</code>/<code>desktop</code>/<code>ide</code>) can hang the device. Workaround: run <code>asyncmode off</code> to use the classic shell for those, or power-cycle if stuck.</li>
-          <li>This beta build has been static-checked and built from the verified v1.0 base, but the current build has <strong>not yet been re-verified on hardware</strong>. Treat it as early beta and please report bugs.</li>
-        </ul>
+      <div class="note-box">
+        <p><strong>Note</strong> &mdash; this is a developer beta. The core is hardware-verified (boots, multitasking, async networking, and the editor all work on the Pico 2W), but it's still an early build that may change &mdash; please report anything rough. If you ever want the classic synchronous shell, <code>asyncmode off</code> switches to it (it's also the automatic crash fallback).</p>
       </div>
 
       <p>After v1.0: TUI framework, SD card support, SSH-over-TCP, multiple terminals. See the <a href="roadmap">roadmap</a> for the full plan.</p>
