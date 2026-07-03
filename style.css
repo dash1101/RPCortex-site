@@ -2099,26 +2099,3 @@ body::before, body::after { display: none; }   /* retire the legacy drift orbs *
   opacity: 0.65;
   letter-spacing: 0.2px;
 }
-
-/* ══════════════════════════════════════════════════════════════
-   HYPER-REALISTIC POLISH — a liquid light-sweep across glass on hover.
-   Unifies rpc.novalabs.app with novalabs.app's refined glass. Purely additive:
-   these cards already declare position:relative + z-index:0 + a ::before sheen,
-   so the ::after sits in the card's stacking context, below its content.
-   ══════════════════════════════════════════════════════════════ */
-.feature-card, .docs-card, .prereq-card, .step { overflow: hidden; }
-.feature-card::after, .docs-card::after, .prereq-card::after, .step::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -55%;
-  width: 40%;
-  height: 100%;
-  z-index: -1;
-  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.075), transparent);
-  transform: skewX(-16deg);
-  transition: left 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
-}
-.feature-card:hover::after, .docs-card:hover::after,
-.prereq-card:hover::after, .step:hover::after { left: 135%; }
