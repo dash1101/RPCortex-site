@@ -1,10 +1,11 @@
 {
   "version": "v1.0.0",
   "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
-  "size": 227610,
-  "notes": "Vela v1.0 Pre-release (opt-in). True multitasking \u2014 async shell by default, so foreground apps run alongside background services. Hardware-verified on the Pico 2W (boots, multitasking, async networking, editor). Pre-release \u2014 please report bugs.",
-  "build": "1.00.23",
+  "size": 228653,
+  "notes": "Vela v1.0 Pre-release (opt-in). This build fixes a MemoryError when installing large packages \u2014 pkg install now streams the archive to flash in small chunks instead of reading it whole, so 'pkg install NovaD1' no longer fails with 'memory allocation failed'. Plus the multitasking base: async shell by default, so foreground apps run alongside background services. Hardware-verified on the Pico 2W. Pre-release \u2014 please report bugs.",
+  "build": "1.00.24",
   "features": [
+    "Fixed: pkg install streams the archive to flash (512-byte chunks) \u2014 no more MemoryError on large packages; a partly-extracted package registers no command",
     "DEVELOPER BUILD \u2014 the v0.9.5 multitasking foundation, now the default experience",
     "Multitasking shell is the DEFAULT \u2014 background services keep running while you work (classic sync shell stays as the recovery / crash fallback)",
     "Background services: httpd start --bg / status / stop; service list/add/remove/test",
