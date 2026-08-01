@@ -1,9 +1,9 @@
 {
   "version": "v1.0.0",
   "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
-  "size": 231593,
+  "size": 231630,
   "notes": "Vela v1.0 Pre-release (opt-in). New: 'safeboot [cmd]' reboots to a serviceless maintenance shell (full RAM) and can stage an update to run there, then reboot back \u2014 so UI updates work despite background apps holding RAM. Also: removing a package now removes its startup/service entries. Plus streamed pkg install + TLS-download heap handling. Async multitasking shell by default. Pre-release \u2014 please report bugs.",
-  "build": "1.00.30",
+  "build": "1.00.31",
   "features": [
     "New: safeboot [cmd] can STAGE an update to run on a serviceless maintenance boot (full RAM), then reboot back \u2014 reliable UI updates",
     "Fixed: removing a package also removes its startup task + background service",
