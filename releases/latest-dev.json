@@ -3,7 +3,7 @@
   "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
   "size": 236783,
   "notes": "Vela v1.0 Pre-release (opt-in). This build is about memory. HTTPS transfers were failing with a bare errno, because mbedTLS reports an out-of-memory as OSError(ENOMEM) rather than MemoryError and the guidance was only ever wired to MemoryError; and the pre-handshake contiguous-block check guarded 10 KB when a handshake needs about 16.7 KB, so it passed and the handshake died anyway. Both fixed. wget no longer rebuilds the whole response body on every chunk (about 40 KB of churn to fetch 6 KB), which was fragmenting the heap in exactly the place a handshake needs an unbroken run. meminfo now reports the largest allocatable block and a fragmentation percentage, because free memory alone is what made \"90 KB free\" and \"cannot do HTTPS\" look contradictory. New 'defrag' command reclaims and reports whether a handshake can start; optional 'defrag on' holds a contiguous block from boot (off by default, applies after a reboot). Pre-release \u2014 please report bugs.",
-  "build": "1.00.41",
+  "build": "1.00.42",
   "features": [
     "Fixed: an HTTPS out-of-memory now explains itself. mbedTLS raises OSError(ENOMEM), not MemoryError, so the actionable message was dead code for the exact case it was written for",
     "Fixed: the pre-handshake contiguous-block check guarded 10 KB, but MBEDTLS_SSL_IN_CONTENT_LEN is 16384 and the input buffer is one allocation \u2014 the check passed on a heap that could not finish a handshake",
