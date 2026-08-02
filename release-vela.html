@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; v1.0.0 Vela Release Notes</title>
+  <meta name="description" content="What's new in RPCortex v1.0 &quot;Vela&quot; &mdash; the multitasking release. Pre-release notes, updated as builds ship.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="docs">Docs</a>
+        <a href="packages">Packages</a>
+        <a href="roadmap">Roadmap</a>
+        <a href="install">Install</a>
+        <a href="https://github.com/dash1101/RPCortex-OS" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Vela Release Notes</h1>
+      <p>v1.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela</strong> &nbsp;&bull;&nbsp; Pre-release &nbsp;&bull;&nbsp; Succeeds v0.9.1 &ldquo;Pulsar&rdquo;</p>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="docs-page-layout">
+    <nav class="docs-toc">
+      <h4>Contents</h4>
+      <a href="#status">Status</a>
+      <a href="#hardware">Supported hardware</a>
+      <a href="#multitasking">Multitasking</a>
+      <a href="#shell">Shell &amp; terminal</a>
+      <a href="#networking">Networking</a>
+      <a href="#memory">Memory &amp; reliability</a>
+      <a href="#updates">Packages &amp; updates</a>
+      <a href="#storage">Storage</a>
+      <a href="#platform">Platform</a>
+      <a href="#novad1">Nova D1</a>
+      <a href="#installation">Installing</a>
+      <a href="#limitations">Known limitations</a>
+    </nav>
+
+    <article class="docs-article">
+
+      <h2 id="status">Status</h2>
+      <p><strong>Pre-release.</strong> v1.0 builds are published on the <strong>beta</strong> channel. A device on the stable line is never moved onto them automatically &mdash; opting in is a deliberate step.</p>
+      <div class="note-box">
+        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>, which remains the stable release. They are updated as pre-release builds ship, so this page tracks the version rather than describing a single frozen build. For the full command reference see the <a href="docs">docs</a>; for what comes after v1.0, the <a href="roadmap">roadmap</a>.
+      </div>
+      <p>The data directory moves from <code>/Pulsar/</code> to <code>/Vela/</code>. Updating devices migrate automatically &mdash; accounts, WiFi profiles, settings and installed packages are all preserved.</p>
+
+      <h2 id="hardware">Supported hardware</h2>
+      <p>v1.0 targets the <strong>Pico 2 W (RP2350)</strong> and the <strong>ESP32-S3</strong>.</p>
+      <div class="note-box">
+        <p><strong>RP2040 boards are not supported by this release.</strong> The Pico 1 and Pico 1 W cannot run the v1.0 multitasking build in 264 KB of RAM &mdash; it idles near the ceiling and climbs until it fails. Those boards should stay on <strong>v0.9.1</strong>, which is fully supported. A separate optimised image for them is planned rather than cutting the portable base down to fit.</p>
+      </div>
+
+      <h2 id="multitasking">Multitasking</h2>
+      <p>This is the headline change. The shell is cooperative rather than blocking, which is what lets background services, on-screen apps and the serial terminal share one small device.</p>
+      <ul>
+        <li><strong>The multitasking shell is the default.</strong> Background services keep running while you work at the prompt. <code>asyncmode off</code> switches to the classic synchronous shell, which also remains the automatic crash fallback.</li>
+        <li><strong><code>appkit</code>, a cooperative app framework</strong> for package authors. A foreground TUI yields instead of monopolising the loop, so it runs alongside background services. <code>read_key</code> is non-blocking and <code>read_line</code> yields.</li>
+        <li><strong>Background services</strong> are supervised, survive a cancelled command line, and are managed with <code>service list | add | remove</code>.</li>
+      </ul>
+
+      <h2 id="shell">Shell &amp; terminal</h2>
+      <ul>
+        <li><strong>Typing is faster.</strong> Each keystroke repaints only what changed rather than redrawing the whole line, which is what makes input feel immediate over serial.</li>
+        <li><strong>Pasting a block works.</strong> A pasted block &mdash; and a held backspace, or a held printable key &mdash; is processed in batches instead of one character per loop turn.</li>
+        <li><strong>Backspace behaves everywhere.</strong> Terminals disagree about which byte plain Backspace sends; both are now treated as a single-character delete, with <kbd>Ctrl</kbd>+<kbd>W</kbd> as the terminal-independent delete-word-back.</li>
+        <li><strong>Word-wise keys work in PuTTY and mpremote</strong> &mdash; both the SS3 and CSI encodings &mdash; in the shell and in the editor.</li>
+        <li><strong>Escape sequences no longer leak</strong> into the line as stray characters such as <code>;5A</code>.</li>
+        <li><strong>An idle shell yields the CPU.</strong> The reader backs off when nothing is being typed, so it stops competing with background work.</li>
+        <li><strong><code>grep -i</code></strong> for case-insensitive matching.</li>
+      </ul>
+
+      <h2 id="networking">Networking</h2>
+      <ul>
+        <li><strong>Async <code>ping</code>, <code>wget</code> and <code>curl</code></strong> &mdash; network commands yield on every socket wait, so a download no longer freezes the device and background services keep serving throughout.</li>
+        <li><strong>HTTPS fixed on current firmware.</strong> TLS uses <code>SSLContext</code>, which MicroPython v1.29 and later require.</li>
+        <li><strong>Honest HTTPS failures.</strong> A TLS handshake needs one unbroken block of about 16.7 KB. Memory is now reclaimed <em>before</em> the handshake rather than after it fails, and when the block genuinely is not available the error says so &mdash; and reports how much contiguous memory there actually is &mdash; instead of a generic failure.</li>
+        <li><strong>Downloads no longer slow down as they grow.</strong> The response body was being rebuilt on every chunk; it is assembled once at the end.</li>
+        <li><strong>WiFi autoconnect</strong> and <strong>NTP time sync</strong> at boot.</li>
+      </ul>
+
+      <h2 id="memory">Memory &amp; reliability</h2>
+      <p>On a device this size the recurring failure is not running <em>out</em> of memory but running out of <em>contiguous</em> memory. MicroPython&rsquo;s heap does not compact, so it can report 200 KB free and still refuse a 16 KB allocation. Several changes target that directly.</p>
+      <ul>
+        <li><strong><code>meminfo</code> reports the largest allocatable block</strong> and a fragmentation percentage, not just the free total &mdash; the number that actually decides whether an HTTPS request can succeed.</li>
+        <li><strong><code>defrag</code></strong> reclaims memory and reports what it recovered.</li>
+        <li><strong><code>freeup</code> now frees memory on compiled builds.</strong> Commands loaded from <code>.mpy</code> live on in the module table, so clearing the command cache released almost nothing. It now evicts the command modules themselves &mdash; measured on a Pico 2 W as a change from 2 KB recovered to 84 KB.</li>
+        <li><strong>Automatic reclaim.</strong> The scheduler reclaims when free memory is low <em>or</em> when a contiguity check fails, rather than waiting for something to break.</li>
+        <li><strong>Package installs stream to flash.</strong> A <code>.pkg</code> is extracted entry by entry instead of being read into memory whole, which is what made large packages fail to install.</li>
+      </ul>
+
+      <h2 id="updates">Packages &amp; updates</h2>
+      <ul>
+        <li><strong><code>safeboot</code></strong> &mdash; reboot without background services so an update runs with the full heap available. It can also stage a command for the next boot, which is what lets an update started from a screen finish reliably.</li>
+        <li><strong>An opt-in beta channel</strong> &mdash; <code>update channel beta | stable</code>. With no channel chosen, a device follows the stage of the build it is running, so a pre-release device checks the pre-release manifest rather than comparing itself against something older.</li>
+        <li><strong>Update checks never offer a downgrade.</strong> A differing build id is no longer enough on its own: the version must match and the build counter must be ahead.</li>
+        <li><strong>Non-interactive updates</strong> (<code>-y</code>), so an update begun somewhere without a keyboard can complete.</li>
+        <li><strong>Removing a package</strong> stops its services first and clears its autostart entries, instead of deleting files out from under a running service.</li>
+        <li><strong>Installed packages take priority over frozen modules</strong> on the import path, so a package update is picked up even when an older copy is built into the firmware.</li>
+      </ul>
+
+      <h2 id="storage">Storage</h2>
+      <ul>
+        <li><strong>SD card support</strong> &mdash; <code>sdmgr</code>, the <code>sd</code> command, and optional auto-mount at boot.</li>
+        <li><strong>A storage guard</strong> that warns at 95% full and blocks writes at 98%, rather than letting the filesystem fill and fail in the middle of a write.</li>
+      </ul>
+
+      <h2 id="platform">Platform</h2>
+      <ul>
+        <li><strong>One place for hardware differences.</strong> Die temperature, safe clock range and current frequency now come from a single platform module, so RP2040, RP2350 and ESP32-S3 differences are not scattered through the tree.</li>
+        <li><strong>A sensible boot clock.</strong> An unconfigured RP2350 runs at 200 MHz instead of the old flat 125 MHz default &mdash; which was <em>slower</em> than the chip&rsquo;s own default of 150.</li>
+        <li><strong>Command output is captured properly.</strong> Results printed as status lines are captured alongside ordinary output, so a command whose entire result is a single status line is no longer invisible to pipes, scripts and on-screen apps.</li>
+        <li><strong><code>diag</code> and <code>sysinfo</code> report more</strong>, in plainer wording.</li>
+      </ul>
+
+      <h2 id="novad1">Nova D1</h2>
+      <p>The <a href="https://novalabs.app/d1" target="_blank" rel="noopener">Nova D1</a> multi-tool runs on Vela as a package suite. It is developed alongside this release and has its own version line; see the <a href="packages">packages</a> page for the current build.</p>
+
+      <h2 id="installation">Installing</h2>
+      <p><strong>Fresh install:</strong> pick <em>RPCortex Vela &mdash; Pre-release</em> in the <a href="install">Web Installer</a>.</p>
+      <p><strong>Updating from v0.9.1</strong> on a Pico 2 W or ESP32-S3:</p>
+      <pre><code>update channel beta
+update check
+safeboot update online -y</code></pre>
+      <p>Accounts, WiFi profiles, settings and installed packages are preserved, and <code>/Pulsar/</code> is migrated to <code>/Vela/</code> automatically. <code>update channel stable</code> switches back at any time; it will not downgrade an existing install.</p>
+
+      <h2 id="limitations">Known limitations</h2>
+      <ul>
+        <li><strong>RP2040 is not supported</strong> &mdash; see <a href="#hardware">supported hardware</a>. Stay on v0.9.1.</li>
+        <li><strong>Contiguous memory is still the binding constraint</strong> on a device that has been running a long time with a large package resident. Run <code>freeup</code> before an update, or reboot first &mdash; a fresh boot has the least fragmentation.</li>
+        <li><strong>A firmware flash erases the filesystem.</strong> Applying an <code>.rpc</code> OS update does not; flashing MicroPython itself does.</li>
+        <li><strong>This is a pre-release.</strong> The core is hardware-verified on the Pico 2 W, but behaviour may still change. Please report anything rough.</li>
+      </ul>
+
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela &mdash; v1.0.0 pre-release &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome. Looking for the stable release? See the <a href="release">v0.9.1 Pulsar notes</a>.</p>
+
+    </article>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex Vela</span>
+        <div class="footer-links">
+          <a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a>
+          <a href="https://github.com/dash1101/RPCortex-OS" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/releases" target="_blank">Releases</a>
+          <a href="docs">Docs</a>
+          <a href="roadmap">Roadmap</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/issues" target="_blank">Issues</a>
+          <a href="privacy">Privacy</a>
+        </div>
+      </div>
+      <p class="footer-note">Built by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. &copy; 2026 &mdash; all rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const sections = document.querySelectorAll('.docs-article h2[id]');
+    const tocLinks = document.querySelectorAll('.docs-toc a');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const link = document.querySelector('.docs-toc a[href="#' + e.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => obs.observe(s));
+  </script>
+
+  <script src="js/nav.js"></script>
+</body>
+</html>
