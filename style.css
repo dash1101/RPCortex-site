@@ -2099,3 +2099,23 @@ body::before, body::after { display: none; }   /* retire the legacy drift orbs *
   opacity: 0.65;
   letter-spacing: 0.2px;
 }
+
+/* Hero footnote — the single line under the call-to-action buttons.
+   .hero-actions carries a 56px bottom margin, so this pulls up into that gap
+   rather than sitting adrift below it: 24px under the buttons, 40px before the
+   terminal. Smaller and dimmer than .hero-sub so it reads as a postscript. */
+.hero-note {
+  margin: -32px auto 40px;
+  max-width: 620px;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+.hero-note a {
+  color: var(--cyan);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s var(--ease);
+  white-space: nowrap;
+}
+.hero-note a:hover { border-bottom-color: currentColor; }

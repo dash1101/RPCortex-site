@@ -1,18 +1,26 @@
 {
-  "version": "v0.9.1",
-  "url": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Final.rpc",
-  "size": 193945,
-  "notes": "Pulsar \u2014 pipes, && / || chaining, .rps scripting, startup + scheduled tasks, recovery tools, OTA updates, wifi autoconnect, ntp sync, owner/timezone, FileExp explorer, admin users, compiled .mpy image option.",
-  "build": "0.91.114",
+  "version": "v1.0.0",
+  "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0.rpc",
+  "size": 238063,
+  "notes": "Vela v1.0 \u2014 the 1.0 milestone. The shell is async by default: a foreground app runs cooperatively alongside background services on one event loop and one terminal, with the classic synchronous shell kept as the crash/recovery fallback. HTTPS now works on a device that has been running a while \u2014 the failure was never a shortage of free memory but of CONTIGUOUS memory, and meminfo reports the largest allocatable block so the difference is visible. Update checks follow the channel of the build you are running. Also: a full async line editor with history and Tab completion, background services (httpd --bg, the service manager), safeboot for staging a memory-heavy update, streamed package installs, and the recovery toolkit. Verified on Pico 2 W and ESP32-S3.",
+  "build": "1.00.55",
   "features": [
-    "Shell: pipes, && / || chaining, .rps scripting, persistent aliases, word-wise editing",
-    "Automation: startup tasks, scheduled tasks, headless autonomy mode",
-    "Filesystem: streamed cp/mv, du, multi-file cat, FileExp TUI explorer",
-    "Networking: wget progress bars, extended curl, wifi autoconnect, ntp sync",
-    "Updates: OTA check/online, preserve-data installs, source or compiled .mpy images",
-    "Recovery: fscheck, diag, logdump, regreset, pkgdisable",
-    "Personalisation: owner, timezone, device id, idle logout",
-    "Users: admin roles, nopass accounts, protected root/guest, admin-gated actions"
+    "Async by default \u2014 background services keep running while you use the prompt (asyncmode off returns the classic shell)",
+    "Cooperative app framework (appkit) \u2014 foreground apps yield so services keep ticking",
+    "Full async line editor \u2014 history, Tab completion, cursor and word navigation",
+    "Background services \u2014 httpd --bg, the service manager, services.cfg",
+    "HTTPS works after the device has been up a while \u2014 the contiguous block a TLS handshake needs is claimed at boot and handed back when memory gets tight",
+    "meminfo reports the LARGEST ALLOCATABLE BLOCK and a fragmentation percentage, not just free memory",
+    "defrag \u2014 reclaim and report whether there is enough contiguous RAM for HTTPS",
+    "safeboot [cmd] \u2014 stage an update to run on a serviceless maintenance boot with full RAM",
+    "Update checks follow the channel of the build you are running; a differing build id can no longer offer an older version as an upgrade",
+    "pkg install streams the archive to flash \u2014 no MemoryError on large packages",
+    "Async networking \u2014 ping/wget/curl (incl. HTTPS) yield to the loop",
+    "Recovery \u2014 fscheck, diag, logdump, regreset, pkgdisable"
   ],
-  "stage": "Release"
+  "stage": "Stable",
+  "platforms": [
+    "RP2350",
+    "ESP32S3"
+  ]
 }

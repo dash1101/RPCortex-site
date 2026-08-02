@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; The switch to C++</title>
+  <meta name="description" content="Why RPCortex v2.0 is a native C++ rewrite, what stays the same, and what happens to v1.0.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="docs">Docs</a>
+        <a href="packages">Packages</a>
+        <a href="roadmap">Roadmap</a>
+        <a href="install">Install</a>
+        <a href="https://github.com/dash1101/RPCortex-OS" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>The switch to C++</h1>
+      <p>v1.0 &ldquo;Vela&rdquo; is the last MicroPython release &nbsp;&bull;&nbsp; v2.0 is the same OS, written native</p>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="docs-page-layout">
+    <nav class="docs-toc">
+      <h4>Contents</h4>
+      <a href="#short">The short version</a>
+      <a href="#why">Why</a>
+      <a href="#same">What stays the same</a>
+      <a href="#better">What gets better</a>
+      <a href="#packages">Packages still work</a>
+      <a href="#v1">What happens to v1.0</a>
+      <a href="#now">Where it stands</a>
+      <a href="#when">When</a>
+    </nav>
+
+    <article class="docs-article">
+
+      <h2 id="short">The short version</h2>
+      <p>RPCortex is being rewritten in C++, running natively on the hardware with no interpreter underneath. It is the same operating system &mdash; the same shell, the same commands, the same accounts, the same package system. The goal is that you open PuTTY and cannot tell the codebase changed, except that everything is faster and the memory ceiling you kept running into is gone.</p>
+      <div class="note-box">
+        There is no v1.1. The work that would have gone into it goes into v2.0 instead. <strong>v1.0 keeps working, stays installable, and stays supported</strong> &mdash; nothing is being taken away from anyone.
+      </div>
+
+      <h2 id="why">Why</h2>
+      <p>Most of the hard bugs in the last year were the same bug wearing different hats: not enough memory, in a way that was difficult to see and harder to fix.</p>
+      <p>The clearest example shipped in v1.0. HTTPS would stop working on a device that had been running a while, and the reason was not that memory had run out &mdash; a board would report 52 KB free and still fail. A TLS handshake needs one unbroken block of about 16.9 KB, and MicroPython's collector never moves anything, so once the heap is carved up there is no way to make a run that large again. The fix works, and it is a good fix, but it is a fix for a problem that only exists because of how the runtime manages memory.</p>
+      <p>The same shape turned up everywhere. Package installs that failed on large archives. Commands that could not be loaded when the heap was fragmented. A whole board &mdash; the original Pico and Pico W, with 264 KB of RAM &mdash; that had to be dropped from v1.0 because the multitasking build simply would not fit.</p>
+      <p>Underneath all of it, an interpreter was doing work that a microcontroller cannot really spare: parsing, allocating, tracing, collecting. Removing it removes the category.</p>
+
+      <h2 id="same">What stays the same</h2>
+      <p>This is a rewrite of the implementation, not a redesign of the product. Deliberately:</p>
+      <ul>
+        <li>The <strong>shell</strong> &mdash; the same prompt, the same commands, the same second spellings (<code>ll</code>, <code>dir</code>, <code>more</code>, <code>del</code>, <code>free</code>), the same pipes and <code>&amp;&amp;</code>&thinsp;/&thinsp;<code>||</code> chaining and redirection.</li>
+        <li>The <strong>look</strong> &mdash; the boot banner, the colours, the <code>[@]</code> and <code>[!]</code> status lines, the column layout of <code>ls</code>. These were reproduced against the v1 source rather than rebuilt from memory.</li>
+        <li>The <strong>accounts system</strong> &mdash; salted hashes, admin roles, the protected root and guest accounts, the guided first-run setup.</li>
+        <li>The <strong>filesystem</strong> &mdash; the same littlefs version and on-disk format a v1 device already uses.</li>
+        <li>The <strong>package system</strong> &mdash; see below, because this was the part that had to be proven before anything else could start.</li>
+      </ul>
+
+      <h2 id="better">What gets better</h2>
+      <ul>
+        <li><strong>Speed.</strong> Native code, direct hardware access, no bytecode in between.</li>
+        <li><strong>Memory.</strong> No garbage collector, so no collector pauses and no fragmentation problem of the kind that broke HTTPS. Memory that is free is memory you can actually use.</li>
+        <li><strong>The Pico 1 and 1 W come back.</strong> Without an interpreter, 264 KB stops being the wall it was.</li>
+        <li><strong>Real OTA updates.</strong> The RP2350's boot ROM has A/B flash slots and rollback built in &mdash; a failed update returns to the working image by itself.</li>
+        <li><strong>USB.</strong> HID, BadUSB and U2F need native USB device support, which was never reachable before.</li>
+        <li><strong>Installing is simpler.</strong> Hold BOOTSEL, plug in, drag one file across. No firmware step, no file-pasting step.</li>
+      </ul>
+
+      <h2 id="packages">Packages still work &mdash; this was the deciding question</h2>
+      <p>The obvious objection to dropping an interpreter is that you lose the thing an interpreter gives you: the ability to load and run code that was not compiled into the firmware. An OS without a package system is a much smaller idea, and it was genuinely unclear whether this was possible.</p>
+      <p>It is. A package is a compiled object file, loaded from the filesystem at runtime, relocated in RAM, resolved against a firmware symbol table, and run &mdash; then unloaded cleanly, with its commands removed from the shell and its memory returned. It costs about 3.3 KB of flash and no static RAM. This was built and proven first, before any of the rest, because a "no" there would have ended the whole idea.</p>
+      <p>So packages still install, still register shell commands, still update independently of the OS. They are compiled ahead of time instead of shipped as source.</p>
+      <div class="note-box">
+        <strong>Existing packages will need rebuilding.</strong> A <code>.py</code> package cannot run on a machine with no Python on it. Support for running Python apps under v2 is wanted and is being looked at, but it is not promised and it is not what v2.0 will ship with.
+      </div>
+
+      <h2 id="v1">What happens to v1.0</h2>
+      <p>It stays. v1.0 is the current stable release, it is what the installer gives you, and it is what <code>update online</code> moves you to. It will keep working on the devices it works on today.</p>
+      <p>What ends is new feature development on the MicroPython line. The v1 source is not going anywhere &mdash; it is archived and readable, and the packages in the repository continue to work with it.</p>
+
+      <h2 id="now">Where it stands</h2>
+      <p>Further along than "planned". Working today, tested on the host and building for both the RP2350 and the RP2040:</p>
+      <ul>
+        <li>The package loader, with clean load / run / unload.</li>
+        <li>The shell &mdash; around 50 commands plus v1's aliases, with pipes, chaining, redirection and quoting.</li>
+        <li>Line editing &mdash; cursor and word movement, history, Tab completion over commands and paths.</li>
+        <li>Accounts, the registry, the filesystem, WiFi.</li>
+        <li>The console: v1's output layer, checked byte for byte against the original escape sequences.</li>
+      </ul>
+      <p>Still to come: the package repository, the rest of the command set (<code>ping</code>, <code>ntp</code>, <code>wget</code>, the editor), OTA updates, USB HID, and the Nova D1 port. The <a href="roadmap">roadmap</a> tracks it.</p>
+
+      <h2 id="when">When</h2>
+      <p>When it is genuinely better than v1.0, and not before. Shipping a rewrite that is merely equivalent would be asking people to take a risk for nothing.</p>
+      <p>If you want to follow along or argue with any of this, the <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a> is the place.</p>
+
+    </article>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-top">
+        <div class="footer-brand">RPCortex</div>
+        <div class="footer-links">
+          <a href="https://github.com/dash1101/RPCortex-OS" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/releases" target="_blank">Releases</a>
+          <a href="docs">Docs</a>
+          <a href="roadmap">Roadmap</a>
+          <a href="https://github.com/dash1101/RPCortex-OS/issues" target="_blank">Issues</a>
+          <a href="privacy">Privacy</a>
+        </div>
+      </div>
+      <p class="footer-note">Built by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. &copy; 2026 &mdash; all rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const sections = document.querySelectorAll('.docs-article h2[id]');
+    const tocLinks = document.querySelectorAll('.docs-toc a');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const link = document.querySelector('.docs-toc a[href="#' + e.target.id + '"]');
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => obs.observe(s));
+  </script>
+
+  <script src="js/nav.js"></script>
+</body>
+</html>

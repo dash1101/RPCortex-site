@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RPCortex &mdash; v1.0.0 Vela Release Notes</title>
-  <meta name="description" content="What's new in RPCortex v1.0 &quot;Vela&quot; &mdash; the multitasking release. Pre-release notes, updated as builds ship.">
+  <meta name="description" content="What's new in RPCortex v1.0 &quot;Vela&quot; &mdash; the multitasking release.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -29,7 +29,7 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Vela Release Notes</h1>
-      <p>v1.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela</strong> &nbsp;&bull;&nbsp; Pre-release &nbsp;&bull;&nbsp; Succeeds v0.9.1 &ldquo;Pulsar&rdquo;</p>
+      <p>v1.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela</strong> &nbsp;&bull;&nbsp; Stable &nbsp;&bull;&nbsp; Succeeds v0.9.1 &ldquo;Pulsar&rdquo;</p>
     </div>
   </header>
 
@@ -54,9 +54,9 @@
     <article class="docs-article">
 
       <h2 id="status">Status</h2>
-      <p><strong>Pre-release.</strong> v1.0 builds are published on the <strong>beta</strong> channel. A device on the stable line is never moved onto them automatically &mdash; opting in is a deliberate step.</p>
+      <p><strong>Stable.</strong> v1.0 is the current release on the default channel &mdash; the Install and Update default, superseding v0.9.1 &ldquo;Pulsar&rdquo;.</p>
       <div class="note-box">
-        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>, which remains the stable release. They are updated as pre-release builds ship, so this page tracks the version rather than describing a single frozen build. For the full command reference see the <a href="docs">docs</a>; for what comes after v1.0, the <a href="roadmap">roadmap</a>.
+        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>. For the full command reference see the <a href="docs">docs</a>. v1.0 is also the last MicroPython release &mdash; what comes next is a native rewrite, explained in <a href="switch">the switch to C++</a>.
       </div>
       <p>The data directory moves from <code>/Pulsar/</code> to <code>/Vela/</code>. Updating devices migrate automatically &mdash; accounts, WiFi profiles, settings and installed packages are all preserved.</p>
 
@@ -132,7 +132,7 @@
       <p>The <a href="https://novalabs.app/d1" target="_blank" rel="noopener">Nova D1</a> multi-tool runs on Vela as a package suite. It is developed alongside this release and has its own version line; see the <a href="packages">packages</a> page for the current build.</p>
 
       <h2 id="installation">Installing</h2>
-      <p><strong>Fresh install:</strong> pick <em>RPCortex Vela &mdash; Pre-release</em> in the <a href="install">Web Installer</a>.</p>
+      <p><strong>Fresh install:</strong> pick <em>RPCortex Vela</em> in the <a href="install">Web Installer</a> &mdash; it is the default.</p>
       <p><strong>Updating from v0.9.1</strong> on a Pico 2 W or ESP32-S3:</p>
       <pre><code>update channel beta
 update check

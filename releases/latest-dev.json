@@ -1,23 +1,26 @@
 {
   "version": "v1.0.0",
-  "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
-  "size": 237592,
-  "notes": "Vela v1.0 Pre-release (opt-in). This build makes HTTPS work on a device that has been running a while. The failure was never a shortage of free memory but of CONTIGUOUS memory: a handshake needs one unbroken ~16.9 KB block, and a non-moving collector cannot re-create a run that large once the heap is carved up. A measured Pico 2 W sat at 52 KB free with a largest block of 10 KB, and 'update check' failed every time. RPCortex now claims that block at boot, while the heap is still clean, and 'update check' on the same board succeeds. It is not a permanent tax: the block is handed back automatically once free memory gets tight, and taken again once there is room. Set Settings.TLS_Reserve to off to disable it. Also: update checks follow the channel of the build you are running and can no longer offer you an older version as an upgrade, and 'freeup' actually frees memory on a compiled image (measured 2 KB -> 84 KB). Pre-release \u2014 please report bugs.",
-  "build": "1.00.52",
+  "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0.rpc",
+  "size": 238063,
+  "notes": "Vela v1.0 \u2014 the 1.0 milestone. The shell is async by default: a foreground app runs cooperatively alongside background services on one event loop and one terminal, with the classic synchronous shell kept as the crash/recovery fallback. HTTPS now works on a device that has been running a while \u2014 the failure was never a shortage of free memory but of CONTIGUOUS memory, and meminfo reports the largest allocatable block so the difference is visible. Update checks follow the channel of the build you are running. Also: a full async line editor with history and Tab completion, background services (httpd --bg, the service manager), safeboot for staging a memory-heavy update, streamed package installs, and the recovery toolkit. Verified on Pico 2 W and ESP32-S3.",
+  "build": "1.00.55",
   "features": [
-    "HTTPS works after the device has been up a while: the contiguous block a TLS handshake needs is claimed at boot and given back automatically when memory gets tight",
-    "Update checks follow the channel of the build you are running, and a differing build id can no longer offer an older version as an upgrade",
-    "freeup actually frees memory on a compiled image \u2014 it evicts the command modules, not just the scope cache (measured 2 KB -> 84 KB on a Pico 2 W)",
-    "meminfo now reports the LARGEST ALLOCATABLE BLOCK and a fragmentation percentage, not just free memory \u2014 the GC never compacts, so free memory alone is misleading",
-    "New: defrag \u2014 reclaim and report whether there is enough contiguous RAM for HTTPS; defrag on|auto|off holds a block from boot (off by default)",
-    "New: safeboot [cmd] can STAGE an update to run on a serviceless maintenance boot (full RAM), then reboot back \u2014 reliable UI updates",
-    "Fixed: removing a package also removes its startup task + background service",
-    "Fixed: pkg install streams the archive to flash (512-byte chunks) \u2014 no more MemoryError on large packages; a partly-extracted package registers no command",
-    "DEVELOPER BUILD \u2014 the v0.9.5 multitasking foundation, now the default experience",
-    "Multitasking shell is the DEFAULT \u2014 background services keep running while you work (classic sync shell stays as the recovery / crash fallback)",
-    "Background services: httpd start --bg / status / stop; service list/add/remove/test",
-    "Cooperative app framework (appkit) \u2014 a foreground app (e.g. sysmon) yields so it runs alongside background services",
-    "Full async line editor \u2014 history, Tab completion, cursor + word navigation (shared LineEditor with the classic shell)"
+    "Async by default \u2014 background services keep running while you use the prompt (asyncmode off returns the classic shell)",
+    "Cooperative app framework (appkit) \u2014 foreground apps yield so services keep ticking",
+    "Full async line editor \u2014 history, Tab completion, cursor and word navigation",
+    "Background services \u2014 httpd --bg, the service manager, services.cfg",
+    "HTTPS works after the device has been up a while \u2014 the contiguous block a TLS handshake needs is claimed at boot and handed back when memory gets tight",
+    "meminfo reports the LARGEST ALLOCATABLE BLOCK and a fragmentation percentage, not just free memory",
+    "defrag \u2014 reclaim and report whether there is enough contiguous RAM for HTTPS",
+    "safeboot [cmd] \u2014 stage an update to run on a serviceless maintenance boot with full RAM",
+    "Update checks follow the channel of the build you are running; a differing build id can no longer offer an older version as an upgrade",
+    "pkg install streams the archive to flash \u2014 no MemoryError on large packages",
+    "Async networking \u2014 ping/wget/curl (incl. HTTPS) yield to the loop",
+    "Recovery \u2014 fscheck, diag, logdump, regreset, pkgdisable"
   ],
-  "stage": "Pre-release"
+  "stage": "Stable",
+  "platforms": [
+    "RP2350",
+    "ESP32S3"
+  ]
 }

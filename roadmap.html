@@ -300,23 +300,23 @@
           </div>
         </div>
 
-        <!-- v1.0 Vela — current / in development -->
+        <!-- v1.0 Vela — shipped, the stable release -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot active">🔵</div>
+            <div class="roadmap-dot done">✓</div>
           </div>
-          <div class="roadmap-body active">
+          <div class="roadmap-body">
             <div class="roadmap-header">
               <span class="roadmap-ver">v1.0 &mdash; Vela</span>
-              <span class="roadmap-status testing">Pre-release &middot; Opt-in</span>
+              <span class="roadmap-status future">Shipped &middot; Stable</span>
             </div>
             <p class="roadmap-desc">
               The 1.0 milestone &mdash; <strong>true multitasking</strong>. The shell is
               <strong>async by default</strong>: a foreground app (e.g. <code>sysmon</code>)
               runs cooperatively alongside background services (e.g. <code>httpd&nbsp;--bg</code>)
               on one event loop and one terminal. The classic synchronous shell stays as the
-              crash / recovery fallback so older setups never break. <strong>Now available as an
-              opt-in developer beta</strong>, separate from the stable v0.9.1 channel.
+              crash / recovery fallback so older setups never break. <strong>This is the current
+              stable release</strong> &mdash; the Install and Update default.
             </p>
 
             <div class="roadmap-section-label">Done &mdash; verified on hardware (Pico&nbsp;2W + ESP32-S3)</div>
@@ -330,63 +330,58 @@
             </ul>
 
             <div class="roadmap-note">
-              The v1.0 pre-release is live and opt-in &mdash; grab it from the <a href="install">installer</a>
-              (pick "Pre-release") or run <code>update channel beta</code> on-device. The core is
-              hardware-verified on the Pico&nbsp;2W and ESP32-S3; v0.9.1 stays the recommended stable.
-              What&rsquo;s next lands in <strong>v1.1</strong> (below).
+              v1.0 is the stable release &mdash; grab it from the <a href="install">installer</a>,
+              or run <code>update online</code> on any device to move up to it. Hardware-verified
+              on the Pico&nbsp;2W and ESP32-S3. It is also the <strong>last MicroPython
+              release</strong>: what comes next is a native rewrite. See
+              <a href="switch">the switch to C++</a>.
             </div>
           </div>
         </div>
 
-        <!-- v1.1 — next -->
+        <!-- v2.0 — the C++ rewrite -->
         <div class="roadmap-entry">
           <div class="roadmap-dot-wrap">
-            <div class="roadmap-dot">🟡</div>
+            <div class="roadmap-dot active">🔵</div>
           </div>
-          <div class="roadmap-body">
+          <div class="roadmap-body active">
             <div class="roadmap-header">
-              <span class="roadmap-ver">v1.1 &mdash; next</span>
-              <span class="roadmap-status planned">Planned</span>
+              <span class="roadmap-ver">v2.0 &mdash; Vela II</span>
+              <span class="roadmap-status testing">In development</span>
             </div>
             <p class="roadmap-desc">
-              With the multitasking foundation shipped in v1.0, v1.1 builds on top of it &mdash;
-              the features that needed the async loop in place, plus broader system polish.
+              RPCortex is being <strong>rewritten in C++</strong>, native on the hardware, with no
+              interpreter underneath. Same shell, same commands, same accounts, same package
+              system &mdash; the goal is that you cannot tell the codebase changed except that
+              everything is faster and the memory ceiling is gone. There is no v1.1: the effort
+              that would have gone into it goes here instead.
+              <a href="switch">The full reasoning is here.</a>
             </p>
 
-            <div class="roadmap-section-label">Multitasking, finished</div>
+            <div class="roadmap-section-label">Working now (host-tested, both boards build)</div>
             <ul class="roadmap-items">
-              <li><strong>SSH-style shell over TCP</strong> &mdash; log into the device over WiFi; rides the async networking layer</li>
-              <li><strong>Multiple terminals &amp; a shell status bar</strong> &mdash; multiplexing on the loop, with a persistent top bar (path, user, clock, temp, clock speed, WiFi, RAM/disk)</li>
-              <li><strong>Convert the last sync paths</strong> so background work never stalls, whatever the foreground is doing</li>
+              <li class="done-item"><strong>Runtime package loader</strong> &mdash; compiled apps are loaded, relocated and run at runtime, then unloaded cleanly. This was the go/no-go for keeping a package system without an interpreter, and it went</li>
+              <li class="done-item"><strong>The shell</strong> &mdash; ~50 commands plus v1&rsquo;s aliases, pipes, <code>&amp;&amp;</code>&thinsp;/&thinsp;<code>||</code>, redirection, quoting</li>
+              <li class="done-item"><strong>Line editing</strong> &mdash; cursor and word navigation, history, Tab completion over commands and paths</li>
+              <li class="done-item"><strong>Accounts</strong> &mdash; salted SHA-256, roles, the guided first-run setup, login backoff</li>
+              <li class="done-item"><strong>Filesystem</strong> &mdash; littlefs, in the same on-disk format a v1 device already uses</li>
+              <li class="done-item"><strong>WiFi</strong> &mdash; scan, connect, saved networks, autoconnect</li>
+              <li class="done-item"><strong>The console</strong> &mdash; v1&rsquo;s tagged output, colours and boot banner, reproduced rather than reinterpreted</li>
             </ul>
 
-            <div class="roadmap-section-label">Storage &amp; hardware</div>
+            <div class="roadmap-section-label">Next</div>
             <ul class="roadmap-items">
-              <li><strong>SD-card support</strong> &mdash; an <code>sd</code> package auto-mounted via a startup task</li>
-              <li><strong>Per-device optimized builds</strong> &mdash; frozen modules / custom <code>.uf2</code> and <code>@native</code>/<code>@viper</code> hot paths, especially to bring the RAM-tight Pico&nbsp;1/1W back into play</li>
-              <li><strong>Bluetooth / BLE</strong> on the ESP32-S3 &mdash; a <code>ble</code> package (beacons, simple GATT)</li>
-              <li><strong>Power management</strong> &mdash; light/deep-sleep helpers for battery builds</li>
-            </ul>
-
-            <div class="roadmap-section-label">Shell, UI &amp; quality of life</div>
-            <ul class="roadmap-items">
-              <li><strong>TUI framework</strong> for package devs (adaptive, terminal-size-aware box drawing); rebuild <code>settings</code>/<code>edit</code> on it</li>
-              <li><strong>Adaptive TUI sizing</strong> &mdash; apps lay out to your real terminal size</li>
-              <li><strong>Richer line editing</strong> &mdash; word-wise keys across terminals + history search (Ctrl+R)</li>
-              <li><strong>Themes</strong> &mdash; a <code>theme</code> command to switch palettes (the design system already supports it)</li>
-              <li><strong>Home-changer</strong> &mdash; optionally boot into the desktop, with shortcuts to installed packages</li>
-              <li><strong>A <code>pkg</code> browser TUI</strong> &mdash; pick packages to install/remove from a list</li>
-            </ul>
-
-            <div class="roadmap-section-label">Networking &amp; security</div>
-            <ul class="roadmap-items">
-              <li><strong>WiFi extras</strong> &mdash; static IP / DNS, AP (hotspot) mode, captive-portal setup</li>
-              <li><strong>Encrypted credential storage</strong> &mdash; stop storing WiFi keys in plaintext</li>
-              <li><strong>New packages</strong> &mdash; <code>mqtt</code> (IoT messaging), <code>git</code> (clone/pull), a webhook/REST helper</li>
+              <li><strong>Package repository</strong> &mdash; <code>pkg</code> talking to a real index, so packages install over the air the way they do on v1</li>
+              <li><strong>The rest of the command set</strong> &mdash; <code>ping</code>, <code>ntp</code>, <code>wget</code>/<code>curl</code>, <code>watch</code>, the editor</li>
+              <li><strong>OTA updates</strong> &mdash; A/B flash slots with rollback, which the RP2350 bootrom supports natively</li>
+              <li><strong>Nova&nbsp;D1</strong>, ported onto the new package system</li>
+              <li><strong>USB HID</strong> &mdash; BadUSB, U2F, and the composite-device work that needs native USB</li>
+              <li><strong>The Pico&nbsp;1/1W back in play</strong> &mdash; without an interpreter, 264&nbsp;KB is no longer the wall it was</li>
             </ul>
 
             <div class="roadmap-note">
-              Direction, not a contract &mdash; priorities shift with what people actually want. Ideas welcome.
+              v1.0 keeps working and stays installable &mdash; nothing is being taken away.
+              Direction, not a contract; priorities shift with what people actually want.
             </div>
           </div>
         </div>
