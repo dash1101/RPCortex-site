@@ -3,7 +3,7 @@
   "url": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0-dev.rpc",
   "size": 237592,
   "notes": "Vela v1.0 Pre-release (opt-in). This build makes HTTPS work on a device that has been running a while. The failure was never a shortage of free memory but of CONTIGUOUS memory: a handshake needs one unbroken ~16.9 KB block, and a non-moving collector cannot re-create a run that large once the heap is carved up. A measured Pico 2 W sat at 52 KB free with a largest block of 10 KB, and 'update check' failed every time. RPCortex now claims that block at boot, while the heap is still clean, and 'update check' on the same board succeeds. It is not a permanent tax: the block is handed back automatically once free memory gets tight, and taken again once there is room. Set Settings.TLS_Reserve to off to disable it. Also: update checks follow the channel of the build you are running and can no longer offer you an older version as an upgrade, and 'freeup' actually frees memory on a compiled image (measured 2 KB -> 84 KB). Pre-release \u2014 please report bugs.",
-  "build": "1.00.51",
+  "build": "1.00.52",
   "features": [
     "HTTPS works after the device has been up a while: the contiguous block a TLS handshake needs is claimed at boot and given back automatically when memory gets tight",
     "Update checks follow the channel of the build you are running, and a differing build id can no longer offer an older version as an upgrade",
