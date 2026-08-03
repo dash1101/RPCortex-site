@@ -1,10 +1,17 @@
 [
   {
+    "version": "v2.0.0",
+    "label": "v2.0.0",
+    "tag": "Vela II · stable",
+    "file": "v2.0.0.html",
+    "default": true,
+    "heroSub": "RPCortex Vela II v2.0.0 &mdash; the native C++ release; full reference for the shell, commands, packages and hardware"
+  },
+  {
     "version": "v1.0.0",
     "label": "v1.0.0",
-    "tag": "Vela · beta",
+    "tag": "Vela · MicroPython",
     "file": "v1.0.0.html",
-    "default": true,
     "heroSub": "RPCortex Vela v1.0.0 (beta) &mdash; full reference for the shell, commands, registry, and hardware"
   },
   {

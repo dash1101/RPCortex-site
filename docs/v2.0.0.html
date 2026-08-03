@@ -1,0 +1,332 @@
+<!-- SIDEBAR TOC -->
+    <nav class="docs-toc">
+      <h4>Contents</h4>
+      <a href="#getting-started">Getting Started</a>
+      <a href="#boot-sequence">Boot Sequence</a>
+      <a href="#the-shell">The Shell</a>
+      <a href="#filesystem">Filesystem Commands</a>
+      <a href="#text-commands">Text Processing</a>
+      <a href="#system-commands">System Commands</a>
+      <a href="#multitasking">Multitasking</a>
+      <a href="#automation">Automation &amp; Scripting</a>
+      <a href="#networking">Networking</a>
+      <a href="#web-tools">Web Tools</a>
+      <a href="#package-manager">Package Manager</a>
+      <a href="#os-updates">OS Updates</a>
+      <a href="#editor">Editor</a>
+      <a href="#settings-panel">Settings Panel</a>
+      <a href="#user-management">User Management</a>
+      <a href="#registry">Registry</a>
+      <a href="#diagnostics">Diagnostics</a>
+      <a href="#writing-packages">Writing Packages</a>
+      <a href="#supported-hardware">Supported Hardware</a>
+      <a href="#moving-from-v1">Moving from v1</a>
+      <a href="#known-limitations">Known Limitations</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <article class="docs-article">
+
+      <!-- GETTING STARTED -->
+      <h2 id="getting-started">Getting Started</h2>
+      <p><strong>What you need:</strong></p>
+      <ul>
+        <li>A Raspberry Pi Pico, Pico W, Pico 2, or Pico 2 W</li>
+        <li>A serial terminal at <strong>115200 baud</strong> &mdash; PuTTY on Windows, minicom or screen on Linux/macOS</li>
+      </ul>
+      <p>That is the whole list. v2 is a firmware image, not a set of files copied on top of
+         something else, so there is nothing to install underneath it.</p>
+
+      <h3>Installation</h3>
+      <ol>
+        <li>Hold <strong>BOOTSEL</strong> and plug the board into USB. It appears as a drive called <strong>RP2350</strong> or <strong>RPI-RP2</strong>.</li>
+        <li>Drag the <code>.uf2</code> for your board onto it. Pick it from the <a href="../get">Get</a> page.</li>
+        <li>The board reboots by itself. Open your serial terminal at 115200 baud.</li>
+      </ol>
+      <div class="note-box">
+        <strong>After the first install you should not need that page again.</strong> The device
+        updates itself &mdash; see <a href="#os-updates">OS Updates</a>.
+      </div>
+
+      <h3>First boot</h3>
+      <p>A short setup runs the first time:</p>
+      <ol>
+        <li>You set the <code>root</code> password</li>
+        <li>A <code>guest</code> account is created, which accepts any password</li>
+        <li>You are offered a WiFi connection, on boards that have a radio</li>
+      </ol>
+      <p>After that you are at the shell prompt. The setup only runs once.</p>
+
+      <!-- BOOT SEQUENCE -->
+      <h2 id="boot-sequence">Boot Sequence</h2>
+      <p>Boot brings up the filesystem, the registry, the log ring and the scheduler, prints the
+         banner, then starts the shell as its own task. If WiFi autoconnect is enabled, the join
+         runs <em>in the background</em> &mdash; the login prompt appears immediately rather than
+         waiting for the network.</p>
+      <p>If the previous boot crashed while joining, the automatic join is skipped and says so. A
+         device that is merely offline is far better than one stuck in a boot loop.</p>
+
+      <!-- THE SHELL -->
+      <h2 id="the-shell">The Shell</h2>
+      <p>The shell takes v1's behaviour as its specification. Pipes, <code>&amp;&amp;</code> and
+         <code>||</code>, <code>;</code>, redirects with <code>&gt;</code> and <code>&gt;&gt;</code>,
+         quoting, history and around thirty aliases all work the way they did.</p>
+      <table class="cmd-table">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>Tab</td><td>Complete a command or path. A grey suggestion trails the cursor as you type.</td></tr>
+          <tr><td>Up / Down</td><td>History</td></tr>
+          <tr><td>Left / Right, Ctrl+Left / Right</td><td>Move by character or by word</td></tr>
+          <tr><td>Ctrl+C</td><td>Interrupt the running command</td></tr>
+          <tr><td>Ctrl+D</td><td>Log out</td></tr>
+        </tbody>
+      </table>
+      <p><code>help</code> lists everything. <code>which &lt;name&gt;</code> says whether a name is a
+         built-in, an alias or an installed package command.</p>
+
+      <!-- FILESYSTEM -->
+      <h2 id="filesystem">Filesystem Commands</h2>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td><code>ls</code></td><td>List a directory. Aliases: <code>ll</code>, <code>la</code>, <code>dir</code></td></tr>
+          <tr><td><code>cd</code> <code>pwd</code></td><td>Change and print the working directory</td></tr>
+          <tr><td><code>cat</code></td><td>Print a file</td></tr>
+          <tr><td><code>cp</code> <code>mv</code> <code>rm</code> <code>rename</code></td><td>Copy, move, remove, rename</td></tr>
+          <tr><td><code>mkdir</code> <code>touch</code></td><td>Create a directory or an empty file</td></tr>
+          <tr><td><code>tree</code></td><td>Show the directory tree</td></tr>
+          <tr><td><code>df</code> <code>du</code></td><td>Space free, and space used by a path</td></tr>
+          <tr><td><code>find</code></td><td>Find files by name</td></tr>
+          <tr><td><code>put</code></td><td>Write a line to a file</td></tr>
+          <tr><td><code>fscheck</code></td><td>Check the filesystem</td></tr>
+        </tbody>
+      </table>
+
+      <!-- TEXT -->
+      <h2 id="text-commands">Text Processing</h2>
+      <p><code>grep</code>, <code>wc</code>, <code>head</code>, <code>tail</code>, <code>sort</code>,
+         <code>uniq</code>, <code>hex</code>, <code>basename</code>, <code>dirname</code> and
+         <code>echo</code>. They pipe into each other as you would expect:</p>
+      <div class="codeblock"><pre>ls /Packages | grep app | wc</pre></div>
+
+      <!-- SYSTEM -->
+      <h2 id="system-commands">System Commands</h2>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td><code>sysinfo</code></td><td>Board, clock, memory, storage, network in one screen</td></tr>
+          <tr><td><code>meminfo</code> <code>freeup</code></td><td>Memory report; release what can be released</td></tr>
+          <tr><td><code>uptime</code> <code>date</code> <code>ver</code></td><td>Time since boot, the clock, the version</td></tr>
+          <tr><td><code>pulse</code></td><td>Live system monitor</td></tr>
+          <tr><td><code>fetch</code></td><td>The system summary card. Aliases: <code>neofetch</code>, <code>picofetch</code></td></tr>
+          <tr><td><code>env</code></td><td>Environment</td></tr>
+          <tr><td><code>reboot</code> <code>sreboot</code></td><td>Restart; soft restart</td></tr>
+          <tr><td><code>bootloader</code></td><td>Hand USB back to the boot ROM, for reflashing</td></tr>
+          <tr><td><code>sleep</code></td><td>Wait, without blocking anything else</td></tr>
+        </tbody>
+      </table>
+
+      <!-- MULTITASKING -->
+      <h2 id="multitasking">Multitasking</h2>
+      <p>Tasks are green threads with real stacks, scheduled across <strong>both cores</strong>. A
+         task can block anywhere &mdash; halfway down a call chain, inside a read, in the middle of a
+         directory walk &mdash; which is what makes a background download and an interactive shell
+         possible at the same time.</p>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td><code>ps</code></td><td>Tasks, with state, core, CPU time and stack high-water mark</td></tr>
+          <tr><td><code>task</code></td><td>Scheduled work</td></tr>
+          <tr><td><code>service</code></td><td>Long-running background jobs</td></tr>
+          <tr><td><code>bg</code></td><td>Run a command in the background</td></tr>
+          <tr><td><code>kill</code></td><td>Ask a task to stop</td></tr>
+          <tr><td><code>startup</code></td><td>What runs at boot</td></tr>
+          <tr><td><code>watch</code></td><td>Re-run a command on an interval</td></tr>
+          <tr><td><code>stress</code></td><td>Load generator, for checking the scheduler</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        A task is stopped at its next yield point, where it is by definition not holding a lock or
+        half-way through a flash write. A task that never yields at all is force-terminated by the
+        watchdog instead, and only after it has been asked politely first.
+      </div>
+
+      <!-- AUTOMATION -->
+      <h2 id="automation">Automation &amp; Scripting</h2>
+      <p><code>.rps</code> scripts run with <code>script</code>. The language matches v1's: the same
+         statements, the same conditions, the same rule that two operands which both look numeric
+         are compared as numbers.</p>
+      <div class="codeblock"><pre>set name = world
+if $name == world
+  echo hello $name
+end</pre></div>
+      <p><code>run</code> and <code>exec</code> run a compiled <code>.app</code>. There is no
+         interpreter on the device, so neither runs source.</p>
+
+      <!-- NETWORKING -->
+      <h2 id="networking">Networking</h2>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td><code>wifi</code></td><td>Status, scan, connect, saved networks, autoconnect</td></tr>
+          <tr><td><code>net</code></td><td>Addressing &mdash; DNS servers, static IP, DHCP</td></tr>
+          <tr><td><code>ping</code></td><td>ICMP echo</td></tr>
+          <tr><td><code>nslookup</code></td><td>Resolve a name. Alias: <code>ns</code></td></tr>
+          <tr><td><code>ntp</code></td><td>Set the clock from a time server</td></tr>
+        </tbody>
+      </table>
+      <p>Up to four networks are saved. Their passwords are stored in the clear, exactly as v1 stored
+         them, because the board has no secure element to seal them with &mdash; anyone holding the
+         flash can read them either way.</p>
+
+      <!-- WEB -->
+      <h2 id="web-tools">Web Tools</h2>
+      <p><code>curl</code> and <code>wget</code> speak HTTP and HTTPS. TLS is real: certificates are
+         verified against a root bundle at <code>/os/ca.pem</code>, and an unverifiable connection is
+         refused rather than downgraded.</p>
+      <div class="codeblock"><pre>curl https://example.com
+wget https://example.com/file.bin</pre></div>
+      <p>Downloads stream to flash as they arrive and show a live progress bar. Nothing is held whole
+         in memory, so a file far larger than RAM downloads without trouble.</p>
+
+      <!-- PACKAGES -->
+      <h2 id="package-manager">Package Manager</h2>
+      <p>Packages are compiled <code>.app</code> binaries, loaded and relocated at runtime. A package
+         registers shell commands, which then behave exactly like built-ins.</p>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td><code>pkg update</code></td><td>Fetch the package list</td></tr>
+          <tr><td><code>pkg available</code></td><td>What can be installed</td></tr>
+          <tr><td><code>pkg install &lt;name&gt;</code></td><td>Download, verify and install</td></tr>
+          <tr><td><code>pkg remove &lt;name&gt;</code></td><td>Uninstall</td></tr>
+          <tr><td><code>pkg list</code></td><td>What is installed</td></tr>
+          <tr><td><code>pkgdisable</code> <code>pkgenable</code></td><td>Turn a package off without removing it</td></tr>
+          <tr><td><code>apps</code> <code>unload</code></td><td>Loaded apps; unload one</td></tr>
+          <tr><td><code>stock</code></td><td>The packages installed on first boot</td></tr>
+        </tbody>
+      </table>
+      <p>Every download is checked against the SHA-256 in the index before it is installed. The
+         official repository is configured out of the box, so <code>pkg update</code> works with no
+         setup.</p>
+
+      <!-- UPDATES -->
+      <h2 id="os-updates">OS Updates</h2>
+      <p>The device updates itself over the air.</p>
+      <div class="codeblock"><pre>update check
+update install</pre></div>
+      <p>The new image is downloaded to a staging area in flash and checksummed there. Only once it
+         has been verified whole is the running image replaced, and the write itself runs entirely
+         from RAM &mdash; an update that is interrupted leaves the staged copy untouched rather than
+         a half-written OS.</p>
+
+      <!-- EDITOR -->
+      <h2 id="editor">Editor</h2>
+      <p><code>edit &lt;file&gt;</code> opens the full-screen editor. <code>nano</code> and
+         <code>vi</code> are aliases for it &mdash; the name is a convenience, not a promise of
+         either program's key bindings.</p>
+      <table class="cmd-table">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>Ctrl+S</td><td>Save</td></tr>
+          <tr><td>Ctrl+Q</td><td>Quit, asking first if there are unsaved changes</td></tr>
+          <tr><td>Arrows, PgUp / PgDn, Home / End</td><td>Move</td></tr>
+        </tbody>
+      </table>
+
+      <!-- SETTINGS -->
+      <h2 id="settings-panel">Settings Panel</h2>
+      <p><code>settings</code> opens a full-screen panel over the same TUI layer as the editor: WiFi,
+         accounts, the clock, boot behaviour and appearance, without having to remember registry key
+         names.</p>
+
+      <!-- USERS -->
+      <h2 id="user-management">User Management</h2>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td><code>users</code></td><td>List accounts</td></tr>
+          <tr><td><code>mkacct</code> <code>rmuser</code> <code>usermod</code></td><td>Create, remove, modify</td></tr>
+          <tr><td><code>passwd</code></td><td>Change a password</td></tr>
+          <tr><td><code>whoami</code></td><td>Who you are. Alias: <code>id</code></td></tr>
+          <tr><td><code>sudo</code></td><td>Raise privilege for one command</td></tr>
+          <tr><td><code>logout</code></td><td>End the session</td></tr>
+        </tbody>
+      </table>
+      <p>Passwords are salted SHA-256. There are two privilege levels rather than v1's matrix:
+         anything that changes the machine for everyone is admin-only, and <code>sudo</code> raises
+         it for a single command, and only for someone who is already an admin.</p>
+
+      <!-- REGISTRY -->
+      <h2 id="registry">Registry</h2>
+      <p><code>reg</code> reads and writes the persistent settings store; <code>regreset</code> puts
+         a key back to its default.</p>
+      <div class="codeblock"><pre>reg get WiFi.Auto
+reg set WiFi.Auto true</pre></div>
+
+      <!-- DIAGNOSTICS -->
+      <h2 id="diagnostics">Diagnostics</h2>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td><code>diag</code></td><td>A health sweep across storage, memory, network and tasks</td></tr>
+          <tr><td><code>compat</code></td><td>What this board supports and what it does not</td></tr>
+          <tr><td><code>logdump</code></td><td>The log ring</td></tr>
+          <tr><td><code>inputstat</code></td><td>What the terminal is actually sending, key by key</td></tr>
+          <tr><td><code>bench</code></td><td>RPCMark, if installed</td></tr>
+        </tbody>
+      </table>
+      <p>A crash is recorded in a black box that survives the reset, so the next boot can say which
+         task was running, what it was doing and how long it had been stuck. If a task overruns its
+         stack the tripwire at the bottom of it fires and the OS names the task instead of corrupting
+         its neighbour and blaming something unrelated later.</p>
+
+      <!-- WRITING PACKAGES -->
+      <h2 id="writing-packages">Writing Packages</h2>
+      <p>A package is a small C++ program compiled against a stable ABI and linked into a relocatable
+         <code>.app</code>. It calls back into the OS through a function table rather than linking
+         against it directly, which is what lets one binary keep working across OS releases.</p>
+      <p>See <a href="../PackageDev">Package Development</a> for the toolchain, the ABI and a worked
+         example.</p>
+
+      <!-- HARDWARE -->
+      <h2 id="supported-hardware">Supported Hardware</h2>
+      <table class="cmd-table">
+        <thead><tr><th>Board</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Raspberry Pi Pico 2 W (RP2350 + WiFi)</td><td>Recommended</td></tr>
+          <tr><td>Raspberry Pi Pico 2 (RP2350)</td><td>Supported</td></tr>
+          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td>Supported</td></tr>
+          <tr><td>Raspberry Pi Pico (RP2040)</td><td>Supported</td></tr>
+          <tr><td>ESP32-S3</td><td>v1.0 only &mdash; the v2 port is in progress</td></tr>
+        </tbody>
+      </table>
+      <p>The original Pico and Pico W are back on the current release. v1.0's multitasking runtime
+         could not fit in 264&nbsp;KB and those boards stayed on v0.9.1; without an interpreter to
+         host, v2 fits with room to spare.</p>
+
+      <!-- MOVING FROM V1 -->
+      <h2 id="moving-from-v1">Moving from v1</h2>
+      <p>Most of what you know carries over. The commands, the output, the colours, the boot banner
+         and the shell grammar were all checked against v1 rather than reinvented. What is genuinely
+         different:</p>
+      <ul>
+        <li><strong>Packages are compiled.</strong> Existing <code>.py</code> packages need rebuilding as <code>.app</code>. Running Python under v2 is wanted, but not promised.</li>
+        <li><strong><code>exec</code> does not run source.</strong> There is no interpreter, so it runs a compiled app and says so plainly when handed a <code>.py</code>.</li>
+        <li><strong>Two permission levels, not a matrix.</strong></li>
+        <li><strong><code>rawrepl</code> is <code>bootloader</code>.</strong> v1 dropped to the MicroPython REPL so a host tool could reflash; the equivalent here hands USB back to the boot ROM.</li>
+        <li><strong>Installing is a <code>.uf2</code>, not a file copy.</strong> There is nothing underneath it to install first.</li>
+      </ul>
+      <p><a href="../switch">The full comparison</a> covers why the rewrite happened.</p>
+
+      <!-- LIMITATIONS -->
+      <h2 id="known-limitations">Known Limitations</h2>
+      <ul>
+        <li><strong>The package catalogue is small.</strong> v1's twenty packages have not been ported yet. That work is underway and is the main thing between v2 and parity.</li>
+        <li><strong>No ESP32 port yet.</strong> The OS core is portable; the context switch, storage and network layers are not.</li>
+        <li><strong>No SD card support.</strong> It needs a driver.</li>
+        <li><strong>No <code>runurl</code>.</strong> <code>curl</code> and <code>script</code> both exist, so it is a small gap rather than a missing capability.</li>
+        <li><strong>Packages are not isolated.</strong> A package runs with the same privileges as the OS. MPU-backed isolation is planned.</li>
+      </ul>
+
+    </article>

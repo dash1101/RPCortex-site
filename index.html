@@ -55,22 +55,22 @@
           </g>
         </svg>
       </div>
-      <div class="badge">v1.0.0 &mdash; Vela &nbsp;&bull;&nbsp; Stable</div>
+      <div class="badge">v2.0.0 &mdash; Vela II &nbsp;&bull;&nbsp; Stable</div>
       <h1>A real OS. On your microcontroller.</h1>
       <p class="hero-sub">
-        RPCortex is a full CLI operating system built in MicroPython for the RP2 family and ESP32.
-        User accounts, WiFi, a package manager, a text editor, POST, and a complete interactive
-        shell that <strong>truly multitasks</strong> &mdash; background services keep running while
-        you work. All in half a megabyte of RAM.
+        RPCortex is a full CLI operating system for the RP2 family, written in
+        <strong>native C++</strong>. User accounts, WiFi, HTTPS, a package manager, a text editor,
+        scripting, and a shell that genuinely multitasks across both cores. No interpreter
+        underneath &mdash; the whole OS is one file you drag onto the board.
       </p>
       <div class="hero-actions">
-        <a class="btn-primary" href="install">Web Installer</a>
+        <a class="btn-primary" href="get">Get RPCortex</a>
         <a class="btn-secondary" href="docs">Documentation</a>
-        <a class="btn-secondary" href="https://github.com/dash1101/RPCortex-OS" target="_blank">GitHub</a>
+        <a class="btn-secondary" href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
       </div>
       <p class="hero-note">
-        v1.0 is the stable release &mdash; and the last one built on MicroPython.
-        <a href="switch">RPCortex is moving to native C++ &rarr;</a>
+        v2.0 is the current release. v1.0 &ldquo;Vela&rdquo; still runs on MicroPython and
+        is still available. <a href="switch">What changed, and why &rarr;</a>
       </p>
       <div class="hero-term">
         <div class="term-bar">
@@ -80,10 +80,10 @@
         <div class="term-body" id="term-body"></div>
       </div>
       <div class="stat-band">
-        <div class="stat-chip"><div class="stat-num" data-target="520" data-suffix=" KB">0</div><div class="stat-cap">Target board RAM</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="60"  data-suffix="+">0</div><div class="stat-cap">Shell commands</div></div>
-        <div class="stat-chip"><div class="stat-num" id="statPackages" data-target="20">0</div><div class="stat-cap">Packages</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="100" data-suffix="%">0</div><div class="stat-cap">MicroPython</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="324" data-suffix="&times;">0</div><div class="stat-cap">Faster than v1</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="88"  data-suffix="">0</div><div class="stat-cap">Shell commands</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="254" data-suffix=" KB">0</div><div class="stat-cap">The whole OS</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="2"   data-suffix="">0</div><div class="stat-cap">Cores used</div></div>
       </div>
     </div>
   </header>
@@ -191,18 +191,18 @@
         </thead>
         <tbody>
           <tr><td>Raspberry Pi Pico 2 W (RP2350 + WiFi)</td><td><span class="tag cyan-tag">Recommended</span></td></tr>
-          <tr><td>ESP32-S3</td><td><span class="tag cyan-tag">Recommended</span></td></tr>
           <tr><td>Raspberry Pi Pico 2 (RP2350)</td><td><span class="tag green">Supported</span></td></tr>
-          <tr><td>ESP32 / ESP32-S2</td><td><span class="tag green">Supported</span></td></tr>
-          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag yellow">v0.9.1 only</span></td></tr>
-          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag yellow">v0.9.1 only</span></td></tr>
+          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">Supported</span></td></tr>
+          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">Supported</span></td></tr>
+          <tr><td>ESP32-S3</td><td><span class="tag yellow">v1.0 &mdash; v2 port in progress</span></td></tr>
         </tbody>
       </table>
-      <p class="note">MicroPython v1.25+ &nbsp;&bull;&nbsp; 4 MB flash recommended &nbsp;&bull;&nbsp; 512 KB+ RAM for v1.0 &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
-      <p class="note"><strong>On the RP2040 boards:</strong> v0.9.1 &ldquo;Pulsar&rdquo; runs well in 264&nbsp;KB and stays
-        available for them. v1.0 &ldquo;Vela&rdquo; does not fit &mdash; the multitasking runtime leaves too little
-        headroom on 264&nbsp;KB, so it targets 512&nbsp;KB+ boards. A build tuned specifically for the
-        RP2040 is planned; until then, install v0.9.1 on a Pico or Pico&nbsp;W.</p>
+      <p class="note">No firmware underneath &nbsp;&bull;&nbsp; 2 MB flash &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
+      <p class="note"><strong>The RP2040 boards are back.</strong> v1.0's multitasking runtime could not fit in
+        264&nbsp;KB and those boards were left on v0.9.1. Without an interpreter to host, v2 fits with
+        room to spare, so the original Pico and Pico&nbsp;W get the current release again.</p>
+      <p class="note"><strong>ESP32-S3:</strong> v1.0 supports it and continues to. The v2 port is underway &mdash;
+        the OS core is portable, but the context switch, storage and network layers are not.</p>
     </div>
   </section>
 
@@ -273,45 +273,44 @@ logout          <span class="dim"># back to login</span></pre>
   <section id="install" class="section">
     <div class="inner">
       <h2>Installation</h2>
-      <p style="margin-bottom: 1.5rem;">Prefer a one-click option? The <a href="install" style="color: var(--cyan-dim); font-weight: 500;">Web Installer</a> connects to your device over USB and flashes RPCortex directly from your browser &mdash; no software required (Chrome/Edge only).</p>
+      <p style="margin-bottom: 1.5rem;">One file, dragged onto the board. No drivers, no serial tool, nothing to install on your computer &mdash; the <a href="get" style="color: var(--cyan-dim); font-weight: 500;">Get</a> page picks the right one for your device. (Installing <a href="get" style="color: var(--cyan-dim); font-weight: 500;">v1.0</a> instead still uses the browser installer, since it needs MicroPython underneath.)</p>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-text">
-            <strong>Flash MicroPython</strong>
-            <p>Download the latest MicroPython firmware for your board from <a href="https://micropython.org/download/" target="_blank">micropython.org</a> and flash it using Thonny or <code>picotool</code>. v1.25+ required, v1.28 recommended.</p>
+            <strong>Hold BOOTSEL and plug in</strong>
+            <p>The board appears as a USB drive called <strong>RP2350</strong> or <strong>RPI-RP2</strong>. Nothing to install on your computer.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-text">
-            <strong>Copy files</strong>
-            <p>Download the latest <code>.zip</code> release from <a href="https://github.com/dash1101/RPCortex-OS/releases" target="_blank">GitHub</a> and copy all files to the root of the board's filesystem using Thonny or <code>mpremote</code>.</p>
+            <strong>Drag the .uf2 across</strong>
+            <p>Pick the file for your board on the <a href="get">Get</a> page and drop it onto the drive. The board reboots by itself.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-text">
             <strong>Open a serial terminal</strong>
-            <p>Connect with <strong>PuTTY</strong> (Windows) or <strong>minicom / screen</strong> (Linux/macOS) at <strong>115200 baud</strong>. Thonny's REPL works in a pinch but arrow keys and the editor won't function correctly.</p>
+            <p>Connect with <strong>PuTTY</strong> (Windows) or <strong>minicom / screen</strong> (Linux/macOS) at <strong>115200 baud</strong>.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-text">
             <strong>First boot</strong>
-            <p>POST runs automatically. You'll be prompted to set a <code>root</code> password and given a <code>guest</code> account. Log in and you're in the shell.</p>
+            <p>You'll be prompted to set a <code>root</code> password and given a <code>guest</code> account. Log in and you're in the shell. After this, <code>update install</code> handles new releases over the air &mdash; you should not need this page again.</p>
           </div>
         </div>
       </div>
       <div class="codeblock">
         <div class="codeblock-label">Quick start after first login</div>
         <pre>wifi connect
-pkg repo add https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json
 pkg update
 pkg available
-pkg install HelloWorld
-hello</pre>
+pkg install bench
+bench</pre>
       </div>
     </div>
   </section>
