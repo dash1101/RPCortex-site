@@ -1,0 +1,94 @@
+{
+  "note": "Drives the download picker. A version is a row here, not a page.",
+  "versions": [
+    {
+      "id": "v2.0.0",
+      "name": "RPCortex v2.0.0",
+      "codename": "Vela II",
+      "kind": "native",
+      "tag": "latest",
+      "default": true,
+      "blurb": "Rewritten in C++. No interpreter, both cores, and a package manager that works at any uptime rather than only from a fresh boot.",
+      "install": "uf2",
+      "devices": {
+        "pico2_w": {
+          "label": "Pico 2 W",
+          "chip": "RP2350",
+          "wireless": true,
+          "uf2": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/rpcortex-v2-pico2_w.uf2",
+          "bin": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/rpcortex-v2-pico2_w.bin"
+        },
+        "pico2": {
+          "label": "Pico 2",
+          "chip": "RP2350",
+          "wireless": false,
+          "uf2": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/rpcortex-v2-pico2.uf2",
+          "bin": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/rpcortex-v2-pico2.bin"
+        },
+        "pico_w": {
+          "label": "Pico W",
+          "chip": "RP2040",
+          "wireless": true,
+          "uf2": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/rpcortex-v2-pico_w.uf2",
+          "bin": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/rpcortex-v2-pico_w.bin"
+        },
+        "pico": {
+          "label": "Pico",
+          "chip": "RP2040",
+          "wireless": false,
+          "uf2": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/rpcortex-v2-pico.uf2",
+          "bin": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/rpcortex-v2-pico.bin"
+        }
+      }
+    },
+    {
+      "id": "v1.0.0",
+      "name": "RPCortex v1.0.0",
+      "codename": "Vela",
+      "kind": "micropython",
+      "tag": "stable",
+      "blurb": "The MicroPython line, with cooperative multitasking. Still the recommended build if you rely on Python packages.",
+      "install": "installer",
+      "rpc": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0.rpc",
+      "devices": {
+        "pico2_w": {
+          "label": "Pico 2 W",
+          "chip": "RP2350",
+          "wireless": true
+        },
+        "pico_w": {
+          "label": "Pico W",
+          "chip": "RP2040",
+          "wireless": true
+        },
+        "esp32s3": {
+          "label": "ESP32-S3",
+          "chip": "Xtensa LX7",
+          "wireless": true
+        }
+      }
+    },
+    {
+      "id": "v0.9.1",
+      "name": "RPCortex v0.9.1",
+      "codename": "Pulsar",
+      "kind": "micropython",
+      "tag": "older",
+      "blurb": "The previous stable MicroPython release.",
+      "install": "installer",
+      "rpc": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Final.rpc",
+      "devices": {
+        "pico2_w": {
+          "label": "Pico 2 W",
+          "chip": "RP2350",
+          "wireless": true
+        },
+        "pico_w": {
+          "label": "Pico W",
+          "chip": "RP2040",
+          "wireless": true
+        }
+      }
+    }
+  ]
+}

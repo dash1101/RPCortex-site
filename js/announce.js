@@ -16,17 +16,20 @@
 (function () {
   'use strict';
 
+  // v1.0 "Vela" shipped, so its pre-release notice is retired. The next one
+  // belongs to v2.0 "Vela II" — left written out rather than deleted, since
+  // the shape is the only documentation this file needs, and it goes back on
+  // the moment there are v2 pages worth pointing at.
   var ANNOUNCEMENT = {
-    enabled: true,
-    id:      'v1.0-prerelease-2026-06',
+    enabled: false,
+    id:      'v2.0-vela-ii-2026-08',
     tag:     'New',
-    title:   'RPCortex v1.0 “Vela” — pre-release',
-    body:    'True multitasking has landed. v1.0 is available now as an opt-in ' +
-             'pre-release — grab it from the installer (pick “Pre-release”) or ' +
-             'run “update channel beta” on-device. v0.9.1 stays the recommended ' +
-             'stable build.',
-    cta:     'Check it out',
-    href:    'release',
+    title:   'RPCortex v2.0 “Vela II”',
+    body:    'Rewritten in C++: no interpreter, both cores, and a package ' +
+             'manager that works at any uptime rather than only from a fresh ' +
+             'boot. v1.0 “Vela” stays the recommended MicroPython build.',
+    cta:     'See what changed',
+    href:    'switch',
     repeat:  'session'
   };
 

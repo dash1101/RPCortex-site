@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; Get RPCortex</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="docs">Docs</a>
+        <a href="packages">Packages</a>
+        <a href="roadmap">Roadmap</a>
+        <a href="get">Get</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Get RPCortex</h1>
+      <p>Pick a version and a board. What you get depends on which &mdash; v2 is a
+         single file you drag onto the device, v1 installs over USB from this page.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="inner">
+
+      <!-- STEP 1 — version -->
+      <div class="get-step" id="stepVersion">
+        <div class="get-step-head"><span class="get-step-num">1</span><h2>Choose a version</h2></div>
+        <div class="get-cards" id="versionCards">
+          <p class="get-loading">Loading releases&hellip;</p>
+        </div>
+      </div>
+
+      <!-- STEP 2 — board -->
+      <div class="get-step is-hidden" id="stepDevice">
+        <div class="get-step-head"><span class="get-step-num">2</span><h2>Choose your board</h2></div>
+        <div class="get-cards get-cards-sm" id="deviceCards"></div>
+      </div>
+
+      <!-- STEP 3 — what to do -->
+      <div class="get-step is-hidden" id="stepResult">
+        <div class="get-step-head"><span class="get-step-num">3</span><h2>Install it</h2></div>
+        <div class="get-result" id="resultPanel"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <p>RPCortex &mdash; an operating system for microcontrollers.
+         <a href="https://novalabs.app">NovaLabs</a></p>
+    </div>
+  </footer>
+
+  <script src="js/nav.js"></script>
+  <script src="js/announce.js"></script>
+  <script src="js/get.js"></script>
+</body>
+</html>
