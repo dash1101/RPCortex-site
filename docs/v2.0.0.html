@@ -107,7 +107,7 @@
       <p><code>grep</code>, <code>wc</code>, <code>head</code>, <code>tail</code>, <code>sort</code>,
          <code>uniq</code>, <code>hex</code>, <code>basename</code>, <code>dirname</code> and
          <code>echo</code>. They pipe into each other as you would expect:</p>
-      <div class="codeblock"><pre>ls /Packages | grep app | wc</pre></div>
+      <div class="codeblock"><pre>ls /os/pkg | grep .app | wc</pre></div>
 
       <!-- SYSTEM -->
       <h2 id="system-commands">System Commands</h2>
@@ -173,8 +173,12 @@ end</pre></div>
           <tr><td><code>ping</code></td><td>ICMP echo</td></tr>
           <tr><td><code>nslookup</code></td><td>Resolve a name. Alias: <code>ns</code></td></tr>
           <tr><td><code>ntp</code></td><td>Set the clock from a time server</td></tr>
+          <tr><td><code>radio</code></td><td>Lock every radio off, or release the lock. Alias: <code>airplane</code></td></tr>
         </tbody>
       </table>
+      <p><code>radio off</code> is a hard stop rather than a disconnect: nothing can bring a radio
+         back up while it is set, including the automatic join at boot, and it survives a reboot
+         because a privacy switch that forgets itself is not one.</p>
       <p>Up to four networks are saved. Their passwords are stored in the clear, exactly as v1 stored
          them, because the board has no secure element to seal them with &mdash; anyone holding the
          flash can read them either way.</p>
@@ -186,6 +190,10 @@ end</pre></div>
          refused rather than downgraded.</p>
       <div class="codeblock"><pre>curl https://example.com
 wget https://example.com/file.bin</pre></div>
+      <p><code>runurl &lt;url&gt;</code> downloads a <code>.rps</code> script and runs it. It asks
+         first unless given <code>-y</code> &mdash; fetching and executing a remote script is
+         arbitrary code execution, and the confirmation is the point of the command rather than an
+         obstacle in it.</p>
       <p>Downloads stream to flash as they arrive and show a live progress bar. Nothing is held whole
          in memory, so a file far larger than RAM downloads without trouble.</p>
 
@@ -222,8 +230,8 @@ update install</pre></div>
 
       <!-- EDITOR -->
       <h2 id="editor">Editor</h2>
-      <p><code>edit &lt;file&gt;</code> opens the full-screen editor. <code>nano</code> and
-         <code>vi</code> are aliases for it &mdash; the name is a convenience, not a promise of
+      <p><code>edit &lt;file&gt;</code> opens the full-screen editor. <code>nano</code>,
+         <code>vi</code> and <code>vim</code> are the same command &mdash; the name is a convenience, not a promise of
          either program's key bindings.</p>
       <table class="cmd-table">
         <thead><tr><th>Key</th><th>Does</th></tr></thead>
@@ -251,8 +259,13 @@ update install</pre></div>
           <tr><td><code>whoami</code></td><td>Who you are. Alias: <code>id</code></td></tr>
           <tr><td><code>sudo</code></td><td>Raise privilege for one command</td></tr>
           <tr><td><code>logout</code></td><td>End the session</td></tr>
+          <tr><td><code>autonomy</code></td><td>Boot straight to a shell with no login prompt</td></tr>
         </tbody>
       </table>
+      <p><code>autonomy on</code> suits a device that lives on a shelf doing a job, where there is
+         nobody present to type a password. Anyone with physical access then has that account, so it
+         asks before enabling. If the named account is later removed the device falls back to asking
+         for a login rather than becoming unreachable.</p>
       <p>Passwords are salted SHA-256. There are two privilege levels rather than v1's matrix:
          anything that changes the machine for everyone is admin-only, and <code>sudo</code> raises
          it for a single command, and only for someone who is already an admin.</p>
@@ -274,8 +287,17 @@ reg set WiFi.Auto true</pre></div>
           <tr><td><code>logdump</code></td><td>The log ring</td></tr>
           <tr><td><code>inputstat</code></td><td>What the terminal is actually sending, key by key</td></tr>
           <tr><td><code>bench</code></td><td>RPCMark, if installed</td></tr>
+          <tr><td><code>safeboot</code></td><td>Restart with no packages, services or startup items</td></tr>
+          <tr><td><code>factoryreset</code></td><td>Erase all data and restart into first-run setup</td></tr>
         </tbody>
       </table>
+      <p><code>safeboot</code> is for when an installed package or a service is what is stopping the
+         device being usable. Given a command &mdash; <code>safeboot pkg remove thing</code> &mdash;
+         it stages it and runs it once the quiet shell is up. The maintenance flag is one-shot, so
+         however that boot ends the next one is normal.</p>
+      <p><code>factoryreset</code> erases accounts, settings, packages and all user directories, then
+         restarts into first-run setup. It keeps the OS and its certificate bundle, so a reset device
+         can still reach the network and install things again.</p>
       <p>A crash is recorded in a black box that survives the reset, so the next boot can say which
          task was running, what it was doing and how long it had been stuck. If a task overruns its
          stack the tripwire at the bottom of it fires and the OS names the task instead of corrupting
@@ -325,7 +347,6 @@ reg set WiFi.Auto true</pre></div>
         <li><strong>The package catalogue is small.</strong> v1's twenty packages have not been ported yet. That work is underway and is the main thing between v2 and parity.</li>
         <li><strong>No ESP32 port yet.</strong> The OS core is portable; the context switch, storage and network layers are not.</li>
         <li><strong>No SD card support.</strong> It needs a driver.</li>
-        <li><strong>No <code>runurl</code>.</strong> <code>curl</code> and <code>script</code> both exist, so it is a small gap rather than a missing capability.</li>
         <li><strong>Packages are not isolated.</strong> A package runs with the same privileges as the OS. MPU-backed isolation is planned.</li>
       </ul>
 
