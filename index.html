@@ -55,7 +55,7 @@
           </g>
         </svg>
       </div>
-      <div class="badge">v2.0.0 &mdash; Vela II &nbsp;&bull;&nbsp; Stable</div>
+      <div class="badge">v1.0 &ldquo;Vela&rdquo; &nbsp;&bull;&nbsp; Stable &nbsp;&nbsp;|&nbsp;&nbsp; v2.0 &ldquo;Vela II&rdquo; &nbsp;&bull;&nbsp; Early alpha</div>
       <h1>A real OS. On your microcontroller.</h1>
       <p class="hero-sub">
         RPCortex is a full CLI operating system for the RP2 family, written in
@@ -69,8 +69,10 @@
         <a class="btn-secondary" href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
       </div>
       <p class="hero-note">
-        v2.0 is the current release. v1.0 &ldquo;Vela&rdquo; still runs on MicroPython and
-        is still available. <a href="switch">What changed, and why &rarr;</a>
+        <strong>v1.0 is the release to run.</strong> v2.0 is the native C++ rewrite and it is
+        early alpha &mdash; it boots, joins a network and runs packages, and it is still
+        finding the kind of bug that needs a reflash. Try it on a board you can afford to
+        wipe. <a href="switch">What changed, and why &rarr;</a>
       </p>
       <div class="hero-term">
         <div class="term-bar">
@@ -82,8 +84,8 @@
       <div class="stat-band">
         <div class="stat-chip"><div class="stat-num" data-target="324" data-suffix="&times;">0</div><div class="stat-cap">Faster than v1</div></div>
         <div class="stat-chip"><div class="stat-num" data-target="88"  data-suffix="">0</div><div class="stat-cap">Shell commands</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="254" data-suffix=" KB">0</div><div class="stat-cap">The whole OS</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="2"   data-suffix="">0</div><div class="stat-cap">Cores used</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="1" data-suffix="">0</div><div class="stat-cap">File to install</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="2"   data-suffix="">0</div><div class="stat-cap">Cores multitasking</div></div>
       </div>
     </div>
   </header>
@@ -192,15 +194,19 @@
         <tbody>
           <tr><td>Raspberry Pi Pico 2 W (RP2350 + WiFi)</td><td><span class="tag cyan-tag">Recommended</span></td></tr>
           <tr><td>Raspberry Pi Pico 2 (RP2350)</td><td><span class="tag green">Supported</span></td></tr>
-          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">Supported</span></td></tr>
-          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">Supported</span></td></tr>
+          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">v1.0 &mdash; v2 needs a smaller build</span></td></tr>
+          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">v1.0 &mdash; v2 needs a smaller build</span></td></tr>
           <tr><td>ESP32-S3</td><td><span class="tag yellow">v1.0 &mdash; v2 port in progress</span></td></tr>
         </tbody>
       </table>
       <p class="note">No firmware underneath &nbsp;&bull;&nbsp; 2 MB flash &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
-      <p class="note"><strong>The RP2040 boards are back.</strong> v1.0's multitasking runtime could not fit in
-        264&nbsp;KB and those boards were left on v0.9.1. Without an interpreter to host, v2 fits with
-        room to spare, so the original Pico and Pico&nbsp;W get the current release again.</p>
+      <p class="note"><strong>The RP2040 boards, honestly.</strong> v1.0's multitasking runtime could not fit
+        in 264&nbsp;KB of RAM and those boards were left on v0.9.1. Dropping the interpreter solves the
+        RAM problem, but it does not solve the FLASH one: those boards have 2 MB in total, and v2
+        currently reserves that much for the firmware and its update slot &mdash; which leaves the
+        filesystem nothing. Bringing them back means a build without the two-slot update
+        layout, and probably without Bluetooth. It is intended, it is not done, and until it is
+        the honest answer for an original Pico is v1.0.</p>
       <p class="note"><strong>ESP32-S3:</strong> v1.0 supports it and continues to. The v2 port is underway &mdash;
         the OS core is portable, but the context switch, storage and network layers are not.</p>
     </div>
