@@ -37,6 +37,17 @@
   <section class="section">
     <div class="inner">
 
+      <!-- WHICH VERSION THIS PAGE IS FOR -->
+      <div class="codeblock" style="margin-bottom:24px;">
+        <div class="codeblock-label">This page is the v1.0 catalogue</div>
+        <pre style="white-space:pre-wrap;">Everything below is a <strong>.pkg</strong> file: a Python module for RPCortex v1.0 "Vela",
+installed over USB from this page or with <strong>pkg install</strong> on the device.
+
+v2.0 "Vela II" has no Python in it, so a .pkg cannot run there. Its packages are
+native <strong>.app</strong> objects from a separate index, and they are installed from the
+shell rather than from here. See below.</pre>
+      </div>
+
       <!-- CONNECT BAR -->
       <div class="connect-bar" id="connectBar">
         <div class="connect-bar-left">
@@ -90,7 +101,7 @@
       <!-- CLI REFERENCE -->
       <div style="margin-top:40px;">
         <div class="codeblock">
-          <div class="codeblock-label">Or install from the shell (WiFi required)</div>
+          <div class="codeblock-label">v1.0 &mdash; or install from the shell (WiFi required)</div>
           <pre>pkg repo add https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json
 pkg update
 pkg available
@@ -98,11 +109,35 @@ pkg install &lt;name&gt;</pre>
         </div>
       </div>
 
+      <!-- v2 PACKAGES -->
+      <div style="margin-top:28px;">
+        <div class="codeblock">
+          <div class="codeblock-label">v2.0 &mdash; packages come from the device, not from here</div>
+          <pre>pkg available            <span class="dim"># the built-in catalogue, no network needed</span>
+pkg update               <span class="dim"># refresh it over HTTPS</span>
+pkg install &lt;name&gt;
+pkg list</pre>
+        </div>
+        <p class="note" style="margin-top:14px;">A v2 device ships knowing its own catalogue, so
+          <code>pkg available</code> works before it has ever been online and there is no repository to
+          add by hand. Packages are native <code>.app</code> objects built for ARMv6-M, which is why one
+          binary runs on both the RP2040 and RP2350 parts, and they run
+          <strong>unprivileged</strong> on RP2350 &mdash; on a stack and a heap of their own, unable to
+          reach the rest of the system.</p>
+        <p class="note"><strong>There is no web installer for v2 yet.</strong> The page above talks the
+          v1.0 serial protocol, and v2 does not speak it. Until that is written, v2 packages install from
+          the shell.</p>
+      </div>
+
       <!-- DEVELOPER CTA -->
       <div class="pkgdev-cta">
         <div class="pkgdev-cta-text">
           <h3>Build your own package</h3>
-          <p>Bundle a Python module into a <code>.pkg</code> and ship it to any RPCortex device. The guide walks through <code>package.cfg</code>, the <code>make_pkg.py</code> builder, compiled <code>.mpy</code> packages, and publishing to a repo.</p>
+          <p>Bundle a Python module into a <code>.pkg</code> and ship it to any RPCortex <strong>v1.0</strong>
+             device. The guide walks through <code>package.cfg</code>, the <code>make_pkg.py</code> builder,
+             compiled <code>.mpy</code> packages, and publishing to a repo. A v2 package is a different
+             thing entirely &mdash; a C++ object compiled against the firmware ABI &mdash; and its guide is
+             not written yet.</p>
         </div>
         <a class="btn-primary pkgdev-cta-btn" href="PackageDev">Package Dev Guide &rarr;</a>
       </div>
