@@ -110,9 +110,11 @@ root@vela:/&gt; help
         2&nbsp;MB of flash, and v2 reserves 2&nbsp;MB for firmware &mdash; one megabyte to run
         from, one as a staging slot an update is assembled in. That leaves nothing for
         storage. The image boots and the shell works, but nothing can be saved: no accounts,
-        no settings, no packages. Fixing it means shrinking the reserve or giving RP2040 a
-        different flash layout, and until that lands these two boards are for looking at
-        rather than using. On an RP2040 board, <strong>v1.0 is the version to run.</strong>
+        no settings, no packages.
+        <br><br>
+        <strong>This is temporary.</strong> These boards will get a filesystem &mdash; a small
+        one, from a reserve sized for RP2040 rather than shared with RP2350. Until that lands,
+        <strong>v1.0 is the version to run on an RP2040 board.</strong>
       </div>
 
       <h3>What RP2350 adds beyond storage</h3>
@@ -849,8 +851,9 @@ update channel beta | stable</code></pre>
       <h2 id="known-limitations">Known Limitations</h2>
       <p>The honest list, as of v2.0.0.</p>
       <ul>
-        <li><strong>RP2040 boards have no filesystem.</strong> The firmware reserve is their
-            entire flash. See <a href="#boards">Which Boards Work</a>.</li>
+        <li><strong>RP2040 boards have no filesystem yet.</strong> The firmware reserve is
+            their entire flash. A smaller RP2040-specific reserve is planned. See
+            <a href="#boards">Which Boards Work</a>.</li>
         <li><strong>A package that exhausts its own stack restarts the device.</strong> Every
             other package fault is contained. See <a href="#sandbox">The Sandbox</a>.</li>
         <li><strong>No Python.</strong> Packages are compiled. That is the point of v2, but it
