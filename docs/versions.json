@@ -2,10 +2,10 @@
   {
     "version": "v2.0.0",
     "label": "v2.0.0",
-    "tag": "Vela II · stable",
+    "tag": "Vela II · early alpha",
     "file": "v2.0.0.html",
     "default": true,
-    "heroSub": "RPCortex Vela II v2.0.0 &mdash; the native C++ release; full reference for the shell, commands, packages and hardware"
+    "heroSub": "RPCortex Vela II v2.0.0 &mdash; the native C++ release, in early alpha. Full reference for the shell, commands, packages and hardware."
   },
   {
     "version": "v1.0.0",
