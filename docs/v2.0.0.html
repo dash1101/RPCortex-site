@@ -669,15 +669,19 @@ download report.txt      # or just these files</code></pre>
           <tr><td>Uses a bad pointer</td><td>The command. A report names the package and the offset, and the shell carries on.</td></tr>
           <tr><td>Stops responding entirely</td><td>The command. The call is taken back at a timer interrupt; the session survives.</td></tr>
           <tr><td>Asks for something that does not exist</td><td>Nothing. The call is refused and an error returned.</td></tr>
-          <tr><td>Runs out of its own stack</td><td>A restart, with a report naming it.</td></tr>
+          <tr><td>Runs out of its own stack</td><td>The command. A report names the package, and the shell carries on.</td></tr>
         </tbody>
       </table>
       <div class="note-box">
-        <strong>Why a stack overflow still restarts.</strong> An exception pushes its frame
-        <em>below</em> the stack pointer, so a stack with nothing left has nowhere to put one.
-        The frame is never written, and a frame that was never written cannot be redirected
-        somewhere survivable. That is the architecture rather than a missing feature, and the
-        report still names the package and the fault.
+        <strong>Even a stack overflow.</strong> That one took two things to survive. The
+        fault handler stands on a stack of its own, rather than the one that just ran out
+        &mdash; it has to release the stack guard to run at all, so anything it did on the
+        exhausted stack would be written past the bottom of it. And the guard sits a little
+        above the bottom of the package's stack rather than at it, so the instruction that
+        overflows is <em>refused</em> with the stack pointer intact and there is still room
+        to take the exception. Without that second part the stack pointer walks straight out
+        of the region, the exception frame lands in the heap, and there is nothing valid left
+        to redirect.
       </div>
       <p>On RP2040 none of this applies: there are not enough protection regions to spare, so
          packages there run with the OS's own privileges.</p>
@@ -854,8 +858,6 @@ update channel beta | stable</code></pre>
         <li><strong>RP2040 boards have no filesystem yet.</strong> The firmware reserve is
             their entire flash. A smaller RP2040-specific reserve is planned. See
             <a href="#boards">Which Boards Work</a>.</li>
-        <li><strong>A package that exhausts its own stack restarts the device.</strong> Every
-            other package fault is contained. See <a href="#sandbox">The Sandbox</a>.</li>
         <li><strong>No Python.</strong> Packages are compiled. That is the point of v2, but it
             is a real loss of convenience against v1.</li>
         <li><strong>The package catalogue is small.</strong> v1's twenty packages have not all
