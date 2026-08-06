@@ -130,6 +130,14 @@
           <tr><td>Pico</td><td>247 KB</td><td>1.25 MB</td><td>no</td></tr>
         </tbody>
       </table>
+      <div class="warn-box">
+        <strong>The RP2040 images have not been booted.</strong> They build, both image checks
+        pass on them, and the flash layout was verified by reading the constant back out of the
+        compiled firmware &mdash; but no Pico or Pico W has run one. Every hardware result quoted
+        here is from a Pico 2 W. That is what pre-release means, and it is the first thing worth
+        confirming if you have one of those boards.
+      </div>
+
       <p><strong>The RP2040 boards are back.</strong> v1.0 had to drop them because the
          multitasking build did not fit in 264 KB of RAM; without an interpreter it does. They
          hold 2 MB of flash against the RP2350's 4, so the firmware is built for size there and
