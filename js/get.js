@@ -62,6 +62,19 @@
       c.classList.remove('is-chosen');
     });
     if (card) card.classList.add('is-chosen');
+
+    // THE BOARD STEP ONLY MEANS SOMETHING FOR A .uf2.
+    //
+    // A native release is one image per board and picking the wrong one gives
+    // you a device that does not boot. The MicroPython releases are the same
+    // files whatever they are installed onto — the browser installer talks to
+    // whatever is plugged in — so asking which board is a question with no
+    // consequence, and a step with no consequence is a step in the way.
+    if (chosenVersion.install !== 'uf2') {
+      stepDevice.classList.add('is-hidden');
+      renderResult(null, null);
+      return;
+    }
     renderDevices();
     stepDevice.classList.remove('is-hidden');
     stepResult.classList.add('is-hidden');
@@ -143,6 +156,13 @@
             'The Web Serial API does not exist in Firefox or Safari.</li>' +
         '<li>Pick <strong>' + esc(chosenVersion.id) + '</strong> in the version list and connect.</li>' +
       '</ol>' +
+      // Which boards, as information rather than as a choice. The files are the
+      // same whatever they are installed onto, so this is worth saying and not
+      // worth a step.
+      '<p class="get-dl-sub">Runs on ' +
+        Object.keys(chosenVersion.devices).map(function (k) {
+          return esc(chosenVersion.devices[k].label);
+        }).join(', ') + '.</p>' +
       '<div class="get-aside">' +
         '<h4>Prefer to do it yourself?</h4>' +
         '<p>The archive is <a href="' + esc(chosenVersion.rpc) + '" download>' +

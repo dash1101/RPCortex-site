@@ -55,7 +55,7 @@
           </g>
         </svg>
       </div>
-      <div class="badge">v1.0 &ldquo;Vela&rdquo; &nbsp;&bull;&nbsp; Stable &nbsp;&nbsp;|&nbsp;&nbsp; v2.0 &ldquo;Vela II&rdquo; &nbsp;&bull;&nbsp; Early alpha</div>
+      <div class="badge">v2.0 &ldquo;Vela II&rdquo; &nbsp;&bull;&nbsp; Latest &nbsp;&nbsp;|&nbsp;&nbsp; v1.0 &ldquo;Vela&rdquo; &nbsp;&bull;&nbsp; MicroPython</div>
       <h1>A real OS. On your microcontroller.</h1>
       <p class="hero-sub">
         RPCortex is a full CLI operating system for the RP2 family, written in
@@ -69,10 +69,9 @@
         <a class="btn-secondary" href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
       </div>
       <p class="hero-note">
-        <strong>v1.0 is the release to run.</strong> v2.0 is the native C++ rewrite and it is
-        early alpha &mdash; it boots, joins a network and runs packages, and it is still
-        finding the kind of bug that needs a reflash. Try it on a board you can afford to
-        wipe. <a href="switch">What changed, and why &rarr;</a>
+        <strong>v2.0 is the release to run</strong> on any RP2 board. v1.0 is the MicroPython
+        version and is still the answer for an ESP32-S3, where the v2 port is underway but not
+        finished. <a href="switch">What changed, and why &rarr;</a>
       </p>
       <div class="hero-term">
         <div class="term-bar">
@@ -82,10 +81,10 @@
         <div class="term-body" id="term-body"></div>
       </div>
       <div class="stat-band">
-        <div class="stat-chip"><div class="stat-num" data-target="324" data-suffix="&times;">0</div><div class="stat-cap">Faster than v1</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="88"  data-suffix="">0</div><div class="stat-cap">Shell commands</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="1" data-suffix="">0</div><div class="stat-cap">File to install</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="2"   data-suffix="">0</div><div class="stat-cap">Cores multitasking</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="200" data-suffix="&times;">0</div><div class="stat-cap">Faster than v1</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="97"  data-suffix="">0</div><div class="stat-cap">Shell commands</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="99"  data-suffix="&nbsp;KB">0</div><div class="stat-cap">RAM in use idle</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="2"   data-suffix="">0</div><div class="stat-cap">Cores, real threads</div></div>
       </div>
     </div>
   </header>
@@ -98,12 +97,12 @@
         <div class="feature-card">
           <div class="feature-icon">⌨</div>
           <h3>Interactive Shell</h3>
-          <p>Colored prompt, full cursor navigation, command history, and session logging. Pipe commands (<code>cat log | grep ERR</code>) and chain them with <code>&amp;&amp;</code> / <code>||</code>. Commands load once and stay cached.</p>
+          <p>Coloured prompt, cursor navigation, history that survives a reboot, and Tab completion that adapts to case. Pipe commands (<code>cat log | grep ERR</code>), chain them with <code>&amp;&amp;</code> / <code>||</code>, redirect with <code>&gt;</code>. Status lines stay on the console rather than going down the pipe.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔀</div>
-          <h3>True Multitasking</h3>
-          <p>The shell is async by default. Start a background service like <code>httpd --bg</code>, then keep right on working &mdash; foreground apps cooperatively yield, so a web server (or a download, or a ping) runs while you use the prompt.</p>
+          <h3>Real Multithreading</h3>
+          <p>Both cores, one task table. v1 could not touch core 1 at all &mdash; MicroPython's heap is not safe across cores &mdash; and here an unpinned task lives on core 1 about 99% of the time. <code>ps</code> shows pid, state, core, stack and CPU time; <code>kill</code> stops one.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🤖</div>
@@ -128,7 +127,7 @@
         <div class="feature-card">
           <div class="feature-icon">📦</div>
           <h3>Package Manager</h3>
-          <p>Install packages by name from a repo, manage repos, search and browse the index, upgrade installed packages. No reboot needed after install or remove.</p>
+          <p>Install by name from a repository, search the index, upgrade everything outdated, remove cleanly. Packages are compiled <code>.app</code> files that load at runtime &mdash; and on RP2350 they run <strong>unprivileged</strong>, so a bad one costs you a command rather than the device.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">✏</div>
@@ -138,7 +137,7 @@
         <div class="feature-card">
           <div class="feature-icon">🚀</div>
           <h3>Boot &amp; POST</h3>
-          <p>Every boot runs a self-test: registry check, CPU arithmetic, RAM verification, clock calibration, and optional WiFi autoconnect. Recovery shell if anything fails.</p>
+          <p>Every boot reports what it found and what the last run was doing if it ended badly &mdash; a log ring and a black box in memory the reset does not clear. <code>safeboot</code> starts with no services or packages, and three failed boots rebuild the filesystem rather than needing another computer.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🎛</div>
@@ -148,7 +147,7 @@
         <div class="feature-card">
           <div class="feature-icon">⚡</div>
           <h3>Performance Tools</h3>
-          <p>Overclock and underclock via <code>pulse</code>. Benchmark with <code>bench</code> (RPCMark). System info via <code>fetch</code>. Heap management with <code>freeup</code>.</p>
+          <p>Clock control with <code>pulse</code>, memory and fragmentation with <code>meminfo</code>, the protection unit with <code>mpu</code>, and what the board actually supports with <code>compat</code>. <code>bench</code> and <code>probe</code> install from the repository when you want numbers.</p>
         </div>
       </div>
     </div>
@@ -166,7 +165,7 @@
         </div>
         <div class="docs-card">
           <h3>Release Notes</h3>
-          <p>What's new in each release &mdash; from pipes, scripting, and OTA updates through to v1.0's true multitasking.</p>
+          <p>What changed in each release. v2.0 is the C++ rewrite: no interpreter, both cores, and packages that cannot take the device down.</p>
           <a href="release">Release Notes &rarr;</a>
         </div>
         <div class="docs-card">
@@ -176,7 +175,7 @@
         </div>
         <div class="docs-card">
           <h3>Build a Package</h3>
-          <p>Step-by-step guide: write a command, create a <code>package.cfg</code>, build a <code>.pkg</code> with <code>make_pkg.py</code>, host a repo, and get listed.</p>
+          <p>Write a command in C, build a <code>.app</code> against the SDK, push it over serial, and get it listed in the repository.</p>
           <a href="PackageDev">Package Dev Guide &rarr;</a>
         </div>
       </div>
@@ -194,21 +193,22 @@
         <tbody>
           <tr><td>Raspberry Pi Pico 2 W (RP2350 + WiFi)</td><td><span class="tag cyan-tag">Recommended</span></td></tr>
           <tr><td>Raspberry Pi Pico 2 (RP2350)</td><td><span class="tag green">Supported</span></td></tr>
-          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">v1.0 &mdash; v2 needs a smaller build</span></td></tr>
-          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">v1.0 &mdash; v2 needs a smaller build</span></td></tr>
-          <tr><td>ESP32-S3</td><td><span class="tag yellow">v1.0 &mdash; v2 port in progress</span></td></tr>
+          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">Supported</span></td></tr>
+          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">Supported</span></td></tr>
+          <tr><td>ESP32-S3 and other ESP32</td><td><span class="tag yellow">v1.0 today &mdash; v2 port underway</span></td></tr>
         </tbody>
       </table>
-      <p class="note">No firmware underneath &nbsp;&bull;&nbsp; 2 MB flash &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
-      <p class="note"><strong>The RP2040 boards, honestly.</strong> v1.0's multitasking runtime could not fit
-        in 264&nbsp;KB of RAM and those boards were left on v0.9.1. Dropping the interpreter solves the
-        RAM problem, but it does not solve the FLASH one: those boards have 2 MB in total, and v2
-        currently reserves that much for the firmware and its update slot &mdash; which leaves the
-        filesystem nothing. Bringing them back means a build without the two-slot update
-        layout, and probably without Bluetooth. It is intended, it is not done, and until it is
-        the honest answer for an original Pico is v1.0.</p>
-      <p class="note"><strong>ESP32-S3:</strong> v1.0 supports it and continues to. The v2 port is underway &mdash;
-        the OS core is portable, but the context switch, storage and network layers are not.</p>
+      <p class="note">No firmware underneath &nbsp;&bull;&nbsp; 2&ndash;4 MB flash &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
+      <p class="note"><strong>The RP2040 boards are back.</strong> v1.0 had to leave them on v0.9.1 because
+        its multitasking runtime would not fit in 264&nbsp;KB of RAM; without an interpreter it does.
+        They hold 2 MB of flash against the RP2350's 4, so the firmware is built for size there and
+        the filesystem is smaller &mdash; 384 KB on a Pico W, 1.25 MB on a Pico &mdash; with wireless,
+        Bluetooth, TLS and over-the-air updates all still in. What they do not get is the package
+        sandbox: ARMv6-M protection regions are power-of-two sized and aligned to their own size,
+        so the five a package needs cost more RAM than those boards have.</p>
+      <p class="note"><strong>ESP32-S3 and the other ESP32 parts:</strong> v1.0 supports them today and continues
+        to. The v2 port is underway &mdash; the portable core moves unchanged, and the context switch,
+        storage and network layers are the work.</p>
     </div>
   </section>
 
@@ -239,11 +239,11 @@
         <div class="cmd-block">
           <div class="cmd-block-label">Filesystem</div>
           <pre>ls              <span class="dim"># list with size + timestamp</span>
-cd ~/projects   <span class="dim"># ~ is your home dir</span>
-cp file.py bak/
-tree            <span class="dim"># recursive directory tree</span>
+tree /os        <span class="dim"># recursive directory tree</span>
+rm -r /old      <span class="dim"># or rm /logs/*.txt</span>
 df              <span class="dim"># flash usage</span>
-edit notes.txt  <span class="dim"># open the built-in editor</span></pre>
+download        <span class="dim"># drag files on and off over USB</span>
+edit notes.txt  <span class="dim"># nano, vi and vim open the same one</span></pre>
         </div>
         <div class="cmd-block">
           <div class="cmd-block-label">Networking</div>
@@ -256,20 +256,21 @@ nslookup example.com</pre>
         </div>
         <div class="cmd-block">
           <div class="cmd-block-label">System</div>
-          <pre>fetch           <span class="dim"># system info display</span>
-sysinfo         <span class="dim"># OS + hardware overview</span>
-pulse set 220   <span class="dim"># overclock to 220 MHz</span>
-bench           <span class="dim"># run RPCMark</span>
-freeup          <span class="dim"># compact heap, report RAM</span>
-settings        <span class="dim"># open settings panel</span></pre>
+          <pre>fetch           <span class="dim"># system info with the logo</span>
+meminfo         <span class="dim"># RAM, and how fragmented it is</span>
+pulse set 250   <span class="dim"># clock speed, now or at boot</span>
+mpu             <span class="dim"># what the protection unit enforces</span>
+compat          <span class="dim"># what this board actually supports</span>
+settings        <span class="dim"># the settings panel</span></pre>
         </div>
         <div class="cmd-block">
-          <div class="cmd-block-label">Users</div>
-          <pre>whoami
-mkacct alice    <span class="dim"># create account</span>
-usermod alice passwd  <span class="dim"># change password</span>
-rmuser alice
-logout          <span class="dim"># back to login</span></pre>
+          <div class="cmd-block-label">Tasks &amp; diagnostics</div>
+          <pre>ps              <span class="dim"># pid, state, core, stack, CPU</span>
+bg httpd        <span class="dim"># run something in the background</span>
+kill 7          <span class="dim"># stop it at its next yield</span>
+task add 60 ntp sync   <span class="dim"># every 60 seconds</span>
+service add httpd      <span class="dim"># started at boot, stays up</span>
+logdump         <span class="dim"># survives a reboot</span></pre>
         </div>
       </div>
     </div>
@@ -279,44 +280,16 @@ logout          <span class="dim"># back to login</span></pre>
   <section id="install" class="section">
     <div class="inner">
       <h2>Installation</h2>
-      <p style="margin-bottom: 1.5rem;">One file, dragged onto the board. No drivers, no serial tool, nothing to install on your computer &mdash; the <a href="get" style="color: var(--cyan-dim); font-weight: 500;">Get</a> page picks the right one for your device. (Installing <a href="get" style="color: var(--cyan-dim); font-weight: 500;">v1.0</a> instead still uses the browser installer, since it needs MicroPython underneath.)</p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-text">
-            <strong>Hold BOOTSEL and plug in</strong>
-            <p>The board appears as a USB drive called <strong>RP2350</strong> or <strong>RPI-RP2</strong>. Nothing to install on your computer.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-text">
-            <strong>Drag the .uf2 across</strong>
-            <p>Pick the file for your board on the <a href="get">Get</a> page and drop it onto the drive. The board reboots by itself.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-text">
-            <strong>Open a serial terminal</strong>
-            <p>Connect with <strong>PuTTY</strong> (Windows) or <strong>minicom / screen</strong> (Linux/macOS) at <strong>115200 baud</strong>.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-text">
-            <strong>First boot</strong>
-            <p>You'll be prompted to set a <code>root</code> password and given a <code>guest</code> account. Log in and you're in the shell. After this, <code>update install</code> handles new releases over the air &mdash; you should not need this page again.</p>
-          </div>
-        </div>
-      </div>
-      <div class="codeblock">
-        <div class="codeblock-label">Quick start after first login</div>
-        <pre>wifi connect
-pkg update
-pkg available
-pkg install bench
-bench</pre>
+      <p style="margin-bottom: 1.5rem;">One file, dragged onto the board. No drivers, no serial
+        tool, nothing to install on your computer &mdash; hold <strong>BOOTSEL</strong>, plug in,
+        and drop the <code>.uf2</code> onto the drive that appears. The board reboots by itself,
+        asks for a <code>root</code> password once, and after that updates itself over the air.</p>
+      <p style="margin-bottom: 1.5rem;">The Get page picks the right file for your board and walks
+        through it. Installing <strong>v1.0</strong> instead uses the browser installer, since it
+        needs MicroPython underneath.</p>
+      <div class="hero-actions" style="margin-bottom: 0;">
+        <a class="btn-primary" href="get">Get RPCortex &rarr;</a>
+        <a class="btn-secondary" href="docs">Read the docs</a>
       </div>
     </div>
   </section>
@@ -325,23 +298,29 @@ bench</pre>
   <section id="packages" class="section alt">
     <div class="inner">
       <h2>Package Manager</h2>
-      <p style="color: var(--text-muted); margin-bottom: 0;">The official RPCortex package repo is hosted here. Add it once and use <code>pkg update</code> to stay current. Installed commands are live immediately after install. No reboot needed.</p>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Packages are compiled
+        <code>.app</code> files that load at runtime and register their own commands. Install one
+        and it is live immediately &mdash; no reboot. On RP2350 they run <strong>unprivileged</strong>,
+        with the memory protection unit describing exactly what each may touch, so a package that
+        misbehaves costs you a command rather than the device.</p>
       <div class="codeblock">
-        <div class="codeblock-label">Add the official repo and browse packages</div>
-        <pre>pkg repo add https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json
-pkg update
-pkg available            # list everything in the repo
-pkg search &lt;query&gt;      # filter by name or description
-pkg install &lt;name&gt;
-pkg info    &lt;name&gt;      # show package details
-pkg list                 # what's installed
-pkg upgrade              # update outdated packages
-pkg remove  &lt;name&gt;</pre>
+        <div class="codeblock-label">The whole of it</div>
+        <pre>pkg update               <span class="dim"># refresh the list</span>
+pkg search web           <span class="dim"># or bare, to list everything</span>
+pkg install httpd
+pkg list                 <span class="dim"># what is installed</span>
+pkg upgrade              <span class="dim"># everything with a newer version</span>
+pkg remove httpd</pre>
       </div>
       <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 20px;">
-        Packages are standard ZIP archives renamed to <code>.pkg</code>. Build your own with the included <code>make_pkg.py</code> script and submit a PR to get listed in the repo.
-        <a href="PackageDev" style="color: var(--cyan-dim); font-weight: 500;">Full package development guide &rarr;</a>
+        The official repository is hosted here and configured out of the box. Browse what is in it,
+        or write your own &mdash; a package is C compiled against the SDK, and the worked example is
+        about twenty lines.
       </p>
+      <div class="hero-actions" style="margin-bottom: 0;">
+        <a class="btn-primary" href="packages">Browse packages &rarr;</a>
+        <a class="btn-secondary" href="PackageDev">Write one</a>
+      </div>
     </div>
   </section>
 
