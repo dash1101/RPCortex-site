@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPCortex &mdash; v2.0.0 Vela II Release Notes</title>
+  <meta name="description" content="What's new in RPCortex v2.0 &quot;Vela II&quot; &mdash; the native C++ rewrite.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
+      <div class="nav-links">
+        <a href="docs">Docs</a>
+        <a href="packages">Packages</a>
+        <a href="roadmap">Roadmap</a>
+        <a href="get">Get</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="docs-hero">
+    <div class="inner">
+      <h1>Vela II Release Notes</h1>
+      <p>v2.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela&nbsp;II</strong> &nbsp;&bull;&nbsp; The C++ rewrite &nbsp;&bull;&nbsp; Succeeds v1.0 &ldquo;Vela&rdquo;</p>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="docs-page-layout">
+    <nav class="docs-toc">
+      <h4>Contents</h4>
+      <a href="#headline">The headline</a>
+      <a href="#sandbox">Packages cannot kill it</a>
+      <a href="#new">New in v2</a>
+      <a href="#matches">What matches v1</a>
+      <a href="#hardware">Boards</a>
+      <a href="#installing">Installing</a>
+      <a href="#upgrading">Upgrading from v1</a>
+      <a href="#limitations">Known limitations</a>
+    </nav>
+
+    <article class="docs-article">
+
+      <p>The rewrite. RPCortex was MicroPython for four versions; this one is C++, and almost
+         everything underneath is different even though the shell is deliberately familiar.</p>
+
+      <h2 id="headline">The headline</h2>
+
+      <h3>No interpreter</h3>
+      <p>RPCMark scores around <strong>1.2 million</strong> against a v1 device's 5,000&ndash;6,000
+         &mdash; roughly <strong>200&times;</strong>. That is not a projection: <code>bench</code>
+         runs the same workload as <code>tools/bench.py</code> does on v1, same iteration counts,
+         so the two numbers are the same measurement taken twice.</p>
+
+      <h3>One image, drag and drop</h3>
+      <p>No firmware to flash and then files to paste on top of it. Hold BOOTSEL, drop a
+         <code>.uf2</code>, done &mdash; and after that the device updates itself over the air.</p>
+
+      <h2 id="sandbox">Packages cannot take the device down</h2>
+      <p>The part with no equivalent in v1 at all. On RP2350 a package runs
+         <strong>unprivileged</strong>, with the memory protection unit describing exactly five
+         regions it may touch, and every pointer it hands the firmware range-checked against
+         those regions.</p>
+      <table>
+        <thead><tr><th>The package&hellip;</th><th>Costs you</th></tr></thead>
+        <tbody>
+          <tr><td>Uses a bad pointer</td><td>The command. A report names it; the shell carries on.</td></tr>
+          <tr><td>Stops responding entirely</td><td>The command. A timer takes the call back.</td></tr>
+          <tr><td>Runs out of its own stack</td><td>The command.</td></tr>
+          <tr><td>Asks for something that does not exist</td><td>Nothing. The call is refused.</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        That last row sounds trivial and is not. <code>havoc</code> is a package built to attack
+        the ABI from inside the sandbox &mdash; null pointers, pointers into flash, lengths that
+        overflow, unterminated strings, handles that were never opened &mdash; and all 62 of its
+        checks have to come back as clean refusals.
+      </div>
+
+      <h2 id="new">New in v2</h2>
+      <ul>
+        <li><strong>Both cores.</strong> v1 could not use core 1 at all; MicroPython's heap is
+            not safe across cores. An unpinned task here lives on core 1 about 99% of the time.</li>
+        <li><strong>A task manager.</strong> <code>ps</code> shows pid, state, core, stack used
+            against allocated, CPU time and where each task was started from. <code>kill</code>
+            stops one. On v1 a misbehaving background service could only be found by rebooting.</li>
+        <li><strong>Crash reporting that survives the crash.</strong> A log ring and a black box
+            in memory the reset does not clear, so the next boot says what the last run was doing
+            when it stopped. v1 lost everything on reboot.</li>
+        <li><strong>A USB drive.</strong> <code>download</code> presents a real FAT volume, so
+            files move by drag and drop in both directions instead of over the serial line.</li>
+        <li><strong>Bluetooth.</strong> The same chip does both radios. v1 could not reach
+            Classic at all &mdash; MicroPython's module is BLE only &mdash; so anything that plays
+            audio was out of reach.</li>
+        <li><strong>Real background work.</strong> v1's <code>task run</code> entered a foreground
+            scheduler: you got scheduled tasks or an interactive shell, not both. Here the timer
+            is just another task.</li>
+        <li><strong>Interruptible everything.</strong> Ctrl+C stops any command instantly, because
+            the interrupt check and the scheduler yield are the same call.</li>
+        <li><strong>PIO, SPI and I2C for packages</strong>, which is what makes drivers possible
+            without touching the firmware.</li>
+      </ul>
+
+      <h2 id="matches">What matches v1</h2>
+      <p>The filesystem commands down to <code>ls</code>'s exact columns. Text processing.
+         Accounts with salted SHA-256, roles and the guided first run. The shell: pipes,
+         <code>&amp;&amp;</code>, <code>||</code>, <code>;</code>, redirection, quoting, history,
+         thirty aliases. <code>wifi</code> with all its subcommands, <code>ping</code>,
+         <code>nslookup</code>, <code>ntp</code>. <code>startup</code>, <code>task</code>,
+         <code>service</code>, <code>watch</code>. The <code>.rps</code> scripting language,
+         unchanged &mdash; scripts carry over as they are.</p>
+      <p>And the console itself: v1's tagged output, colours and boot banner, checked byte for
+         byte against the original escape sequences.</p>
+
+      <h2 id="hardware">Boards</h2>
+      <table>
+        <thead><tr><th>Board</th><th>Firmware</th><th>Filesystem</th><th>Package sandbox</th></tr></thead>
+        <tbody>
+          <tr><td>Pico 2 W</td><td>916 KB</td><td>2 MB</td><td>yes</td></tr>
+          <tr><td>Pico 2</td><td>320 KB</td><td>3 MB</td><td>yes</td></tr>
+          <tr><td>Pico W</td><td>748 KB</td><td>384 KB</td><td>no</td></tr>
+          <tr><td>Pico</td><td>247 KB</td><td>1.25 MB</td><td>no</td></tr>
+        </tbody>
+      </table>
+      <p><strong>The RP2040 boards are back.</strong> v1.0 had to drop them because the
+         multitasking build did not fit in 264 KB of RAM; without an interpreter it does. They
+         hold 2 MB of flash against the RP2350's 4, so the firmware is built for size there and
+         the filesystem is smaller &mdash; with wireless, Bluetooth, TLS and over-the-air updates
+         all still in. What they do not get is the package sandbox: ARMv6-M protection regions are
+         power-of-two sized and aligned to their own size, so the five a package needs cost more
+         RAM than those boards have.</p>
+
+      <h2 id="installing">Installing</h2>
+      <ol>
+        <li>Hold <strong>BOOTSEL</strong> and plug the board into USB.</li>
+        <li>Drag the <code>.uf2</code> for your board onto the drive that appears. Pick it from
+            the <a href="get">Get</a> page.</li>
+        <li>Open a serial terminal at <strong>115200 baud</strong>.</li>
+      </ol>
+      <p>The first boot asks for a <code>root</code> password once. After that,
+         <code>update</code> handles new releases over the air.</p>
+
+      <h2 id="upgrading">Upgrading from v1</h2>
+      <div class="warn-box">
+        v2 replaces the firmware entirely, so installing it removes MicroPython and everything
+        stored under it. Save anything worth keeping first.
+      </div>
+      <p><strong>Scripts carry over.</strong> The <code>.rps</code> language is the same, and
+         <code>capture</code> deliberately sees what a pipe would, so lines like
+         <code>capture n wc -l file</code> behave identically on both.</p>
+      <p><strong>Packages do not.</strong> A v1 <code>.pkg</code> is Python source and there is no
+         Python in v2. The ones in the repository have been rewritten in C; a package of your own
+         needs the same treatment. The <a href="PackageDev">package guide</a> covers it.</p>
+
+      <h2 id="limitations">Known limitations</h2>
+      <ul>
+        <li><strong>No Python.</strong> Packages are compiled C or C++. That is the whole point of
+            the rewrite and it is still a real loss of convenience.</li>
+        <li><strong>Fourteen packages</strong>, against v1's twenty. Porting the rest is the main
+            distance left to parity.</li>
+        <li><strong>No SD card support.</strong> It needs a driver; the design is sketched.</li>
+        <li><strong>No ESP32-S3 yet.</strong> v1 runs there and continues to. The portable core
+            moves unchanged, but the context switch, storage and network layers do not.</li>
+        <li><strong>Cooperative scheduling.</strong> A task that never yields cannot be killed from
+            the shell. There is a timer backstop for packages, not for firmware.</li>
+        <li><strong>Bluetooth is new.</strong> Scanning works, both LE and Classic. Little else has
+            been exercised.</li>
+      </ul>
+
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">
+        RPCortex Vela II &mdash; v2.0.0 &nbsp;&bull;&nbsp; by
+        <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.
+        Earlier releases: <a href="release-vela">v1.0 Vela</a> &middot;
+        <a href="release">v0.9.1 Pulsar</a>.
+      </p>
+
+    </article>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="inner">
+      <div class="footer-row">
+        <span class="footer-brand">RPCortex</span>
+        <div class="footer-links">
+          <a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a>
+          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
+          <a href="docs">Docs</a>
+          <a href="roadmap">Roadmap</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
+          <a href="privacy">Privacy</a>
+        </div>
+      </div>
+      <p class="footer-note">Built by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. &copy; 2026 &mdash; all rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/nav.js"></script>
+</body>
+</html>

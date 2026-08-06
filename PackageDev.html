@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPCortex &mdash; Package Development</title>
+  <title>RPCortex &mdash; Package Development Guide</title>
+  <meta name="description" content="Write, build and publish a package for RPCortex v2 — compiled .app files that register their own shell commands.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -18,7 +19,7 @@
         <a href="packages">Packages</a>
         <a href="roadmap">Roadmap</a>
         <a href="get">Get</a>
-        <a href="https://github.com/dash1101/RPCortex-OS" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
         <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
       </div>
     </div>
@@ -28,313 +29,207 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Build a Package</h1>
-      <p>Write a command, bundle it, host a repo, and get it running on any RPCortex device.</p>
+      <p>RPCortex v2 &mdash; a package is C, compiled, loaded at runtime</p>
     </div>
   </header>
 
-  <!-- LAYOUT -->
+  <!-- CONTENT -->
   <div class="docs-page-layout">
-
-    <!-- TOC -->
     <nav class="docs-toc">
       <h4>Contents</h4>
-      <a href="#overview">Overview</a>
-      <a href="#package-structure">Package Structure</a>
-      <a href="#package-cfg">package.cfg Reference</a>
-      <a href="#writing-commands">Writing Commands</a>
-      <a href="#building">Building a .pkg</a>
-      <a href="#testing">Testing Locally</a>
-      <a href="#hosting-a-repo">Hosting a Repo</a>
-      <a href="#getting-listed">Getting Listed</a>
-      <a href="#full-example">Full Example</a>
+      <a href="#shortest">The shortest one</a>
+      <a href="#build">Building it</a>
+      <a href="#push">Getting it onto a device</a>
+      <a href="#abi">What a package can call</a>
+      <a href="#rules">The four rules</a>
+      <a href="#sandbox">What the sandbox does</a>
+      <a href="#tui">Full-screen packages</a>
+      <a href="#publish">Getting it listed</a>
+      <a href="#v1">Coming from v1</a>
     </nav>
 
-    <!-- CONTENT -->
     <article class="docs-article">
 
-      <!-- OVERVIEW -->
-      <h2 id="overview">Overview</h2>
-      <p>RPCortex packages are standard ZIP archives renamed to <code>.pkg</code>. Each package contains your Python source files and a <code>package.cfg</code> metadata file. The package manager handles installation, command registration, and removal — no reboot needed.</p>
-
-      <p><strong>What you need:</strong></p>
-      <ul>
-        <li>Python 3 on your PC (for <code>make_pkg.py</code>)</li>
-        <li>A MicroPython file with at least one callable function</li>
-        <li>A <code>package.cfg</code> file describing your package</li>
-      </ul>
-
-      <div class="pkgdev-download">
-        <div class="pkgdev-download-text">
-          <strong>make_pkg.py</strong>
-          <span>PC-side tool that builds <code>.pkg</code> archives using ZIP STORED (no compression). Required for Pico-compatible packages.</span>
-        </div>
-        <a class="btn-primary" href="https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/make_pkg.py" download="make_pkg.py">Download make_pkg.py</a>
-      </div>
-
-      <!-- PACKAGE STRUCTURE -->
-      <h2 id="package-structure">Package Structure</h2>
-      <p>A package is a directory with at least two files:</p>
-      <pre><code>MyPackage/
-  package.cfg       # required: metadata and command registration
-  main.py           # your code (can be named anything)
-  helpers.py        # optional: additional modules</code></pre>
-      <p>The directory name becomes the archive prefix. <code>make_pkg.py</code> walks the entire directory tree, so subdirectories work too.</p>
+      <p>A package is a compiled <code>.app</code> file. The OS loads it, relocates it, runs its
+         <code>app_main</code>, and the commands it registers are live immediately &mdash; no
+         reboot. It is real machine code, not a script, and on RP2350 it runs
+         <strong>unprivileged</strong>.</p>
 
       <div class="note-box">
-        <strong>ZIP STORED only.</strong> MicroPython on Pico W does not always have <code>zlib</code> available. Packages must be built with no compression. <code>make_pkg.py</code> handles this automatically &mdash; do not use a standard ZIP tool or your package will fail to install on many devices.
+        Everything below needs the <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">RPCortex
+        v2 source tree</a> and an ARM cross-compiler. <code>./build.sh</code> fetches the SDK the
+        first time it runs.
       </div>
 
-      <!-- PACKAGE.CFG -->
-      <h2 id="package-cfg">package.cfg Reference</h2>
-      <p>Plain text, one key per line, colon-separated. Lines starting with <code>#</code> are comments.</p>
-      <pre><code># RPCortex Package Config
-pkg.name: MyPackage
-pkg.dev:  yourname
-pkg.ver:  1.0.0
-pkg.dir:  /Packages/MyPackage
-pkg.desc: One-line description shown in pkg list
-pkg.cmd:  mycommand:/Packages/MyPackage/main.py:run</code></pre>
+      <h2 id="shortest">The shortest one that does anything</h2>
+      <div class="codeblock">
+        <div class="codeblock-label">os/apps/greet/greet.cpp</div>
+        <pre><code>#include "rpc_app.h"
 
-      <table>
-        <thead><tr><th>Key</th><th>Required</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td>pkg.name</td><td>Yes</td><td>Display name. Used by <code>pkg info</code> and <code>pkg list</code>.</td></tr>
-          <tr><td>pkg.dev</td><td>Yes</td><td>Author or maintainer.</td></tr>
-          <tr><td>pkg.ver</td><td>Yes</td><td>Version string (e.g. <code>1.0.0</code>). Used by <code>pkg upgrade</code>.</td></tr>
-          <tr><td>pkg.dir</td><td>Yes</td><td>Absolute install path on device (e.g. <code>/Packages/MyPackage</code>).</td></tr>
-          <tr><td>pkg.desc</td><td>Yes</td><td>Short description shown in search and list output.</td></tr>
-          <tr><td>pkg.cmd</td><td>No</td><td>Shell command registration (see below). Omit for library-only packages.</td></tr>
-        </tbody>
-      </table>
+RPC_APP_VER("greet", "1.0");
 
-      <h3>pkg.cmd format</h3>
-      <p>One command per <code>pkg.cmd</code> line. Multiple commands are supported by repeating the key:</p>
-      <pre><code>pkg.cmd: hello:/Packages/HelloWorld/main.py:hello
-pkg.cmd: hello-verbose:/Packages/HelloWorld/main.py:hello_verbose</code></pre>
-      <p>Format: <code>&lt;shell-command&gt;:&lt;/absolute/path/to/file.py&gt;:&lt;function_name&gt;</code></p>
-      <ul>
-        <li><strong>shell-command</strong> &mdash; what the user types at the prompt</li>
-        <li><strong>path</strong> &mdash; absolute path to the Python file on the device</li>
-        <li><strong>function_name</strong> &mdash; the function called when the command runs</li>
-      </ul>
+static int cmd_greet(int argc, char **argv) {
+    fw_printf("hello from a package\n");
+    return 0;
+}
 
-      <!-- WRITING COMMANDS -->
-      <h2 id="writing-commands">Writing Commands</h2>
-      <p>Every command function receives a single <code>args</code> parameter containing everything the user typed after the command name, or <code>None</code> if nothing was given.</p>
-      <pre><code>def mycommand(args=None):
-    if args:
-        # args is a plain string: "foo bar baz"
-        parts = args.split(None, 1)
-    else:
-        # no arguments given
-        pass</code></pre>
-
-      <h3>Output utilities</h3>
-      <p>Import from <code>RPCortex</code> for colored, logged output:</p>
-      <pre><code>import sys
-if '/Core' not in sys.path:
-    sys.path.append('/Core')
-
-from RPCortex import ok, info, warn, error, multi, inpt</code></pre>
-
-      <table>
-        <thead><tr><th>Function</th><th>Color</th><th>Use for</th></tr></thead>
-        <tbody>
-          <tr><td>ok(msg)</td><td>Green <code>[OK]</code></td><td>Success messages</td></tr>
-          <tr><td>info(msg)</td><td>Blue <code>[ i]</code></td><td>Section headers, informational</td></tr>
-          <tr><td>warn(msg)</td><td>Yellow <code>[!]</code></td><td>Non-fatal warnings</td></tr>
-          <tr><td>error(msg)</td><td>Red <code>[E]</code></td><td>Recoverable errors</td></tr>
-          <tr><td>fatal(msg)</td><td>Red <code>[X]</code></td><td>Critical failures</td></tr>
-          <tr><td>multi(msg)</td><td>White</td><td>Plain output, data lines</td></tr>
-          <tr><td>inpt(prompt)</td><td>Cyan</td><td>Interactive user input</td></tr>
-        </tbody>
-      </table>
-
-      <h3>Rules for MicroPython compatibility</h3>
-      <ul>
-        <li>Use <code>"{}".format(...)</code> instead of f-strings if you want to support older firmware</li>
-        <li>Use <code>str.split(None, N)</code> positional form, not <code>split(maxsplit=N)</code></li>
-        <li>Keep imports inside functions where possible &mdash; the exec scope is loaded fresh each call and imports inside functions stay local, saving RAM</li>
-        <li>Avoid large module imports at the top of the file; the exec scope must fit in available heap</li>
-      </ul>
-
-      <!-- BUILDING -->
-      <h2 id="building">Building a .pkg</h2>
-      <p>Run <code>make_pkg.py</code> from your PC, pointing it at your package directory:</p>
-      <pre><code>python make_pkg.py packages/MyPackage
-# put the output somewhere specific:
-python make_pkg.py packages/MyPackage -o dist/
-# build every package under a folder at once:
-python make_pkg.py packages/ -o dist/</code></pre>
-
-      <p>The output file is named after <code>pkg.name</code> from your <code>package.cfg</code> (lowercased).</p>
-
-      <h3>Source vs. compiled (.mpy)</h3>
-      <p>By default <code>make_pkg.py</code> <strong>compiles your <code>.py</code> modules to <code>.mpy</code></strong> bytecode with <code>mpy-cross</code> &mdash; smaller on flash and faster to import, which matters on a 264&nbsp;KB Pico. The device's command loader imports a package's <code>.mpy</code> transparently when the <code>.py</code> is absent, so your <code>pkg.cmd</code> path in <code>package.cfg</code> stays the same (point it at the <code>.py</code> name either way).</p>
-      <ul>
-        <li><strong>Compiled (default):</strong> needs <code>mpy-cross</code> &mdash; <code>pip install mpy-cross</code>. The compiler is run without <code>-march</code>, so the bytecode is architecture-neutral and runs on RP2040, RP2350, and ESP32 from one build.</li>
-        <li><strong>Source:</strong> pass <code>--raw</code> to ship the <code>.py</code> files unchanged. Needs only the Python 3 standard library &mdash; no <code>mpy-cross</code>.</li>
-      </ul>
-      <pre><code># ship readable source instead of compiled bytecode:
-python make_pkg.py packages/MyPackage --raw</code></pre>
-
-      <p>Example output:</p>
-      <pre><code>  + MyPackage/package.cfg
-  + MyPackage/main.mpy   (compiled from main.py)
-
-Created 'mypackage.pkg' (1024 bytes)
-Compression: ZIP_STORED (Pico-compatible, no zlib needed)
-Install on device: pkg install /path/to/mypackage.pkg</code></pre>
-
-      <div class="note-box">
-        Compiled builds need <code>mpy-cross</code> (<code>pip install mpy-cross</code>). With <code>--raw</code>, <code>make_pkg.py</code> needs only the Python 3 standard library. Either way the archive is always <strong>ZIP_STORED</strong> &mdash; never deflate-compressed.
-      </div>
-
-      <!-- TESTING -->
-      <h2 id="testing">Testing Locally</h2>
-      <p>Copy the <code>.pkg</code> file to your device (via Thonny, <code>mpremote</code>, or <code>ampy</code>), then install it from the shell:</p>
-      <pre><code>pkg install /mypackage.pkg</code></pre>
-      <p>The command is registered immediately. Run it:</p>
-      <pre><code>mycommand
-mycommand some arguments here</code></pre>
-      <p>Check it appears in the package list:</p>
-      <pre><code>pkg list
-pkg info MyPackage</code></pre>
-      <p>To remove it:</p>
-      <pre><code>pkg remove MyPackage</code></pre>
-      <p>The command disappears from the shell immediately &mdash; no reboot needed.</p>
-
-      <h3>Common issues</h3>
-      <table>
-        <thead><tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
-        <tbody>
-          <tr><td>Install fails with zlib error</td><td>Package was built with ZIP deflate compression</td><td>Rebuild with <code>make_pkg.py</code> (uses ZIP_STORED)</td></tr>
-          <tr><td>Command not found after install</td><td><code>pkg.cmd</code> path or function name is wrong</td><td>Check the path in <code>package.cfg</code> matches the actual file on device</td></tr>
-          <tr><td>MemoryError during install</td><td>Heap fragmented after other commands</td><td>Run <code>freeup</code> first, then retry</td></tr>
-          <tr><td>Function not callable</td><td>Wrong function name in <code>pkg.cmd</code></td><td>Verify the function name matches exactly (case-sensitive)</td></tr>
-        </tbody>
-      </table>
-
-      <!-- HOSTING A REPO -->
-      <h2 id="hosting-a-repo">Hosting a Repo</h2>
-      <p>A repo is a single JSON file accessible over HTTP or HTTPS. GitHub raw URLs, static hosting, and anything that returns <code>Content-Type: application/json</code> all work.</p>
-
-      <h3>index.json format</h3>
-      <pre><code>{
-  "name": "My Repo",
-  "maintainer": "yourname",
-  "packages": [
-    {
-      "name": "MyPackage",
-      "ver": "1.0.0",
-      "desc": "One-line description",
-      "author": "yourname",
-      "url": "https://example.com/repo/packages/mypackage.pkg"
-    }
-  ]
+extern "C" int app_main(int arg) {
+    (void)arg;
+    rpc_register_command("greet", "say hello", cmd_greet);
+    return 0;
 }</code></pre>
+      </div>
+      <p>Three things are load-bearing:</p>
+      <ul>
+        <li><code>RPC_APP_VER(name, version)</code> stamps a header the loader checks. Without it
+            the file is not a package.</li>
+        <li><code>app_main</code> runs once, when the package loads. Register commands here and
+            return &mdash; it is not a place to loop.</li>
+        <li><code>rpc_register_command(name, help, fn)</code> is what puts a word in the shell. The
+            help string is what <code>help all</code> shows.</li>
+      </ul>
+      <p>A command takes <code>(int argc, char **argv)</code> and returns <code>0</code> for
+         success, exactly like <code>main</code>. <code>argv[0]</code> is the command name.</p>
 
-      <table>
-        <thead><tr><th>Field</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td>name</td><td>Repo display name (shown during <code>pkg update</code>)</td></tr>
-          <tr><td>maintainer</td><td>Repo owner</td></tr>
-          <tr><td>packages[].name</td><td>Package name (must match <code>pkg.name</code> in package.cfg)</td></tr>
-          <tr><td>packages[].ver</td><td>Version string (used by <code>pkg upgrade</code> to detect updates)</td></tr>
-          <tr><td>packages[].desc</td><td>Shown in <code>pkg available</code> and <code>pkg search</code></td></tr>
-          <tr><td>packages[].author</td><td>Package author</td></tr>
-          <tr><td>packages[].url</td><td>Direct download URL for the <code>.pkg</code> file</td></tr>
-        </tbody>
-      </table>
-
-      <h3>Hosting on GitHub</h3>
-      <p>The simplest option: put <code>index.json</code> and your <code>.pkg</code> files in a GitHub repo, then use raw URLs:</p>
-      <pre><code># index.json URL (add this on the device):
-https://raw.githubusercontent.com/yourname/my-rpc-repo/main/index.json
-
-# .pkg URL in index.json:
-https://raw.githubusercontent.com/yourname/my-rpc-repo/main/packages/mypackage.pkg</code></pre>
-
-      <div class="warn-box">
-        <strong>HTTPS on Pico 1 W:</strong> raw.githubusercontent.com uses HTTPS. TLS needs ~9.5 KB of contiguous heap. Run <code>freeup</code> before <code>pkg update</code> on a Pico 1. Pico 2 and ESP32 are not affected.
+      <h2 id="build">Building it</h2>
+      <p>Put the source at <code>os/apps/&lt;name&gt;/&lt;name&gt;.cpp</code> and add one line to
+         <code>os/CMakeLists.txt</code>:</p>
+      <div class="codeblock">
+        <div class="codeblock-label">os/CMakeLists.txt</div>
+        <pre><code>rpc_add_app(greet)</code></pre>
+      </div>
+      <p>Then <code>./build.sh</code>. The <code>.app</code> lands in
+         <code>os/build_&lt;board&gt;/apps/greet.app</code>.</p>
+      <div class="note-box">
+        <strong>The build checks every symbol resolves.</strong> A package calling something the
+        firmware does not export would otherwise load fine and fail at the call, reporting a
+        function nobody wrote. That check runs at build time instead.
       </div>
 
-      <h3>Adding your repo to a device</h3>
-      <pre><code>pkg repo add https://raw.githubusercontent.com/yourname/my-rpc-repo/main/index.json
-pkg update
-pkg available</code></pre>
+      <h2 id="push">Getting it onto a device</h2>
+      <p>Three ways, in order of how often they get used.</p>
 
-      <!-- GETTING LISTED -->
-      <h2 id="getting-listed">Getting Listed in the Official Repo</h2>
-      <p>The official RPCortex package repo is at <a href="https://github.com/dash1101/RPCortex-repo" target="_blank">github.com/dash1101/RPCortex-repo</a>. To get your package listed:</p>
+      <h3>Over the serial console</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">on your computer</div>
+        <pre><code>tools/rpc-push.sh os/build_pico2_w/apps/greet.app /dev/ttyACM0</code></pre>
+      </div>
+      <p>Then <code>pkg install /greet.app</code> on the device. The script uses the device's own
+         <code>put</code> command, so nothing else needs installing &mdash; but it does need a
+         logged-in admin session, because writing files does.</p>
+
+      <h3>Over USB, by dragging it</h3>
+      <p>Run <code>download</code> on the device, drop the <code>.app</code> onto the drive that
+         appears, press a key, then <code>pkg install /usb/greet.app</code>.</p>
+
+      <h3>From the browser</h3>
+      <p>The <a href="packages">Packages</a> page connects over Web Serial and installs with one
+         click, including packages you drag onto it from your own machine.</p>
+
+      <h2 id="abi">What a package can call</h2>
+      <p>Everything comes through <code>fw_*</code> functions declared in
+         <code>os/include/rpc_app.h</code>, which is the only header a package includes. There are
+         around 166 of them:</p>
+      <table>
+        <thead><tr><th>Area</th><th>Examples</th></tr></thead>
+        <tbody>
+          <tr><td>Console</td><td><code>fw_printf</code>, <code>fw_log</code>, <code>fw_getchar</code></td></tr>
+          <tr><td>Memory</td><td><code>fw_malloc</code>, <code>fw_free</code>, <code>fw_heap_free</code></td></tr>
+          <tr><td>Files</td><td><code>fw_file_read</code>, <code>fw_file_write</code>, <code>fw_file_size</code>, <code>fw_dir_open</code></td></tr>
+          <tr><td>Tasks</td><td><code>fw_task_spawn</code>, <code>fw_task_sleep_ms</code>, <code>fw_task_should_stop</code></td></tr>
+          <tr><td>Network</td><td><code>fw_net_connected</code>, <code>fw_net_resolve</code>, <code>fw_http_get</code>, <code>fw_tcp_listen</code></td></tr>
+          <tr><td>Hardware</td><td><code>fw_gpio_*</code>, <code>fw_i2c_*</code>, <code>fw_spi_*</code>, <code>fw_pio_*</code>, <code>fw_adc_read</code></td></tr>
+          <tr><td>Screen</td><td><code>fw_tui_*</code> &mdash; a full-screen drawing surface</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        <strong>An ABI call is not free.</strong> A package cannot branch into the firmware &mdash;
+        flash is unreachable from unprivileged code &mdash; so every <code>fw_*</code> call is a
+        supervisor call underneath, measured at about <strong>300 cycles</strong>. The SDK builds
+        that for you and it never needs thinking about, except in a tight loop, where hoisting the
+        call out is worth it.
+      </div>
+
+      <h2 id="rules">The four rules</h2>
       <ol>
-        <li>Make sure your package installs and runs cleanly on a Pico W (the primary target)</li>
-        <li>Host your <code>.pkg</code> file somewhere with a stable URL (GitHub releases or raw.githubusercontent.com works well)</li>
-        <li>Open a pull request on <a href="https://github.com/dash1101/RPCortex-repo" target="_blank">RPCortex-repo</a> adding your package source to <code>repo/packages/</code> and an entry to <code>repo/index.json</code></li>
-        <li>Include your package name, version, description, author, and the URL of your hosted <code>.pkg</code></li>
+        <li><strong>No standard library.</strong> No <code>printf</code>, no <code>malloc</code>,
+            no <code>&lt;string.h&gt;</code>. Use the <code>fw_*</code> equivalents. This is what
+            keeps a package a few kilobytes.</li>
+        <li><strong>Keep big buffers off the stack.</strong> A package gets its own stack, and
+            firmware called through the ABI runs on it &mdash; so a large local competes with
+            whatever the firmware needs underneath. File-scope <code>static</code> is the answer.</li>
+        <li><strong>Yield in long loops.</strong> Anything that runs for a while should call an ABI
+            function periodically; that is what feeds the watchdog and lets Ctrl+C through.
+            <code>fw_task_should_stop()</code> is the polite way to notice a <code>kill</code>.</li>
+        <li><strong>Check what you are given.</strong> <code>argc</code> can be 1. A file can be
+            missing. The firmware refuses bad pointers, but it will not invent an argument you did
+            not check for.</li>
       </ol>
 
-      <pre><code>{
-  "name": "YourPackage",
-  "ver": "1.0.0",
-  "desc": "What your package does",
-  "author": "yourname",
-  "url": "https://your-host/yourpackage.pkg"
+      <h2 id="sandbox">What the sandbox does</h2>
+      <p>On RP2350 a package runs unprivileged, with the memory protection unit describing exactly
+         five regions it may touch: its code, its data, its call veneers, its stack and its heap.
+         Everything else is denied &mdash; the OS's tables, the peripherals, and flash.</p>
+      <p>Every pointer a package hands the firmware is range-checked against those regions. A
+         package cannot ask the OS to read or write memory on its behalf that it could not touch
+         itself.</p>
+      <p>The practical effect while developing: <strong>a bug costs you the command, not the
+         device.</strong> A bad pointer produces a report naming the package and the offset, and
+         the shell carries on. So does a loop that never returns, and so does running out of stack.
+         On RP2040 there are not enough protection regions to spare, so packages run with the OS's
+         privileges &mdash; test on a Pico 2 if you can.</p>
+      <div class="note-box">
+        <code>pkg install havoc</code> then <code>havoc</code> runs 62 checks that the sandbox
+        refuses everything it should. It is worth reading its source if you are writing something
+        that pushes at the ABI.
+      </div>
+
+      <h2 id="tui">Full-screen packages</h2>
+      <p><code>fw_tui_*</code> gives a package the same drawing surface the built-in apps use: a
+         character grid with attributes, a diffing renderer that only sends what changed, and key
+         events including the arrows. <code>tuidemo</code> in the repository is the worked example
+         &mdash; lists, panels and input handling in about two hundred lines.</p>
+      <p>The grid lives in the firmware rather than the package, so a package that crashes
+         mid-draw cannot leave the terminal in a state nothing can recover.</p>
+
+      <h2 id="publish">Getting it listed</h2>
+      <p>The official repository is
+         <a href="https://github.com/dash1101/RPCortex-repo" target="_blank" rel="noopener">RPCortex-repo</a>.
+         Open a pull request adding the built <code>.app</code> to <code>repo-v2/packages/</code>
+         and an entry to <code>repo-v2/index.json</code>:</p>
+      <div class="codeblock">
+        <div class="codeblock-label">repo-v2/index.json</div>
+        <pre><code>{
+  "name": "greet",
+  "ver": "1.0",
+  "desc": "Worked example package - registers a 'greet' shell command",
+  "kind": "app",
+  "author": "your-name",
+  "abi": "1.16",
+  "arch": "armv6m",
+  "size": 1732,
+  "sha256": "...",
+  "url": "https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo-v2/packages/greet.app"
 }</code></pre>
+      </div>
+      <p><strong>The size and hash have to match the file.</strong> A device refuses anything whose
+         hash disagrees, and that presents as a corrupt download rather than as a wrong manifest.</p>
+      <p><code>arch</code> is <code>armv6m</code> for a package built to run on every board &mdash;
+         ARMv6-M code runs on RP2350 too, and the SDK builds packages that way by default, so one
+         file serves all four.</p>
 
-      <!-- FULL EXAMPLE -->
-      <h2 id="full-example">Full Example: HelloWorld</h2>
-      <p>This is the reference sample package included in the repo.</p>
+      <h2 id="v1">Coming from v1</h2>
+      <p>A v1 package is Python source in a ZIP renamed <code>.pkg</code>. There is no Python in
+         v2, so it needs rewriting rather than converting. The shape carries over &mdash; register
+         a command, do a thing, return &mdash; and the <code>fw_*</code> calls line up closely with
+         what the v1 API offered.</p>
+      <p>The <a href="PackageDev-v1">v1 guide</a> is still here for devices still running it.</p>
 
-      <h3>File: <code>HelloWorld/package.cfg</code></h3>
-      <pre><code># RPCortex Package Config
-pkg.name: HelloWorld
-pkg.dev:  dash1101
-pkg.ver:  1.0.1
-pkg.dir:  /Packages/HelloWorld
-pkg.desc: Sample demo package for RPCortex
-pkg.cmd:  hello:/Packages/HelloWorld/main.py:hello</code></pre>
-
-      <h3>File: <code>HelloWorld/main.py</code></h3>
-      <pre><code># Desc: HelloWorld -- sample RPCortex package
-# File: /Packages/HelloWorld/main.py
-# Version: 1.0.1
-# Author: dash1101
-
-import sys
-if '/Core' not in sys.path:
-    sys.path.append('/Core')
-
-from RPCortex import ok, multi
-
-
-def hello(args=None):
-    multi("")
-    multi("  Hello from HelloWorld!")
-    multi("  RPCortex package system is working correctly.")
-    if args:
-        multi("  You said: " + args)
-    multi("")
-    ok("HelloWorld v1.0.1")</code></pre>
-
-      <h3>Build it</h3>
-      <pre><code>python make_pkg.py HelloWorld
-# Output: helloworld.pkg</code></pre>
-
-      <h3>Install and test on device</h3>
-      <pre><code># Copy helloworld.pkg to device root, then in the shell:
-pkg install /helloworld.pkg
-hello
-hello testing 1 2 3</code></pre>
-
-      <h3>Expected output</h3>
-      <pre><code>
-  Hello from HelloWorld!
-  RPCortex package system is working correctly.
-
-[OK] HelloWorld v1.0.1</code></pre>
-
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela v1.0.0 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">
+        Questions, or something here that does not match the source? Open an
+        <a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">issue</a>
+        or ask in <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a>.
+      </p>
 
     </article>
   </div>
@@ -346,32 +241,17 @@ hello testing 1 2 3</code></pre>
         <span class="footer-brand">RPCortex</span>
         <div class="footer-links">
           <a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a>
-          <a href="https://github.com/dash1101/RPCortex-OS" target="_blank">GitHub</a>
-          <a href="https://github.com/dash1101/RPCortex-OS/releases" target="_blank">Releases</a>
+          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
+          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
           <a href="docs">Docs</a>
           <a href="roadmap">Roadmap</a>
-          <a href="https://github.com/dash1101/RPCortex-OS/issues" target="_blank">Issues</a>
+          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
           <a href="privacy">Privacy</a>
         </div>
       </div>
       <p class="footer-note">Built by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. &copy; 2026 &mdash; all rights reserved.</p>
     </div>
   </footer>
-
-  <script>
-    const sections = document.querySelectorAll('.docs-article h2[id]');
-    const tocLinks = document.querySelectorAll('.docs-toc a');
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          tocLinks.forEach(l => l.classList.remove('active'));
-          const link = document.querySelector('.docs-toc a[href="#' + e.target.id + '"]');
-          if (link) link.classList.add('active');
-        }
-      });
-    }, { rootMargin: '-20% 0px -70% 0px' });
-    sections.forEach(s => obs.observe(s));
-  </script>
 
   <script src="js/nav.js"></script>
 </body>
