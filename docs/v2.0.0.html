@@ -746,9 +746,10 @@ int app_main(int arg) {
          installer page after the first flash.</p>
       <div class="codeblock">
         <div class="codeblock-label">shell</div>
-        <pre><code>update check      # is there a newer version?
-update            # download and install it
-update channel beta | stable</code></pre>
+        <pre><code>update check              # is there a newer version?
+update install            # download, verify and apply it
+update install --force    # reinstall the current version
+update from-file &lt;path&gt;   # apply an image already on the device</code></pre>
       </div>
       <p>An update downloads the new image to the filesystem, copies it into a staging slot,
          and only then writes it over the running firmware. Source and destination are the same
@@ -759,8 +760,13 @@ update channel beta | stable</code></pre>
         interrupted <em>download</em> is harmless, but an interrupted <em>write</em> needs a
         BOOTSEL reflash.
       </div>
-      <p>The <strong>beta</strong> channel gets pre-release builds. On an early-alpha release
-         that distinction matters less than it will later, but it is there.</p>
+      <div class="warn-box">
+        <strong>There is no rollback.</strong> The image is verified against its published hash
+        before a byte of firmware is written, so a corrupted download cannot reach the flash &mdash;
+        but an image that passes verification and then fails to boot leaves the device needing a
+        BOOTSEL reflash. <code>update from-file</code> on a locally built image is the way to try
+        one without trusting the network.
+      </div>
 
       <!-- DIAGNOSTICS -->
       <h2 id="diagnostics">Diagnostics</h2>
