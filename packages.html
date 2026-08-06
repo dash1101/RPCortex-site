@@ -70,8 +70,20 @@ shell rather than from here. See below.</pre>
         <div id="installedList" style="font-family:var(--mono);font-size:0.83rem;color:var(--text-muted);line-height:1.7;white-space:pre-wrap;"></div>
       </div>
       <p class="serial-note" id="serialNote">
-        Requires Chrome 89+ or Edge 89+. Close PuTTY/Thonny before connecting. Works whether the device is at the RPCortex shell prompt or the login screen.
+        Requires Chrome 89+ or Edge 89+. Close PuTTY or any other terminal before connecting.
+        Reading what is installed works from the shell or the login prompt; installing to a v2
+        device needs an admin session, because writing files does.
       </p>
+
+      <!-- WHICH CATALOGUE -->
+      <div class="os-picker">
+        <label for="osSelect">Packages for</label>
+        <select id="osSelect">
+          <option value="v2">RPCortex v2 &mdash; compiled .app</option>
+          <option value="v1">RPCortex v1 &mdash; MicroPython .pkg</option>
+        </select>
+        <span id="osNote" class="os-note">Showing the v2 catalogue. Connect a device to match it automatically.</span>
+      </div>
 
       <!-- PACKAGE GRID -->
       <div id="pkgContainer">

@@ -49,6 +49,18 @@
   var packages     = [];
   var installedMap = {};   // lowercase pkg name -> installed version string
 
+  /* Which RPCortex is on the other end, and therefore which catalogue to show
+     and how to get a file across.
+
+     v2 is the default because it is the current release and most visitors have
+     no device plugged in. Connecting corrects it from the device itself rather
+     than from anything the visitor has to know: `_pkgs` on v2 emits an OS line
+     and v1 does not, so the absence of one IS the answer. The selector exists
+     for browsing the other catalogue without a board. */
+  var osKind = 'v2';
+  var osDetected = false;      // true once a device has told us
+  var osLabel = '';            // e.g. "v2.0.0 on pico2_w"
+
   /* ── Version helpers ──────────────────────────────────────────── */
 
   /** Compare dotted version strings. Returns 1 if a>b, -1 if a<b, 0 if equal. */
@@ -64,15 +76,43 @@
     return 0;
   }
 
-  /** Parse the PKGS_BEGIN/PKG:/PKGS_END manifest text into installedMap. */
+  /** Parse the PKGS_BEGIN/PKG:/PKGS_END manifest text into installedMap.
+   *
+   *  An `OS:<version>:<board>` line means v2. v1 emits no such line, so its
+   *  ABSENCE is the detection — which beats reading a banner, because a banner
+   *  is decoration and free to change while this is a protocol. */
   function parseManifest(text) {
     var map = {};
     var lines = text.replace(/\r/g, '').split('\n');
+    var sawOs = false;
     for (var i = 0; i < lines.length; i++) {
+      var o = lines[i].match(/^OS:(.+?):(.+)$/);
+      if (o) {
+        sawOs = true;
+        osKind = 'v2';
+        osLabel = o[1].trim() + ' on ' + o[2].trim();
+      }
       var m = lines[i].match(/^PKG:(.+?):(.+)$/);
       if (m) map[m[1].trim().toLowerCase()] = m[2].trim();
     }
+    if (lines.join('\n').indexOf('PKGS_BEGIN') !== -1) {
+      if (!sawOs) { osKind = 'v1'; osLabel = 'v1 (MicroPython)'; }
+      osDetected = true;
+      reflectOs();
+    }
     return map;
+  }
+
+  /** Show which catalogue is being browsed, and why. */
+  function reflectOs() {
+    var sel = document.getElementById('osSelect');
+    if (sel) sel.value = osKind;
+    var note = document.getElementById('osNote');
+    if (note) {
+      note.textContent = osDetected
+        ? 'Detected ' + osLabel + ' \u2014 showing packages for it.'
+        : 'Showing the v2 catalogue. Connect a device to match it automatically.';
+    }
   }
 
   /**
@@ -168,11 +208,16 @@
       await sleep(300);
       activeDevice.clearBuffer();
 
-      /* Read installed packages so the cards show Install / Update / Re-install.
-         Uses the `_pkgs` escape, which works at the shell or login prompt. */
+      /* Read installed packages so the cards show Install / Update / Remove.
+         `_pkgs` works at the shell or the login prompt, and on v2 it also says
+         which OS this is — so the catalogue is RELOADED if the device turns out
+         to disagree with what was being browsed. Showing v1 packages next to a
+         v2 device would offer installs that cannot work. */
       try {
+        var was = osKind;
         installedMap = await fetchInstalled();
-        renderPackages(packages);
+        if (osKind !== was) await loadPackages();
+        else renderPackages(packages);
       } catch (e) { /* non-fatal — buttons just default to Install */ }
     } catch (e) {
       if (e.name !== 'NotFoundError') {
@@ -284,20 +329,101 @@
     return installOk;
   }
 
+  /* ── put protocol: how a file reaches a v2 device ──────────────── */
+  //
+  // v2 has no `_xfer`. It has `put <path> <len>`, which reads that many RAW
+  // bytes from the serial line and writes them to a file — no base64, no
+  // chunking protocol, nothing to keep in step. Then `pkg install <path>`
+  // validates and installs it, and the temporary file is removed.
+  //
+  // `put` is admin-only, so this needs a logged-in root session rather than the
+  // login prompt v1's escape worked from. That is worth saying plainly when it
+  // fails, because "nothing happened" is the failure it otherwise looks like.
+  async function _doPut(data, pkgName) {
+    var tmp = '/_web_' + pkgName.toLowerCase() + '.app';
+
+    xferLogLine('[:] Asking the device to receive ' + data.length + ' bytes\u2026',
+                'xfer-log-info');
+    activeDevice.clearBuffer();
+    await activeDevice.write('put ' + tmp + ' ' + data.length + '\r');
+
+    var ready = await activeDevice.waitFor('raw bytes now', 8000).catch(function () {
+      return '';
+    });
+    if (!ready) {
+      xferLogLine('[-] The device did not offer to receive. `put` needs an admin ' +
+                  'session \u2014 log in as root on the terminal first.', 'xfer-log-err');
+      xferTitle.textContent = 'Not logged in';
+      xferSub.textContent   = 'Log in as an admin on the device, then try again.';
+      return false;
+    }
+    xferProgress.style.width = '20%';
+
+    // In pieces so the progress bar means something, and with a breath between
+    // them: the device writes each block to flash as it arrives.
+    var CHUNK = 512;
+    for (var i = 0; i < data.length; i += CHUNK) {
+      await activeDevice.write(data.slice(i, i + CHUNK));
+      xferProgress.style.width =
+        (20 + Math.round(((i + CHUNK) / data.length) * 50)) + '%';
+      await sleep(8);
+    }
+    xferLogLine('[@] Sent. Writing to flash\u2026', 'xfer-log-ok');
+    await sleep(400);
+    xferProgress.style.width = '75%';
+
+    xferLogLine('[:] Installing\u2026', 'xfer-log-info');
+    xferSub.textContent = 'Installing on device\u2026';
+    activeDevice.clearBuffer();
+    await activeDevice.write('pkg install ' + tmp + '\r');
+    await sleep(2500);
+    var out = activeDevice.rxBuffer || '';
+    xferProgress.style.width = '95%';
+
+    // Tidy up whatever happened. A temporary file left in the root of somebody
+    // else's filesystem is rude.
+    await activeDevice.write('rm ' + tmp + '\r');
+    await sleep(400);
+    xferProgress.style.width = '100%';
+
+    var ok = /installed|Installed/.test(out) && !/\[!\]/.test(out);
+    if (ok) {
+      xferLogLine('[@] \'' + pkgName + '\' installed.', 'xfer-log-ok');
+      xferTitle.textContent = pkgName + ' installed';
+      xferSub.textContent   = 'Its commands are live now \u2014 no reboot.';
+    } else {
+      xferLogLine('[?] The device did not confirm the install. Its output:',
+                  'xfer-log-warn');
+      xferTitle.textContent = 'Install did not confirm';
+      xferSub.textContent   = 'Check the device shell.';
+    }
+    var rl = out.split('\n');
+    for (var k = 0; k < rl.length; k++) {
+      var t = rl[k].trim();
+      if (t && t.length > 1) xferLogLine('  ' + t, 'xfer-log-dim');
+    }
+    return ok;
+  }
+
   /* ── Install from repo URL ─────────────────────────────────────── */
   async function installToDevice(pkg) {
     if (!activeDevice) { alert('Connect a device first.'); return; }
     var pkgName = pkg.name;
     showOverlay(pkgName);
     try {
-      xferLogLine('[:] Downloading ' + pkgName + '.pkg\u2026', 'xfer-log-info');
+      xferLogLine('[:] Downloading ' + pkgName + PKG_EXT[osKind] + '\u2026', 'xfer-log-info');
       var resp = await fetch(ensureHttps(pkg.url));
       if (!resp.ok) throw new Error('HTTP ' + resp.status + ' downloading package');
       var data = new Uint8Array(await resp.arrayBuffer());
       xferLogLine('[@] Downloaded ' + data.length + ' bytes.', 'xfer-log-ok');
       xferProgress.style.width = '10%';
-      var destPath = '/Vela/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
-      var ok = await _doXfer(data, destPath, pkgName);
+      var ok;
+      if (osKind === 'v2') {
+        ok = await _doPut(data, pkgName);
+      } else {
+        var destPath = '/Vela/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
+        ok = await _doXfer(data, destPath, pkgName);
+      }
       if (ok) await refreshInstalledAfterInstall();
     } catch (e) {
       xferLogLine('[-] Error: ' + (e.message || String(e)), 'xfer-log-err');
@@ -342,6 +468,35 @@
    * Work out the install-button state for a package given what's installed.
    * Returns { label, disabled, title }.
    */
+  /* Remove an installed package. `pkg remove` is the same word on both. */
+  async function removeFromDevice(pkg) {
+    if (!activeDevice) { alert('Connect a device first.'); return; }
+    if (!confirm('Remove ' + pkg.name + ' from the device?')) return;
+    showOverlay(pkg.name);
+    xferTitle.textContent = 'Removing ' + pkg.name;
+    xferSub.textContent   = 'Asking the device to uninstall\u2026';
+    try {
+      activeDevice.clearBuffer();
+      await activeDevice.write('pkg remove ' + pkg.name + '\r');
+      await sleep(1800);
+      xferProgress.style.width = '100%';
+      var out = activeDevice.rxBuffer || '';
+      var lines = out.split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var t = lines[i].trim();
+        if (t && t.length > 1) xferLogLine('  ' + t, 'xfer-log-dim');
+      }
+      xferTitle.textContent = pkg.name + ' removed';
+      xferSub.textContent   = 'Gone from the device.';
+      installedMap = await fetchInstalled();
+      renderPackages(packages);
+    } catch (e) {
+      xferLogLine('[-] ' + (e.message || String(e)), 'xfer-log-err');
+      xferTitle.textContent = 'Remove failed';
+    }
+    xferCloseBtn.disabled = false;
+  }
+
   function installState(p) {
     if (!activeDevice) {
       return { label: 'Install to Device', disabled: true,
@@ -403,7 +558,13 @@
             ' title="' + esc(st.title) + '">' + esc(st.label) + '</button>' +
           '<button class="pkg-dl-btn" data-pkg-url="' + esc(ensureHttps(p.url)) + '"' +
             ' data-pkg-name="' + esc(p.name) + '" data-pkg-ver="' + esc(p.ver) + '"' +
-            ' title="Download the .pkg file to your computer">Download</button>' +
+            ' title="Download the ' + esc(PKG_EXT[osKind]) + ' file to your computer">Download</button>' +
+          // Only when it is actually on the device. A Remove button for
+          // something that is not installed is a button that can only fail.
+          (inst !== undefined && activeDevice
+            ? '<button class="pkg-rm-btn" data-pkg-idx="' + i + '"' +
+              ' title="Remove it from the connected device">Remove</button>'
+            : '') +
         '</div>' +
         '<button class="pkg-cli-copy" data-cli="pkg install ' + esc(p.name) + '"' +
           ' title="Copy the shell install command">' +
@@ -423,6 +584,14 @@
       })(parseInt(btns[j].getAttribute('data-pkg-idx'), 10)));
     }
 
+    /* Bind remove handlers */
+    var rmBtns = pkgContainer.querySelectorAll('.pkg-rm-btn');
+    for (var r = 0; r < rmBtns.length; r++) {
+      rmBtns[r].addEventListener('click', (function (idx) {
+        return function () { removeFromDevice(packages[idx]); };
+      })(parseInt(rmBtns[r].getAttribute('data-pkg-idx'), 10)));
+    }
+
     /* Bind download handlers */
     var dlBtns = pkgContainer.querySelectorAll('.pkg-dl-btn');
     for (var k = 0; k < dlBtns.length; k++) {
@@ -437,7 +606,7 @@
             var dlA  = document.createElement('a');
             dlA.href = URL.createObjectURL(blob);
             dlA.download = btn.getAttribute('data-pkg-name') + '-v' +
-                           btn.getAttribute('data-pkg-ver') + '.pkg';
+                           btn.getAttribute('data-pkg-ver') + PKG_EXT[osKind];
             dlA.click();
             setTimeout(function () { URL.revokeObjectURL(dlA.href); }, 1500);
           } catch (e) {
@@ -480,11 +649,20 @@
   }
 
   /* ── Fetch packages from repo ─────────────────────────────────── */
-  var REPO_INDEX = 'https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json';
+  var REPO_INDEX = {
+    v1: 'https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json',
+    v2: 'https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo-v2/index.json'
+  };
+  /* What a package file is called on each. v1 ships ZIP archives of Python
+     source; v2 ships compiled images. Getting this wrong produces a download
+     with the wrong extension, which the device then refuses. */
+  var PKG_EXT = { v1: '.pkg', v2: '.app' };
 
   async function loadPackages() {
+    pkgContainer.innerHTML = '<div class="pkg-empty">Loading the ' + esc(osKind) +
+                             ' catalogue\u2026</div>';
     try {
-      var resp = await fetch(REPO_INDEX);
+      var resp = await fetch(REPO_INDEX[osKind]);
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       var data = await resp.json();
       packages = data.packages || [];
@@ -561,6 +739,26 @@
     _origSetConnected(connected);
     if (dropInstallBtn && _dropFile) dropInstallBtn.disabled = !connected;
   };
+
+  /* ── The catalogue picker ─────────────────────────────────────── */
+  //
+  // Choosing by hand overrides the detection, because someone browsing without
+  // a board should be able to look at either. Connecting a device sets it back
+  // to what is actually plugged in, which is the answer that cannot be wrong.
+  var osSelect = document.getElementById('osSelect');
+  if (osSelect) {
+    osSelect.value = osKind;
+    osSelect.addEventListener('change', function () {
+      osKind = osSelect.value;
+      osDetected = false;
+      var note = document.getElementById('osNote');
+      if (note) {
+        note.textContent = 'Showing the ' + osKind +
+          ' catalogue. Connect a device to match it automatically.';
+      }
+      loadPackages();
+    });
+  }
 
   /* ── Init ─────────────────────────────────────────────────────── */
   loadPackages();

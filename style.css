@@ -2225,3 +2225,46 @@ body::before, body::after { display: none; }   /* retire the legacy drift orbs *
   .get-result { padding: 1.2rem 1.1rem; }
   .get-step-head h2 { font-size: 1.15rem; }
 }
+
+/* ── Package catalogue picker ─────────────────────────────────────
+   Which RPCortex the listed packages are for. Set from the device when one is
+   connected, and selectable by hand for browsing without a board. */
+.os-picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  background: rgba(0,180,255,0.04);
+  border: 1px solid rgba(0,180,255,0.15);
+  border-radius: var(--radius);
+}
+.os-picker label { font-size: 0.85rem; color: var(--text-muted); }
+.os-picker select {
+  background: rgba(4,9,18,0.7);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.os-picker select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 1px; }
+.os-note { font-size: 0.8rem; color: var(--text-muted); flex: 1 1 220px; }
+
+/* Remove sits beside Download and reads as the destructive one without
+   shouting: a package is one command away from being reinstalled. */
+.pkg-rm-btn {
+  background: rgba(255,80,80,0.08);
+  color: #ff8a8a;
+  border: 1px solid rgba(255,80,80,0.25);
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.pkg-rm-btn:hover { background: rgba(255,80,80,0.16); border-color: rgba(255,80,80,0.45); }
+.pkg-rm-btn:focus-visible { outline: 2px solid #ff8a8a; outline-offset: 2px; }
