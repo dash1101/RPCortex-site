@@ -140,6 +140,7 @@ extern "C" int app_main(int arg) {
           <tr><td>Network</td><td><code>fw_net_connected</code>, <code>fw_net_resolve</code>, <code>fw_http_get</code>, <code>fw_tcp_listen</code></td></tr>
           <tr><td>Hardware</td><td><code>fw_gpio_*</code>, <code>fw_i2c_*</code>, <code>fw_spi_*</code>, <code>fw_pio_*</code>, <code>fw_adc_read</code></td></tr>
           <tr><td>Screen</td><td><code>fw_tui_*</code> &mdash; a full-screen drawing surface</td></tr>
+          <tr><td>The shell</td><td><code>fw_shell_run</code> &mdash; run a command line and capture its output</td></tr>
         </tbody>
       </table>
       <div class="note-box">
@@ -148,6 +149,25 @@ extern "C" int app_main(int arg) {
         supervisor call underneath, measured at about <strong>300 cycles</strong>. The SDK builds
         that for you and it never needs thinking about, except in a tight loop, where hoisting the
         call out is worth it.
+      </div>
+
+      <h3>Running a shell command</h3>
+      <p>A package can run anything the shell can and read back what it printed &mdash; pipes,
+         chaining and redirection included, because it is the same runner that handles a typed
+         line:</p>
+      <div class="codeblock">
+        <div class="codeblock-label">inside a command</div>
+        <pre><code>static char out[512];
+
+int rc = fw_shell_run("df", out, sizeof(out));
+if (rc == 0) fw_printf("%s", out);
+
+fw_shell_run("ntp sync", NULL, 0);   // for its effect, output ignored</code></pre>
+      </div>
+      <div class="note-box">
+        It runs with the <strong>session's</strong> privileges, exactly as if the logged-in user
+        had typed it &mdash; not the package's. A guest session cannot use a package to reach
+        admin-only commands.
       </div>
 
       <h2 id="rules">The four rules</h2>
