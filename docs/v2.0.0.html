@@ -157,6 +157,9 @@ root@vela:/&gt; help
       </table>
       <p>If the last run ended badly, the boot says so before anything else and names the
          command that was running. See <a href="#diagnostics">Diagnostics</a>.</p>
+      <p>A boot counts as failed until the shell starts. Three failures in a row and the device
+         starts repairing itself, cheapest step first &mdash; see
+         <a href="#recovery">Recovery</a>.</p>
 
       <!-- THE SHELL -->
       <h2 id="the-shell">The Shell</h2>
@@ -749,7 +752,8 @@ int app_main(int arg) {
         <pre><code>update check              # is there a newer version?
 update install            # download, verify and apply it
 update install --force    # reinstall the current version
-update from-file &lt;path&gt;   # apply an image already on the device</code></pre>
+update from-file &lt;path&gt;   # apply an image already on the device
+update rollback           # what is saved to go back to</code></pre>
       </div>
       <p>An update downloads the new image to the filesystem, copies it into a staging slot,
          and only then writes it over the running firmware. Source and destination are the same
@@ -760,12 +764,36 @@ update from-file &lt;path&gt;   # apply an image already on the device</code></p
         interrupted <em>download</em> is harmless, but an interrupted <em>write</em> needs a
         BOOTSEL reflash.
       </div>
+
+      <h3>Rollback</h3>
+      <p>An update saves the version it replaces before it writes anything, so there is
+         something to go back to.</p>
+      <div class="codeblock">
+        <div class="codeblock-label">shell</div>
+        <pre><code>update rollback           # what is saved, and how big it is
+update rollback --now     # write it back and reboot
+update rollback --save    # save what is running now
+update rollback --forget  # delete it and free the space</code></pre>
+      </div>
+      <p>The copy is a plain file, read straight out of the running firmware's own flash and
+         hashed on the way out. Restoring it stages it back into the update slot and applies it
+         exactly as an update does &mdash; same verification, same reboot. Files, settings and
+         accounts are untouched; only the firmware changes.</p>
+      <p>The device does this by itself if it has to. Three starts that never reach a shell and
+         it walks the <a href="#recovery">recovery ladder</a>, of which restoring the saved
+         firmware is the second rung.</p>
+      <div class="note-box">
+        <strong>It needs room.</strong> The copy is the size of the firmware &mdash; around
+        900&nbsp;KB on a Pico 2&nbsp;W &mdash; and it lives in the filesystem beside everything
+        else. On the Pico&nbsp;W, where the firmware is larger than the whole filesystem, no copy
+        can be kept at all and <code>update rollback</code> says so. If an update cannot find the
+        room it goes ahead without a copy and tells you, rather than refusing to update.
+      </div>
       <div class="warn-box">
-        <strong>There is no rollback.</strong> The image is verified against its published hash
-        before a byte of firmware is written, so a corrupted download cannot reach the flash &mdash;
-        but an image that passes verification and then fails to boot leaves the device needing a
-        BOOTSEL reflash. <code>update from-file</code> on a locally built image is the way to try
-        one without trusting the network.
+        <strong>Rollback cannot rescue an image that does not boot at all.</strong> The restore
+        runs inside the firmware being replaced, so that firmware has to get as far as the boot
+        sequence. An image that faults before then still needs a BOOTSEL reflash &mdash; only a
+        bootloader that never changes could do better, and this device does not have one.
       </div>
 
       <!-- DIAGNOSTICS -->
@@ -784,6 +812,7 @@ update from-file &lt;path&gt;   # apply an image already on the device</code></p
           <tr><td>inputstat</td><td>The bytes your terminal is sending</td></tr>
           <tr><td>ps</td><td>Tasks, with stack high-water marks</td></tr>
           <tr><td>fscheck</td><td>Check and repair the OS layout</td></tr>
+          <tr><td>fscheck --scan</td><td>Read every file, to find flash that has gone bad</td></tr>
         </tbody>
       </table>
 
@@ -815,12 +844,14 @@ update from-file &lt;path&gt;   # apply an image already on the device</code></p
 
       <!-- RECOVERY -->
       <h2 id="recovery">Recovery</h2>
-      <p>Four ways back, in increasing order of what they cost.</p>
+      <p>Six ways back, in increasing order of what they cost.</p>
       <table>
         <thead><tr><th>Command</th><th>Does</th><th>Loses</th></tr></thead>
         <tbody>
           <tr><td>safeboot</td><td>Restart with no services, startup commands or packages</td><td>Nothing</td></tr>
           <tr><td>fscheck</td><td>Check and repair the OS layout</td><td>Nothing</td></tr>
+          <tr><td>fscheck --scan</td><td>Read every file, to find damaged flash</td><td>Nothing</td></tr>
+          <tr><td>update rollback --now</td><td>Put the previous firmware back</td><td>Nothing</td></tr>
           <tr><td>regreset</td><td>Restore every setting to its default</td><td>Settings</td></tr>
           <tr><td>factoryreset</td><td>Erase all data and restart</td><td>Everything on the device</td></tr>
         </tbody>
@@ -830,6 +861,37 @@ update from-file &lt;path&gt;   # apply an image already on the device</code></p
          working shell without losing anything.</p>
       <p>If none of those get you a prompt, hold BOOTSEL and reflash. That always works,
          because it does not depend on anything on the device being correct.</p>
+
+      <h3>What the device does without being asked</h3>
+      <p>A boot counts as failed until the shell starts, and the count survives a reset. Three
+         failures in a row and the device works down the same ladder by itself, cheapest first.</p>
+      <table>
+        <thead><tr><th>Failed starts</th><th>It tries</th><th>Costs</th></tr></thead>
+        <tbody>
+          <tr><td>3</td><td>Starting with nothing loaded &mdash; no packages, services or startup items</td><td>Nothing; it undoes itself next boot</td></tr>
+          <tr><td>4</td><td>Writing the saved firmware back</td><td>Nothing; files and settings are kept</td></tr>
+          <tr><td>5</td><td>Rebuilding the filesystem</td><td>Everything on the device</td></tr>
+        </tbody>
+      </table>
+      <p>The order is the point. Something that was added to the device &mdash; a package, a
+         service, a startup command &mdash; is the most common reason a working device stops
+         working, and skipping all of them costs nothing to try. Rebuilding the filesystem is
+         the only step that loses anything, so it is last, and it only happens when a bare start
+         failed too and there is no firmware left to restore.</p>
+      <p><code>failboot</code> sets the counter on a healthy device, so the ladder can be
+         watched rather than taken on trust. It says which rung the next boot will reach before
+         it does anything.</p>
+
+      <h3>Damage it repairs on its own</h3>
+      <p>Settings and accounts are written twice, to a file and a copy beside it. If the primary
+         will not read back, the copy is loaded and the primary rewritten from it &mdash; and the
+         boot says so, out loud, because a device that heals silently teaches nobody that its
+         flash is wearing out.</p>
+      <p>Every file the OS owns is read at boot. littlefs checksums every block it writes, so a
+         block that has gone bad does not return wrong data &mdash; it returns a read error.
+         Anything that cannot be read is removed and rebuilt from the copy or from defaults.
+         <code>fscheck --scan</code> reads the rest of the device the same way and only reports,
+         because files in a home directory are yours and not the OS's to delete.</p>
 
       <!-- MOVING FROM V1 -->
       <h2 id="moving-from-v1">Moving from v1</h2>

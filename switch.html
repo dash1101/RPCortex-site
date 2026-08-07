@@ -76,7 +76,7 @@
         <li><strong>Speed.</strong> Native code, direct hardware access, no bytecode in between.</li>
         <li><strong>Memory.</strong> No garbage collector, so no collector pauses and no fragmentation problem of the kind that broke HTTPS. Memory that is free is memory you can actually use.</li>
         <li><strong>The Pico 1 and 1 W come back.</strong> Without an interpreter, 264 KB stops being the wall it was.</li>
-        <li><strong>Real OTA updates.</strong> The RP2350's boot ROM has A/B flash slots and rollback built in &mdash; a failed update returns to the working image by itself.</li>
+        <li><strong>Real OTA updates, with a way back.</strong> An update saves the version it replaces, so <code>update rollback</code> puts it back without losing files or settings &mdash; and a device that fails to start three times restores it on its own.</li>
         <li><strong>USB.</strong> HID, BadUSB and U2F need native USB device support, which was never reachable before.</li>
         <li><strong>Installing is simpler.</strong> Hold BOOTSEL, plug in, drag one file across. No firmware step, no file-pasting step.</li>
       </ul>
