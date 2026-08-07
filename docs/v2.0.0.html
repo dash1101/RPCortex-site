@@ -782,6 +782,9 @@ update rollback --forget  # delete it and free the space</code></pre>
       <p>The device does this by itself if it has to. Three starts that never reach a shell and
          it walks the <a href="#recovery">recovery ladder</a>, of which restoring the saved
          firmware is the second rung.</p>
+      <p>A version that was rolled back from is remembered, so <code>update check</code> stops
+         offering it and says why. A later release clears that by itself;
+         <code>update install --force</code> installs it anyway if you want to try again.</p>
       <div class="note-box">
         <strong>It needs room.</strong> The copy is the size of the firmware &mdash; around
         900&nbsp;KB on a Pico 2&nbsp;W &mdash; and it lives in the filesystem beside everything
