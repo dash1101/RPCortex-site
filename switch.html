@@ -94,18 +94,18 @@
       <p>What ends is new feature development on the MicroPython line. The v1 source is not going anywhere &mdash; it is archived and readable, and the packages in the repository continue to work with it.</p>
 
       <h2 id="now">Where it stands</h2>
-      <p>Further along than "planned". Working today, tested on the host and building for both the RP2350 and the RP2040:</p>
+      <p>Out. <a href="release-vela2">v2.0.0 &ldquo;Vela II&rdquo;</a> is published as a beta pre-release &mdash; you can install it today, on the understanding that it is a beta and v1.0 is the finished one. Working, tested on the host and building for both the RP2350 and the RP2040:</p>
       <ul>
         <li>The package loader, with clean load / run / unload.</li>
-        <li>The shell &mdash; around 50 commands plus v1's aliases, with pipes, chaining, redirection and quoting.</li>
+        <li>The shell &mdash; more commands than v1 had, plus its aliases, with pipes, chaining, redirection and quoting.</li>
         <li>Line editing &mdash; cursor and word movement, history, Tab completion over commands and paths.</li>
         <li>Accounts, the registry, the filesystem, WiFi.</li>
         <li>The console: v1's output layer, checked byte for byte against the original escape sequences.</li>
       </ul>
-      <p>Still to come: the package repository, the rest of the command set (<code>ping</code>, <code>ntp</code>, <code>wget</code>, the editor), OTA updates, USB HID, and the Nova D1 port. The <a href="roadmap">roadmap</a> tracks it.</p>
+      <p>The package repository, the rest of the command set, over-the-air updates and the Nova D1 port have all landed since. Still to come: USB HID, the ESP32 port, and meeting an SD card and an RP2040 board with real hardware rather than a host test. The <a href="roadmap">roadmap</a> tracks it.</p>
 
       <h2 id="when">When</h2>
-      <p>When it is genuinely better than v1.0, and not before. Shipping a rewrite that is merely equivalent would be asking people to take a risk for nothing.</p>
+      <p>The beta is here now. A <em>stable</em> 2.0 arrives when it is genuinely better than v1.0, and not before &mdash; shipping a rewrite that is merely equivalent would be asking people to take a risk for nothing.</p>
       <p>If you want to follow along or argue with any of this, the <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a> is the place.</p>
 
     </article>
