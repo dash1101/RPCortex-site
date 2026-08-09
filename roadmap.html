@@ -347,7 +347,7 @@
           <div class="roadmap-body active">
             <div class="roadmap-header">
               <span class="roadmap-ver">v2.0 &mdash; Vela II</span>
-              <span class="roadmap-status future">Shipped &middot; Latest</span>
+              <span class="roadmap-status future">Pre-release &middot; Beta</span>
             </div>
             <p class="roadmap-desc">
 RPCortex <strong>rewritten in C++</strong>, native on the hardware, with no interpreter
@@ -360,27 +360,25 @@ RPCortex <strong>rewritten in C++</strong>, native on the hardware, with no inte
             <div class="roadmap-section-label">Shipped, and confirmed on hardware</div>
             <ul class="roadmap-items">
               <li class="done-item"><strong>Runtime package loader</strong> &mdash; compiled apps are loaded, relocated and run at runtime, then unloaded cleanly. This was the go/no-go for keeping a package system without an interpreter, and it went</li>
-              <li class="done-item"><strong>The shell</strong> &mdash; 97 commands plus v1&rsquo;s aliases, pipes, <code>&amp;&amp;</code>&thinsp;/&thinsp;<code>||</code>, redirection, quoting</li>
+              <li class="done-item"><strong>The shell</strong> &mdash; more commands than v1 had, plus its aliases, pipes, <code>&amp;&amp;</code>&thinsp;/&thinsp;<code>||</code>, redirection, quoting</li>
               <li class="done-item"><strong>Line editing</strong> &mdash; cursor and word navigation, history, Tab completion over commands and paths</li>
               <li class="done-item"><strong>Accounts</strong> &mdash; salted SHA-256, roles, the guided first-run setup, login backoff</li>
               <li class="done-item"><strong>Filesystem</strong> &mdash; littlefs, in the same on-disk format a v1 device already uses</li>
               <li class="done-item"><strong>WiFi</strong> &mdash; scan, connect, saved networks, autoconnect</li>
               <li class="done-item"><strong>The console</strong> &mdash; v1&rsquo;s tagged output, colours and boot banner, reproduced rather than reinterpreted</li>
-            </ul>
-
               <li class="done-item"><strong>Package repository</strong> &mdash; <code>pkg</code> against a real index, installing over the air</li>
               <li class="done-item"><strong>The whole command set</strong> &mdash; <code>ping</code>, <code>ntp</code>, <code>wget</code>/<code>curl</code>, <code>watch</code>, the editor, and more than v1 had</li>
               <li class="done-item"><strong>Over-the-air updates</strong> &mdash; staged in a second flash slot and verified before a byte of firmware is written</li>
               <li class="done-item"><strong>Packages cannot take the device down</strong> &mdash; unprivileged on RP2350, every pointer range-checked, and all three ways one can misbehave contained</li>
-              <li class="done-item"><strong>The Pico&nbsp;1 and 1&nbsp;W are back</strong> &mdash; without an interpreter, 264&nbsp;KB stopped being the wall it was</li>
-              <li class="done-item"><strong>Bluetooth</strong> &mdash; LE and Classic scanning, which v1 could not reach at all</li>
+              <li class="done-item"><strong>Bluetooth</strong> &mdash; an LE scan, confirmed on a Pico&nbsp;2&nbsp;W. Classic and audio are written and host-tested, still to be met by a real device</li>
               <li class="done-item"><strong>A USB drive</strong> &mdash; drag files on and off, in both directions</li>
             </ul>
 
             <div class="roadmap-section-label">Still to come</div>
             <ul class="roadmap-items">
-              <li><strong>The rest of v1&rsquo;s packages</strong> &mdash; fourteen against twenty, and the gap is what a user notices</li>
-              <li><strong>SD cards</strong> &mdash; the driver is sketched; the filesystem half comes first because it needs no hardware</li>
+              <li><strong>The Pico&nbsp;1 and 1&nbsp;W, on a real board</strong> &mdash; without an interpreter, 264&nbsp;KB stopped being the wall it was, and the images build and pass their checks. Nobody has booted one yet</li>
+              <li><strong>The rest of v1&rsquo;s packages</strong> &mdash; the v2 index is still the shorter of the two, and the gap is what a user notices</li>
+              <li><strong>SD cards, on a real card</strong> &mdash; the driver, the read-only FAT reader and the <code>sd</code> command are written and host-tested; what is left is running them against a card in a slot</li>
               <li><strong>ESP32-S3 and the other ESP32 parts</strong> &mdash; the portable core moves unchanged; the context switch, storage and network layers are the work</li>
               <li><strong>Nova&nbsp;D1</strong>, ported onto the new package system</li>
               <li><strong>USB HID</strong> &mdash; BadUSB, U2F, and the composite-device work that needs native USB</li>
@@ -411,14 +409,13 @@ RPCortex <strong>rewritten in C++</strong>, native on the hardware, with no inte
 <strong>v2:</strong> <code>httpd</code> &middot; <code>websearch</code> &middot;
           <code>speedtest</code> &middot; <code>dht</code> &middot; <code>gpio</code> &middot;
           <code>i2cscan</code> &middot; <code>ws2812</code> &middot; <code>calc</code> &middot;
-          <code>tuidemo</code> &middot; <code>greet</code>, plus <code>bench</code>,
-          <code>probe</code>, <code>stress</code> and <code>havoc</code> for measuring and
-          breaking things. Browse and one-click install them on the
+          <code>tuidemo</code> &middot; <code>greet</code> &middot; <code>novad1</code>, plus
+          <code>bench</code>, <code>probe</code>, <code>stress</code> and <code>havoc</code> for
+          measuring and breaking things. Browse and one-click install them on the
           <a href="packages">Packages</a> page, which detects which OS your device runs.
         </p>
         <div class="roadmap-section-label">Still ideas</div>
         <ul class="roadmap-items">
-          <li><strong><code>sd</code></strong> &mdash; SD cards over SPI. <a href="https://github.com/dash1101/RPCortex/blob/main/os/SDCARD-DESIGN.md" target="_blank" rel="noopener">The design is sketched</a>.</li>
           <li><strong><code>mqtt</code></strong> &mdash; publish / subscribe so RPCortex can talk to Home Assistant, Node-RED, and friends.</li>
           <li><strong><code>git</code></strong> &mdash; clone / fetch repositories (read-mostly); the heaviest of the set.</li>
         </ul>

@@ -2,22 +2,22 @@
   {
     "version": "v2.0.0",
     "label": "v2.0.0",
-    "tag": "Vela II · early alpha",
+    "tag": "Vela II · beta",
     "file": "v2.0.0.html",
     "default": true,
-    "heroSub": "RPCortex Vela II v2.0.0 &mdash; the native C++ release, in early alpha. Full reference for the shell, commands, packages and hardware."
+    "heroSub": "RPCortex Vela II v2.0.0 &mdash; the native C++ rewrite, in beta. Full reference for the shell, commands, packages and hardware."
   },
   {
     "version": "v1.0.0",
     "label": "v1.0.0",
-    "tag": "Vela · MicroPython",
+    "tag": "Vela · stable",
     "file": "v1.0.0.html",
-    "heroSub": "RPCortex Vela v1.0.0 (beta) &mdash; full reference for the shell, commands, registry, and hardware"
+    "heroSub": "RPCortex Vela v1.0.0 &mdash; the stable MicroPython release. Full reference for the shell, commands, registry, and hardware"
   },
   {
     "version": "v0.9.1",
     "label": "v0.9.1",
-    "tag": "Pulsar · stable",
+    "tag": "Pulsar",
     "file": "v0.9.1.html",
     "heroSub": "RPCortex Pulsar v0.9.1 &mdash; full reference for the shell, commands, registry, and hardware"
   },

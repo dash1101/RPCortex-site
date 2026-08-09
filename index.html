@@ -55,7 +55,7 @@
           </g>
         </svg>
       </div>
-      <div class="badge">v2.0 &ldquo;Vela II&rdquo; &nbsp;&bull;&nbsp; Latest &nbsp;&nbsp;|&nbsp;&nbsp; v1.0 &ldquo;Vela&rdquo; &nbsp;&bull;&nbsp; MicroPython</div>
+      <div class="badge">v1.0 &ldquo;Vela&rdquo; &nbsp;&bull;&nbsp; Stable &nbsp;&nbsp;|&nbsp;&nbsp; v2.0 &ldquo;Vela II&rdquo; &nbsp;&bull;&nbsp; C++ beta</div>
       <h1>A real OS. On your microcontroller.</h1>
       <p class="hero-sub">
         RPCortex is a full CLI operating system for the RP2 family, written in
@@ -69,9 +69,10 @@
         <a class="btn-secondary" href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
       </div>
       <p class="hero-note">
-        <strong>v2.0 is the release to run</strong> on any RP2 board. v1.0 is the MicroPython
-        version and is still the answer for an ESP32-S3, where the v2 port is underway but not
-        finished. <a href="switch">What changed, and why &rarr;</a>
+        <strong>v1.0 &ldquo;Vela&rdquo; is the stable release</strong> &mdash; the MicroPython build, and
+        the one to install if you want something finished. <strong>v2.0 &ldquo;Vela II&rdquo; is the C++
+        rewrite, and it is a beta pre-release</strong>: worth running on a spare board, not on
+        anything you depend on. <a href="switch">What changed, and why &rarr;</a>
       </p>
       <div class="hero-term">
         <div class="term-bar">
@@ -82,7 +83,7 @@
       </div>
       <div class="stat-band">
         <div class="stat-chip"><div class="stat-num" data-target="200" data-suffix="&times;">0</div><div class="stat-cap">Faster than v1</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="97"  data-suffix="">0</div><div class="stat-cap">Shell commands</div></div>
+        <div class="stat-chip"><div class="stat-num" data-target="100" data-suffix="+">0</div><div class="stat-cap">Shell commands</div></div>
         <div class="stat-chip"><div class="stat-num" data-target="99"  data-suffix="&nbsp;KB">0</div><div class="stat-cap">RAM in use idle</div></div>
         <div class="stat-chip"><div class="stat-num" data-target="2"   data-suffix="">0</div><div class="stat-cap">Cores, real threads</div></div>
       </div>
@@ -206,9 +207,6 @@
         Bluetooth, TLS and over-the-air updates all still in. What they do not get is the package
         sandbox: ARMv6-M protection regions are power-of-two sized and aligned to their own size,
         so the five a package needs cost more RAM than those boards have.</p>
-      <p class="note"><strong>ESP32-S3 and the other ESP32 parts:</strong> v1.0 supports them today and continues
-        to. The v2 port is underway &mdash; the portable core moves unchanged, and the context switch,
-        storage and network layers are the work.</p>
     </div>
   </section>
 
@@ -216,15 +214,15 @@
   <section class="section">
     <div class="inner">
       <h2>In action</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 28px;">Running on an ESP32-S3 over serial at 115200 baud.</p>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 28px;">The MicroPython build on a Pico&nbsp;2&nbsp;W, over serial at 115200 baud.</p>
       <div class="screenshot-grid">
         <div class="screenshot-wrap">
           <div class="screenshot-label">fetch — system info</div>
-          <img src="img/esp32s3_fetch_rpcb8x.png" alt="RPCortex fetch on ESP32-S3" loading="lazy">
+          <img src="img/esp32s3_fetch_rpcb8x.png" alt="The RPCortex fetch command showing board and system information" loading="lazy">
         </div>
         <div class="screenshot-wrap">
           <div class="screenshot-label">pkg — package manager</div>
-          <img src="img/esp32s3_fetch_pkg_rpcb8x.png" alt="RPCortex pkg on ESP32-S3" loading="lazy">
+          <img src="img/esp32s3_fetch_pkg_rpcb8x.png" alt="The RPCortex pkg command installing a package from the repository" loading="lazy">
         </div>
       </div>
     </div>

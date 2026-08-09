@@ -29,7 +29,7 @@
   <header class="docs-hero">
     <div class="inner">
       <h1>Vela II Release Notes</h1>
-      <p>v2.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela&nbsp;II</strong> &nbsp;&bull;&nbsp; The C++ rewrite &nbsp;&bull;&nbsp; Succeeds v1.0 &ldquo;Vela&rdquo;</p>
+      <p>v2.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela&nbsp;II</strong> &nbsp;&bull;&nbsp; The C++ rewrite &nbsp;&bull;&nbsp; <strong>Beta pre-release</strong>; v1.0 &ldquo;Vela&rdquo; is still the stable one</p>
     </div>
   </header>
 
@@ -170,17 +170,20 @@
 
       <h2 id="limitations">Known limitations</h2>
       <ul>
-        <li><strong>No Python.</strong> Packages are compiled C or C++. That is the whole point of
-            the rewrite and it is still a real loss of convenience.</li>
-        <li><strong>Fourteen packages</strong>, against v1's twenty. Porting the rest is the main
-            distance left to parity.</li>
-        <li><strong>No SD card support.</strong> It needs a driver; the design is sketched.</li>
+        <li><strong>Fewer packages than v1.</strong> Porting the rest is the main distance left to
+            parity &mdash; the <a href="packages">Packages</a> page lists what is in the v2 index
+            today.</li>
+        <li><strong>SD cards are built but unproven.</strong> The card driver, a read-only FAT
+            reader and the <code>sd</code> command are in the RP2350 images, and <code>/sd</code>
+            goes through the same storage calls flash does. Everything above the wire is
+            host-tested; none of it has been run with a card in the slot.</li>
         <li><strong>No ESP32-S3 yet.</strong> v1 runs there and continues to. The portable core
             moves unchanged, but the context switch, storage and network layers do not.</li>
         <li><strong>Cooperative scheduling.</strong> A task that never yields cannot be killed from
             the shell. There is a timer backstop for packages, not for firmware.</li>
-        <li><strong>Bluetooth is new.</strong> Scanning works, both LE and Classic. Little else has
-            been exercised.</li>
+        <li><strong>Bluetooth is uneven.</strong> An LE scan is confirmed on a Pico 2 W. Classic
+            inquiry, <code>bt advertise</code> and playing audio to a speaker are all written and
+            host-tested, but none has been confirmed against a real device yet.</li>
       </ul>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">

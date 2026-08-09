@@ -33,10 +33,12 @@
     <article class="docs-article">
 
       <div class="warn-box">
-        <strong>v2.0 is early alpha.</strong> It boots, joins a network, runs packages and
-        updates itself, and it is still changing week to week. Anything here can move before
-        2.0 is called finished. For the settled system, <a href="?v=v1.0.0">v1.0
-        &ldquo;Vela&rdquo;</a> is the MicroPython release and is documented separately.
+        <strong>v2.0 is a beta pre-release.</strong> It boots, joins a network, runs packages
+        and updates itself, and it is still changing week to week. The version stays at 2.0.0
+        for the whole beta &mdash; what moves between builds is the build number &mdash; and
+        anything here can change before 2.0 is called finished. For the settled system,
+        <a href="?v=v1.0.0">v1.0 &ldquo;Vela&rdquo;</a> is the stable MicroPython release and is
+        documented separately.
       </div>
 
       <!-- GETTING STARTED -->
@@ -90,34 +92,34 @@ root@vela:/&gt; help
 
       <!-- BOARDS -->
       <h2 id="boards">Which Boards Work</h2>
-      <p>v2 builds for four boards. Two are usable today and two are not, and the difference
-         is worth being blunt about.</p>
+      <p>v2 builds for four boards. All four have a filesystem; what separates them is the
+         package sandbox, and that is worth being blunt about.</p>
 
       <table>
         <thead>
-          <tr><th>Board</th><th>Chip</th><th>Filesystem</th><th>Sandbox</th><th>Status</th></tr>
+          <tr><th>Board</th><th>Chip</th><th>Firmware</th><th>Filesystem</th><th>Sandbox</th><th>Status</th></tr>
         </thead>
         <tbody>
-          <tr><td>Pico 2 W</td><td>RP2350</td><td>~1.8 MB</td><td>Yes</td><td>Primary target</td></tr>
-          <tr><td>Pico 2</td><td>RP2350</td><td>~1.8 MB</td><td>Yes</td><td>Supported, no radio</td></tr>
-          <tr><td>Pico W</td><td>RP2040</td><td><strong>None</strong></td><td>No</td><td>Not usable yet</td></tr>
-          <tr><td>Pico</td><td>RP2040</td><td><strong>None</strong></td><td>No</td><td>Not usable yet</td></tr>
+          <tr><td>Pico 2 W</td><td>RP2350</td><td>916 KB</td><td>2 MB</td><td>Yes</td><td>Primary target</td></tr>
+          <tr><td>Pico 2</td><td>RP2350</td><td>320 KB</td><td>3 MB</td><td>Yes</td><td>Supported, no radio</td></tr>
+          <tr><td>Pico W</td><td>RP2040</td><td>748 KB</td><td>384 KB</td><td>No</td><td>Built, not yet booted</td></tr>
+          <tr><td>Pico</td><td>RP2040</td><td>247 KB</td><td>1.25 MB</td><td>No</td><td>Built, not yet booted</td></tr>
         </tbody>
       </table>
 
       <div class="warn-box">
-        <strong>The original Pico and Pico W have no filesystem in v2.</strong> They carry
-        2&nbsp;MB of flash, and v2 reserves 2&nbsp;MB for firmware &mdash; one megabyte to run
-        from, one as a staging slot an update is assembled in. That leaves nothing for
-        storage. The image boots and the shell works, but nothing can be saved: no accounts,
-        no settings, no packages.
+        <strong>The RP2040 images have not been booted.</strong> They build, both image checks
+        pass on them, and the flash layout was verified by reading the constant back out of the
+        compiled firmware &mdash; but no Pico or Pico W has run one, and every hardware number
+        quoted in these docs came off a Pico 2 W. That is what a pre-release means.
         <br><br>
-        <strong>This is temporary.</strong> These boards will get a filesystem &mdash; a small
-        one, from a reserve sized for RP2040 rather than shared with RP2350. Until that lands,
-        <strong>v1.0 is the version to run on an RP2040 board.</strong>
+        <strong>What an RP2040 board does not get is the package sandbox.</strong> ARMv6-M
+        protection regions are power-of-two sized and aligned to their own size, so the five a
+        package needs cost more RAM than those parts have. Wireless, Bluetooth, TLS and
+        over-the-air updates are all still in.
       </div>
 
-      <h3>What RP2350 adds beyond storage</h3>
+      <h3>What RP2350 adds</h3>
       <ul>
         <li><strong>A memory protection unit with regions to spare.</strong> That is what lets
             a package run unprivileged with its code, data, stack and heap each described
@@ -907,7 +909,7 @@ update rollback --forget  # delete it and free the space</code></pre>
           <tr><td>Ships as</td><td>Files on top of a runtime</td><td>One firmware image</td></tr>
           <tr><td>Packages</td><td>Python source, <code>.pkg</code></td><td>Compiled <code>.app</code></td></tr>
           <tr><td>Package isolation</td><td>None</td><td>Unprivileged, hardware-enforced</td></tr>
-          <tr><td>Boards</td><td>RP2040, RP2350, ESP32-S3</td><td>RP2350 (RP2040 boots, no storage)</td></tr>
+          <tr><td>Boards</td><td>RP2040, RP2350, ESP32-S3</td><td>RP2350 and RP2040 (no ESP32 yet)</td></tr>
           <tr><td>Scripts</td><td><code>.rps</code></td><td><code>.rps</code>, same language</td></tr>
         </tbody>
       </table>
@@ -915,8 +917,8 @@ update rollback --forget  # delete it and free the space</code></pre>
          <code>capture</code> deliberately sees what a pipe would, so lines like
          <code>capture n wc -l file</code> behave identically on both.</p>
       <p><strong>Packages do not.</strong> A v1 <code>.pkg</code> is Python source and there is
-         no Python in v2. The four that ship with the SDK have been rewritten in C; a package
-         of your own needs the same treatment.</p>
+         no Python in v2. The ones in the repository have been rewritten in C; a package of your
+         own needs the same treatment.</p>
       <p><strong>The two cannot share a board.</strong> v2 replaces the firmware entirely, so
          installing it removes MicroPython and everything stored under it. Save anything you
          want to keep first.</p>
@@ -926,21 +928,21 @@ update rollback --forget  # delete it and free the space</code></pre>
       <h2 id="known-limitations">Known Limitations</h2>
       <p>The honest list, as of v2.0.0.</p>
       <ul>
-        <li><strong>RP2040 boards have no filesystem yet.</strong> The firmware reserve is
-            their entire flash. A smaller RP2040-specific reserve is planned. See
+        <li><strong>The RP2040 images have not been booted.</strong> They build and both image
+            checks pass, but no Pico or Pico W has run one. See
             <a href="#boards">Which Boards Work</a>.</li>
-        <li><strong>No Python.</strong> Packages are compiled. That is the point of v2, but it
-            is a real loss of convenience against v1.</li>
         <li><strong>The package catalogue is small.</strong> v1's twenty packages have not all
             been ported. That work is the main thing between v2 and parity.</li>
         <li><strong>No ESP32 port.</strong> v1 runs there; v2 does not, yet. The core is
             portable, the context switch, storage and network layers are not.</li>
-        <li><strong>No SD card support.</strong> It needs a driver.</li>
+        <li><strong>SD cards are built but unproven.</strong> The driver, a read-only FAT
+            reader and the <code>sd</code> command are in the RP2350 images. Everything above
+            the wire is host-tested; none of it has been run with a card in the slot.</li>
         <li><strong><code>help</code> by category does not list every command.</strong> The
             categories cover the common set; <code>help all</code> is the complete list.</li>
         <li><strong>Cooperative scheduling.</strong> A task that never yields cannot be killed
             from the shell. The timer backstop covers packages, not firmware.</li>
-        <li><strong>Early alpha.</strong> Things move. If something here does not match the
+        <li><strong>Beta.</strong> Things move. If something here does not match the
             device, the device is right &mdash; and it is worth
             <a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">saying so</a>.</li>
       </ul>
