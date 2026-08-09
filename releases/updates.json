@@ -7,7 +7,7 @@
         "version": "v1.0.0",
         "subversion": "final",
         "file": "https://rpc.novalabs.app/releases/download/v1.0.0/RPC-Vela-v1.0.rpc",
-        "tag": "latest",
+        "tag": "stable",
         "default": true
       }
     ],
@@ -21,7 +21,7 @@
         "version": "v0.9.1",
         "subversion": "final",
         "file": "https://rpc.novalabs.app/releases/download/v0.9.1/RPC-Pulsar-b9-Final.rpc",
-        "tag": "stable"
+        "tag": "older"
       }
     ]
   },
@@ -33,7 +33,7 @@
         "version": "v0.8.1",
         "subversion": "final",
         "file": "https://rpc.novalabs.app/releases/download/v0.8.1/RPC-Nebula-b81-Stable.rpc",
-        "tag": "stable"
+        "tag": "older"
       }
     ]
   }
