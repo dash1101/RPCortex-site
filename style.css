@@ -2190,6 +2190,7 @@ body::before, body::after { display: none; }   /* retire the legacy drift orbs *
   border: 1px solid var(--border-hi); color: var(--accent);
 }
 .get-tag-latest { color: #04121c; background: var(--accent-gradient); border-color: transparent; }
+.get-tag-beta   { color: var(--yellow); background: rgba(255,208,0,.10); border-color: rgba(255,208,0,.35); }
 .get-tag-stable { color: var(--green); border-color: rgba(52,211,153,.35); }
 .get-tag-older  { color: var(--text-muted); border-color: var(--border); }
 

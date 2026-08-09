@@ -6,9 +6,9 @@
       "name": "RPCortex v2.0.0",
       "codename": "Vela II",
       "kind": "native",
-      "tag": "latest",
+      "tag": "beta",
       "default": true,
-      "blurb": "Rewritten in C++. No interpreter, both cores, and a package manager that works at any uptime rather than only from a fresh boot.",
+      "blurb": "Rewritten in C++. No interpreter, both cores, and a package manager that works at any uptime rather than only from a fresh boot. A beta pre-release — v1.0 is the finished one.",
       "install": "uf2",
       "devices": {
         "pico2_w": {
