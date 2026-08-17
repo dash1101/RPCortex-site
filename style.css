@@ -1046,8 +1046,8 @@ footer {
 .transfer-panel {
   display: none;
   max-width: 680px;
-  margin: 20px auto 0;
-  padding: 28px 32px;
+  margin: 24px auto 0;
+  padding: 32px 40px;
   background:      var(--bg-card);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -1107,13 +1107,19 @@ footer {
 }
 .transfer-path-input:focus { outline: none; border-color: rgba(0,200,255,0.4); }
 .transfer-log {
-  margin-top: 16px;
-  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  font-size: 0.78rem;
-  line-height: 1.6;
-  max-height: 180px;
+  background: #020810;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  height: 90px;
   overflow-y: auto;
+  padding: 8px 12px;
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.80rem;
+  line-height: 1.6;
+  margin: 14px 0 16px;
+  scrollbar-width: none;
 }
+.transfer-log::-webkit-scrollbar { display: none; }
 .transfer-log:empty { display: none; }
 
 /* Connected status row */
@@ -1333,21 +1339,8 @@ footer {
 .panel-sub  { font-size: 0.875rem; color: var(--text-muted); margin: 0 0 28px; }
 .panel-hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; }
 
-/* File transfer panel */
-.transfer-panel {
-  background:      var(--bg-card);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 32px 40px;
-  max-width: 680px;
-  margin: 24px auto 0;
-  box-shadow: var(--glass-shadow);
-  display: none;
-}
-.transfer-panel.visible { display: block; }
-.transfer-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+/* File transfer panel — the box itself and its log are defined once, with the
+   Copy-a-file panel above. What is left here is the row of controls inside it. */
 .transfer-file-label {
   flex: 1; min-width: 160px;
   background: rgba(6,14,30,0.7);
@@ -1382,21 +1375,6 @@ footer {
   transition: border-color 0.15s;
 }
 #transferPath:focus { outline: none; border-color: rgba(0,200,255,0.35); }
-.transfer-log {
-  background: #020810;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  height: 90px;
-  overflow-y: auto;
-  padding: 8px 12px;
-  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  font-size: 0.80rem;
-  line-height: 1.6;
-  margin: 14px 0 16px;
-  scrollbar-width: none;
-}
-.transfer-log::-webkit-scrollbar { display: none; }
-
 /* Version picker */
 .version-picker-wrap {
   max-width: 680px;

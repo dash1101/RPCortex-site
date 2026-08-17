@@ -56,7 +56,7 @@
       <h2 id="status">Status</h2>
       <p><strong>Stable.</strong> v1.0 is the current release on the default channel &mdash; the Install and Update default, superseding v0.9.1 &ldquo;Pulsar&rdquo;.</p>
       <div class="note-box">
-        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>. For the full command reference see the <a href="docs">docs</a>. v1.0 is also the last MicroPython release &mdash; what comes next is a native rewrite, explained in <a href="switch">the switch to C++</a>.
+        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>. For the full command reference see the <a href="docs?v=v1.0.0">v1.0.0 docs</a>. v1.0 is also the last MicroPython release &mdash; what comes next is a native rewrite, explained in <a href="switch">the switch to C++</a>.
       </div>
       <p>The data directory moves from <code>/Pulsar/</code> to <code>/Vela/</code>. Updating devices migrate automatically &mdash; accounts, WiFi profiles, settings and installed packages are all preserved.</p>
 
@@ -144,10 +144,10 @@ safeboot update online -y</code></pre>
         <li><strong>RP2040 is not supported</strong> &mdash; see <a href="#hardware">supported hardware</a>. Stay on v0.9.1.</li>
         <li><strong>Contiguous memory is still the binding constraint</strong> on a device that has been running a long time with a large package resident. Run <code>freeup</code> before an update, or reboot first &mdash; a fresh boot has the least fragmentation.</li>
         <li><strong>A firmware flash erases the filesystem.</strong> Applying an <code>.rpc</code> OS update does not; flashing MicroPython itself does.</li>
-        <li><strong>This is a pre-release.</strong> The core is hardware-verified on the Pico 2 W, but behaviour may still change. Please report anything rough.</li>
+        <li><strong>Hardware-verified on the Pico 2 W and the ESP32-S3</strong>, which are the two boards this release targets. Please report anything rough.</li>
       </ul>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela &mdash; v1.0.0 pre-release &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome. The current release is <a href="release-vela2">v2.0 Vela II</a>; the older line is <a href="release">v0.9.1 Pulsar</a>.</p>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela &mdash; v1.0.0, stable &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome. The C++ rewrite, <a href="release-vela2">v2.0 Vela II</a>, is in beta; the older line is <a href="release">v0.9.1 Pulsar</a>.</p>
 
     </article>
   </div>

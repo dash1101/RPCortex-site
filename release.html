@@ -54,9 +54,9 @@
     <article class="docs-article">
 
       <h2 id="status">Status</h2>
-      <p><strong>In developer testing.</strong> Runs on RP2040, RP2350, and ESP32 / ESP32-S2 / ESP32-S3. This is the first public release since <code>v0.8.1</code> and supersedes it directly. Recommended upgrade for everyone on v0.8.x.</p>
+      <p><strong>Superseded by <a href="release-vela">v1.0 &ldquo;Vela&rdquo;</a>,</strong> which is the stable release now. v0.9.1 runs on RP2040, RP2350, and ESP32 / ESP32-S2 / ESP32-S3, and it remains the recommended build for the Pico 1 and Pico 1 W, which v1.0 does not support.</p>
       <div class="note-box">
-        These notes cover everything new since <strong>v0.8.1</strong>. For the full feature reference, see the <a href="docs">docs</a>. For what&rsquo;s coming next, see the <a href="roadmap">roadmap</a>.
+        These notes cover everything new since <strong>v0.8.1</strong>. For the full feature reference, see the <a href="docs?v=v0.9.1">v0.9.1 docs</a>. For what&rsquo;s coming next, see the <a href="roadmap">roadmap</a>.
       </div>
 
       <h2 id="whats-new">What&rsquo;s New in Pulsar</h2>
@@ -118,7 +118,7 @@ ntp sync -s &amp;&amp; startup add task run</code></pre>
       <h3>.rps scripting</h3>
       <p>Write and run scripts from the shell:</p>
       <pre><code>script myscript.rps</code></pre>
-      <p>Supported constructs: <code>set</code>, <code>$var</code> expansion, <code>inc</code>/<code>dec</code>, <code>prompt</code> (read input), <code>capture</code> (store a command&rsquo;s output), <code>if</code>/<code>else</code>/<code>end</code>, <code>while</code>/<code>end</code>, <code>break</code>/<code>continue</code>, and <code>stop</code>. Conditions: <code>eq</code>, <code>ne</code>, <code>gt</code>, <code>lt</code>, <code>ge</code>, <code>le</code>, <code>contains</code>, <code>exists</code>, <code>empty</code>, and <code>not</code> &mdash; or any shell command (non-zero exit = false). Scripts execute through the live shell engine, so all commands, pipes, and aliases work. See the <a href="docs#automation">scripting reference</a> for examples.</p>
+      <p>Supported constructs: <code>set</code>, <code>$var</code> expansion, <code>inc</code>/<code>dec</code>, <code>prompt</code> (read input), <code>capture</code> (store a command&rsquo;s output), <code>if</code>/<code>else</code>/<code>end</code>, <code>while</code>/<code>end</code>, <code>break</code>/<code>continue</code>, and <code>stop</code>. Conditions: <code>eq</code>, <code>ne</code>, <code>gt</code>, <code>lt</code>, <code>ge</code>, <code>le</code>, <code>contains</code>, <code>exists</code>, <code>empty</code>, and <code>not</code> &mdash; or any shell command (non-zero exit = false). Scripts execute through the live shell engine, so all commands, pipes, and aliases work. See the <a href="docs?v=v0.9.1#automation">scripting reference</a> for examples.</p>
 
       <h3>Startup tasks</h3>
       <p>Commands run automatically after login from <code>/Pulsar/Registry/startup.cfg</code>:</p>
@@ -242,7 +242,7 @@ reg set System.TZ_Offset -5</code></pre>
 
       <h2 id="installation">Installation</h2>
       <p><strong>Fresh install:</strong> Use the <a href="install">Web Installer</a> &mdash; flash from your browser over USB, no desktop software required (Chrome or Edge).</p>
-      <p><strong>Updating from v0.8.x:</strong> Run <code>update check</code> then <code>update online</code> from the shell, or use the <a href="update">OS Update page</a>, or <code>update from-file /path/to/RPC-Pulsar-b9-Release.rpc</code>. User accounts, WiFi profiles, settings, and installed packages are all preserved.</p>
+      <p><strong>Updating from v0.8.x:</strong> Run <code>update check</code> then <code>update online</code> from the shell, or use the <a href="update">OS Update page</a>, or <code>update from-file /path/to/RPC-Pulsar-b9-Final.rpc</code>. User accounts, WiFi profiles, settings, and installed packages are all preserved.</p>
       <p><strong>Manual:</strong> Flash MicroPython v1.25+ (v1.28 recommended), copy all files from the release to the board&rsquo;s filesystem, connect a serial terminal at <strong>115200 baud</strong>, and reboot.</p>
       <div class="note-box">
         Already running RPCortex and want a completely clean reflash? Run <code>rawrepl</code> at the shell prompt to drop back to the MicroPython REPL, then use the Web Installer as normal. No wipe needed.
@@ -259,7 +259,7 @@ reg set System.TZ_Offset -5</code></pre>
       </ul>
 
       <h2 id="whats-next">What&rsquo;s Next</h2>
-      <p><strong>v1.0 &ldquo;Vela&rdquo;</strong> (in development) delivers true multitasking as the default experience &mdash; v0.9.5 was folded in rather than shipped separately. The async shell is now the primary shell:</p>
+      <p><strong>v1.0 &ldquo;Vela&rdquo;</strong> shipped after this one and delivers true multitasking as the default experience &mdash; v0.9.5 was folded in rather than shipped separately. The async shell is the primary shell there:</p>
       <ul>
         <li><strong>Multitasking shell is the default</strong> &mdash; background services (e.g. <code>httpd --bg</code>) keep running while you work at the prompt</li>
         <li><strong>Cooperative app framework (<code>appkit</code>)</strong> &mdash; any foreground TUI app (e.g. <code>sysmon</code>) yields so it runs alongside background services</li>
@@ -279,7 +279,7 @@ reg set System.TZ_Offset -5</code></pre>
         <p><strong>Note</strong> &mdash; this is a pre-release. The core is hardware-verified (boots, multitasking, async networking, and the editor all work on the Pico 2W), but it's still pre-1.0 and may change &mdash; please report anything rough. If you ever want the classic synchronous shell, <code>asyncmode off</code> switches to it (it's also the automatic crash fallback).</p>
       </div>
 
-      <p>v1.0 was the last MicroPython release. <strong>v2.0 &ldquo;Vela II&rdquo;</strong> has since shipped &mdash; the same OS rewritten in C++, with no interpreter underneath, around 200&times; the speed and packages that cannot take the device down. Its notes are <a href="release-vela2">here</a>; <a href="switch">why the rewrite happened</a> is here.</p>
+      <p>v1.0 was the last MicroPython release, and it is the stable one. <strong>v2.0 &ldquo;Vela II&rdquo;</strong> is the same OS rewritten in C++, with no interpreter underneath, around 200&times; the speed and packages that cannot take the device down &mdash; published as a beta pre-release. Its notes are <a href="release-vela2">here</a>; <a href="switch">why the rewrite happened</a> is here.</p>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p>
 

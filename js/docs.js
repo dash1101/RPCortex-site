@@ -80,6 +80,6 @@
     })
     .catch(function () {
       mount.innerHTML = '<p class="docs-loading">Could not load the documentation. '
-        + '<a href="?v=v1.0.0">Try the latest &rarr;</a></p>';
+        + '<a href="docs">Try again &rarr;</a></p>';
     });
 })();
