@@ -16,22 +16,29 @@
 (function () {
   'use strict';
 
-  // v1.0 "Vela" shipped, so its pre-release notice is retired. The next one
-  // belongs to v2.0 "Vela II" — left written out rather than deleted, since
-  // the shape is the only documentation this file needs, and it goes back on
-  // the moment there are v2 pages worth pointing at.
+  // The sites are being reworked while they stay live, so this says so on every
+  // page until the revised site replaces them. Bump `id` to show it again to
+  // people who have dismissed it; set `enabled: false` to take it down.
   var ANNOUNCEMENT = {
-    enabled: false,
-    id:      'v2.0-vela-ii-2026-08',
-    tag:     'New',
-    title:   'RPCortex v2.0 “Vela II”',
-    body:    'Rewritten in C++: no interpreter, both cores, and a package ' +
-             'manager that works at any uptime rather than only from a fresh ' +
-             'boot. v1.0 “Vela” stays the recommended MicroPython build.',
-    cta:     'See what changed',
-    href:    'switch',
+    enabled: true,
+    id:      'site-update-2026-10',
+    tag:     'Heads up',
+    title:   'This site is being updated',
+    body:    'Pages are being changed as the work goes on, so some may look ' +
+             'unfinished or move around. A revised site is coming soon.',
+    cta:     'Got it',
+    href:    '',
     repeat:  'session'
   };
+
+  // Kept for later: the notice for v2.0 "Vela II" goes back in this shape once
+  // there are v2 pages worth pointing at.
+  //   { enabled: true, id: 'v2.0-vela-ii-2026-08', tag: 'New',
+  //     title: 'RPCortex v2.0 “Vela II”', cta: 'See what changed',
+  //     href: 'switch', repeat: 'session',
+  //     body: 'Rewritten in C++: no interpreter, both cores, and a package ' +
+  //           'manager that works at any uptime rather than only from a fresh ' +
+  //           'boot. v1.0 “Vela” stays the recommended MicroPython build.' }
 
   var A = ANNOUNCEMENT;
   if (!A.enabled) return;
