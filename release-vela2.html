@@ -55,10 +55,12 @@
       <h2 id="headline">The headline</h2>
 
       <h3>No interpreter</h3>
-      <p>RPCMark scores around <strong>1.2 million</strong> against a v1 device's 5,000&ndash;6,000
-         &mdash; roughly <strong>200&times;</strong>. That is not a projection: <code>bench</code>
+      <p>At 230&nbsp;MHz &mdash; the clock v1's score was taken at &mdash; a Pico 2&nbsp;W scores
+         about <strong>1.05 million</strong> on RPCMark against a v1 device's 5,000&ndash;6,000:
+         roughly <strong>190&times;</strong>. That is not a projection: <code>bench</code>
          runs the same workload as <code>tools/bench.py</code> does on v1, same iteration counts,
-         so the two numbers are the same measurement taken twice.</p>
+         so the two numbers are the same measurement taken twice. At the 150&nbsp;MHz v2 starts
+         at it scores about 700,000; the score follows the clock almost exactly.</p>
 
       <h3>One image, drag and drop</h3>
       <p>No firmware to flash and then files to paste on top of it. Hold BOOTSEL, drop a
@@ -124,10 +126,10 @@
       <table>
         <thead><tr><th>Board</th><th>Firmware</th><th>Filesystem</th><th>Package sandbox</th></tr></thead>
         <tbody>
-          <tr><td>Pico 2 W</td><td>916 KB</td><td>2 MB</td><td>yes</td></tr>
-          <tr><td>Pico 2</td><td>320 KB</td><td>3 MB</td><td>yes</td></tr>
-          <tr><td>Pico W</td><td>748 KB</td><td>384 KB</td><td>no</td></tr>
-          <tr><td>Pico</td><td>247 KB</td><td>1.25 MB</td><td>no</td></tr>
+          <tr><td>Pico 2 W</td><td>855 KB</td><td>1.75 MB</td><td>yes</td></tr>
+          <tr><td>Pico 2</td><td>352 KB</td><td>2.75 MB</td><td>yes</td></tr>
+          <tr><td>Pico W</td><td>805 KB</td><td>384 KB</td><td>no</td></tr>
+          <tr><td>Pico</td><td>297 KB</td><td>1.25 MB</td><td>no</td></tr>
         </tbody>
       </table>
       <div class="warn-box">
