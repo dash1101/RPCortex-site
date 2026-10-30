@@ -112,7 +112,8 @@ class Site:
 
     # ---- chrome -----------------------------------------------------------
     def brand(self, root, key):
-        """The brand in the nav and footer: the product's own wordmark where it has one, else mark and name."""
+        """The brand in the nav: the product's own wordmark where it has one, else mark and name. The footer
+        uses the one-letter mark alone, because the wordmark is already in the header."""
         img = self.site.get(key)
         if img:
             return '<img class="wordmark" src="%s%s" alt="%s">' % (root, img, self.site["name"])
@@ -149,9 +150,9 @@ class Site:
             ext = ' target="_blank" rel="noopener"' if n["href"].startswith("http") else ""
             links += '<a href="%s"%s>%s</a>' % (resolve(n["href"], root), ext, n["label"])
         return ('<footer class="foot"><div class="wrap foot-in">'
-                '<a class="brand" href="%s">%s</a>'
+                '<a class="brand" href="%s"><img src="%slogo.svg" alt="%s"></a>'
                 '<div class="foot-links">%s</div><small>%s</small></div></footer>'
-                % (root, self.brand(root, "brand_image_sm"), links, self.site["copyright"]))
+                % (root, root, self.site["name"], links, self.site["copyright"]))
 
     def page(self, meta, body, root):
         title = meta.get("window_title") or (meta["title"] if meta["title"] == self.site["name"]

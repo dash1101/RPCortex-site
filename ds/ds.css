@@ -106,8 +106,6 @@ body::after {
 .brand:hover { color: var(--text); }
 .brand img { width: 30px; height: 30px; }
 .brand img.wordmark { width: auto; height: 34px; }
-.foot .brand img.wordmark { height: 30px; }
-.lockup { display: block; width: min(100%, 440px); height: auto; margin: 0 0 18px -4px; }
 .menu { display: flex; align-items: center; gap: 4px; margin-left: auto; }
 .menu a { color: var(--dim); text-decoration: none; font-size: 14.5px; padding: 8px 12px; border-radius: 9px; min-height: 40px; display: inline-flex; align-items: center; }
 .menu a:hover { color: var(--text); background: rgba(255,255,255,.05); }

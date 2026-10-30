@@ -2,7 +2,6 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>RPCortex: an operating system for microcontrollers</title><meta name="description" content="RPCortex is a full operating system for the Raspberry Pi Pico family, written in C++: a shell, accounts, Wi-Fi, a package manager and over-the-air updates, with packages that cannot take the board down."><meta name="theme-color" content="#090f1d"><link rel="canonical" href="https://rpc.novalabs.app/"><meta property="og:site_name" content="RPCortex"><meta property="og:type" content="website"><meta property="og:title" content="RPCortex: an operating system for microcontrollers"><meta property="og:description" content="RPCortex is a full operating system for the Raspberry Pi Pico family, written in C++: a shell, accounts, Wi-Fi, a package manager and over-the-air updates, with packages that cannot take the board down."><meta property="og:url" content="https://rpc.novalabs.app/"><meta property="og:image" content="https://rpc.novalabs.app/img/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img class="wordmark" src="./img/rpcortex-wordmark-sm.png" alt="RPCortex"></a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html">Get</a><a href="./docs/v2.html">Docs</a><a href="./packages.html">Packages</a><a href="./releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
 <section class="wrap hero" id="home">
   <div>
-    <img class="lockup" src="./img/rpcortex-wordmark.png" alt="RPCortex" width="440" height="85">
     <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span><span data-rel="display">v2.00-beta</span>&nbsp;&middot; C++ &middot; RP2040 &amp; RP2350</div>
     <h1>An operating system for microcontrollers.</h1>
     <p class="lede">RPCortex gives a Raspberry Pi Pico a shell, a filesystem, accounts, Wi-Fi, a package manager and over-the-air updates. The packages you write run without being able to take the board down.</p>
@@ -15,7 +14,7 @@
   <div class="term" role="img" aria-label="A terminal session on a Pico 2 W: the version command, then the task list showing six tasks across both cores">
     <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">pico2_w &middot; 115200 baud</span></div>
 <pre><span class="p">root@vela:/&gt;</span> ver
-RPCortex v2.00-beta (build <span data-rel="build">486</span>)  &mdash;  Vela II
+RPCortex <span data-rel="display">v2.00-beta</span> (build <span data-rel="build">483</span>)  &mdash;  Vela II
 Commit: badbb459  (dev)  [C++ native]
 GCC 14.2.1   Platform: pico2_w (RP2350)
 
@@ -32,7 +31,7 @@ PID  NAME       STATE  CORE  STACK       CPU
 </section>
 
 <section class="wrap sec" id="proof">
-  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Measured on a Pico 2 W</div><h2>What changed in v2</h2></div>
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Measured on a Pico 2 W</div><h2>What is new in v2</h2></div>
   <div class="facts4">
     <div class="fact"><b>190&times;</b><span>vs v1, same workload</span><p>RPCMark scores 1.05 million at 230 MHz, against v1's 5,000 to 6,000 at the same clock. At the 150 MHz it starts at, about 700,000.</p></div>
     <div class="fact"><b>2 cores</b><span>both in use</span><p>Tasks run on either core. <code>ps</code> shows every one with its stack and CPU time, and <code>kill</code> stops one.</p></div>
@@ -42,7 +41,7 @@ PID  NAME       STATE  CORE  STACK       CPU
 </section>
 
 <section class="wrap sec" id="inside">
-  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>What is in it</div><h2>A real shell, not a menu</h2></div>
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>What is in it</div><h2>What it includes</h2></div>
   <div class="inside">
     <div><h3>Shell</h3><p>Coloured prompt, history that survives a reboot, Tab completion. Pipe with <code>|</code>, chain with <code>&amp;&amp;</code> and <code>||</code>, redirect with <code>&gt;</code>.</p></div>
     <div><h3>Both cores</h3><p>v1 could not touch core 1 at all. Here an unpinned task lives on core 1 about 99% of the time.</p></div>
@@ -86,7 +85,7 @@ logdump       <span class="m"># survives a reboot</span></pre></div>
 </section>
 
 <section class="wrap sec" id="boards">
-  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Boards</div><h2>Four boards, one of them proven</h2>
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Boards</div><h2>Supported boards</h2>
     <p>Every result on this page came from a Pico 2 W. The other three build and pass the image checks and have not been booted yet. They have no package sandbox on RP2040: the protection regions cost more RAM than those boards have. v1 remains the answer on an ESP32-S3 until the port lands.</p></div>
   <div class="tbl-wrap"><table class="tbl">
     <thead><tr><th>Board</th><th>Firmware</th><th>Filesystem</th><th>Package sandbox</th><th>Status</th></tr></thead>
@@ -99,7 +98,7 @@ logdump       <span class="m"># survives a reboot</span></pre></div>
 </section>
 
 <section class="wrap sec" id="more">
-  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Next</div><h2>Where to go from here</h2></div>
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Next</div><h2>Next steps</h2></div>
   <div class="links">
     <a class="link-card" href="./docs/v2.html"><h3>Documentation</h3><p>Command tables, shell controls, registry keys, the security model and known limitations.</p></a>
     <a class="link-card" href="./releases.html"><h3>Releases</h3><p>What changed in each release, and the roadmap.</p></a>
@@ -108,4 +107,4 @@ logdump       <span class="m"># survives a reboot</span></pre></div>
   </div>
 </section>
 </main>
-<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img class="wordmark" src="./img/rpcortex-wordmark-sm.png" alt="RPCortex"></a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/home.js"></script></body></html>
+<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img src="./logo.svg" alt="RPCortex"></a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/home.js"></script></body></html>

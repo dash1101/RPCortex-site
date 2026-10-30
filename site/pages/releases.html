@@ -9,8 +9,8 @@ needs_releases: 1
 <main>
 <section class="wrap page-head">
   <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Releases</div>
-  <h1>Every release, newest first.</h1>
-  <p class="lede">Each entry lists what was added, changed and fixed, and what is still open. The <a href="{{root}}roadmap.html">roadmap</a> is the direction rather than the history.</p>
+  <h1>Releases</h1>
+  <p class="lede">Newest first. Each entry lists what was added, changed and fixed, and what is still open. The <a href="{{root}}roadmap.html">roadmap</a> is the direction rather than the history.</p>
 </section>
 <section class="wrap sec first" style="padding-top:8px">
   <div id="releaseList"><p class="dl-meta">Loading releases&hellip;</p></div>
@@ -19,10 +19,10 @@ needs_releases: 1
 <section class="wrap sec" id="how">
   <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Versions</div><h2>How versions work</h2></div>
   <ul class="rules">
-    <li><strong>v2.11 means the eleventh iteration of the second generation.</strong> There is no patch number, and the count does not stop at nine: v2.9 is followed by v2.10.</li>
-    <li><strong>Only a generation has a name.</strong> Vela, Vela II, and whatever comes after. An iteration is a plain patch release.</li>
-    <li><strong>A change that breaks packages is a new generation.</strong> That is what lets an iteration be installed without reading the notes first.</li>
-    <li><strong>The build number is separate.</strong> <code>ver</code> shows <code>v2.11 (build 1203)</code>; the device uses it to decide what is newer. A pre-release is written <code>v2.0-beta</code>.</li>
+    <li><strong>Every release takes the next number.</strong> v2.00-beta was the first, v2.01-beta the next. A number is never reused, and a later number is always newer. There is no patch number, and the count does not stop at nine: v2.09 is followed by v2.10.</li>
+    <li><strong>A label says how finished it is.</strong> <code>-beta</code>, then <code>-rc</code> and <code>-rc2</code> for release candidates, and no label once it is final, as in v2.06.</li>
+    <li><strong>Only a generation has a name.</strong> Vela, Vela II, and whatever comes after. A change that breaks packages is a new generation, which is what lets any release in a generation be installed without reading the notes first.</li>
+    <li><strong>The build number is separate.</strong> <code>ver</code> shows <code>v2.01-beta (build 520)</code>; the device uses it to decide what is newer. Builds between two releases are not published.</li>
   </ul>
 </section>
 </main>
