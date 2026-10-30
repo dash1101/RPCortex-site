@@ -60,6 +60,26 @@ rewrites them so they work from any folder.
 Hardware pages cannot be tested without a device: the installer and updater use Web Serial, and the
 package browser reads a board's installed packages. After changing any of them, try them against a real board.
 
+## The browser installer (v2)
+
+`flash.html` flashes a Pico from the browser: it downloads the `.uf2` from the OS repository
+(`raw.githubusercontent.com`, which allows cross-origin downloads; GitHub release downloads do not),
+checks it against the SHA-256 in `releases.json`, and writes it through the boot ROM's PICOBOOT
+interface over WebUSB (`js/picoboot.js`). A running board can be restarted into BOOTSEL from the
+page with a 1200-baud serial touch. It is optional: the drag-and-drop install on the Get page always works.
+
+`python3 site/test_picoboot.py` runs the protocol against a mock of the boot ROM in headless Chromium
+(it needs Playwright) and flashes the real images if the OS repository is checked out beside this one.
+**It has not been run against a real board.** The first run on hardware is the test that matters; see the
+DEVICE-UNCONFIRMED notes at the top of `js/picoboot.js` for what is most likely to need a change.
+
+## Why release images are committed to the OS repository
+
+A browser can only download a file cross-origin if the host sends `Access-Control-Allow-Origin`.
+`raw.githubusercontent.com`, GitHub Pages and jsDelivr do; GitHub release downloads redirect to a host that
+does not. So the images the update channel and the browser installer read stay in the OS repository's
+`releases/` folder, and the web installer's `.rpc` archives stay on this site.
+
 ## Things that must not move
 
 - **`releases/`** holds the v1 over-the-air manifest (`latest.json`), the version pickers and the

@@ -1,17 +1,16 @@
-/* rpc.novalabs.app: the shared design system plus what only this site has.
-   The accent is teal; everything else is the shared system. */
-:root {
-  --accent: #2dd4be;
-  --on-accent: #03221d;
-  --accent-hover: #5eead4;
-}
-.stripes i:nth-child(1) { background: #f7262f; } .stripes i:nth-child(2) { background: #2563ff; } .stripes i:nth-child(3) { background: #a31ff0; }
+/* rpc.novalabs.app: the shared design system, unchanged, plus what only this site has.
+   The accent, the stripes and every colour come from ds/ds.css so the two sites match; what is
+   here is layout for pages the other site does not have.
+
+   The one exception is the three stripes: they echo each brand's own mark, so on this site they
+   are the RPCortex wordmark's colours (blue, violet, magenta) and on novalabs.app the Nova mark's. */
+.stripes i:nth-child(1) { background: #0066ff; } .stripes i:nth-child(2) { background: #6a00ff; } .stripes i:nth-child(3) { background: #c800ff; }
 
 /* version pills on documentation pages */
 .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
 .pill { font: 500 13px/1 var(--mono); color: var(--dim); text-decoration: none; border: 1px solid var(--line-hi); border-radius: 999px; padding: 10px 14px; min-height: 40px; display: inline-flex; align-items: center; gap: 8px; }
 .pill:hover { color: var(--text); border-color: var(--accent); }
-.pill.on { color: var(--text); border-color: var(--accent); background: rgba(45,212,190,.08); }
+.pill.on { color: var(--text); border-color: var(--accent); background: rgba(56,189,248,.08); }
 .pill small { color: var(--faint); font-size: 11px; }
 .docs-nav a.active { color: var(--text); border-left-color: var(--accent); }
 
@@ -51,3 +50,9 @@
 .road-row li.done { list-style: none; margin-left: -1.2em; padding-left: 1.2em; position: relative; }
 .road-row li.done::before { content: "\2713"; position: absolute; left: 0; color: var(--ok); }
 @media (max-width: 760px) { .road-row { grid-template-columns: minmax(0, 1fr); } }
+
+/* the browser installer */
+.bar { height: 10px; border-radius: 999px; background: var(--ink-3); border: 1px solid var(--line); overflow: hidden; margin-top: 18px; max-width: 560px; }
+.bar-fill { height: 100%; width: 0; background: var(--accent); transition: width .15s linear; }
+.log { margin: 14px 0 0; padding: 14px 16px; background: var(--ink-0); border: 1px solid var(--line); border-radius: 12px; max-width: 74ch; max-height: 240px; overflow: auto; font: 400 12.5px/1.6 var(--mono); color: var(--dim); white-space: pre-wrap; }
+.log .ok { color: var(--ok); } .log .bad { color: #f87171; }

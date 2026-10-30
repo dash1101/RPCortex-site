@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Install in your browser | RPCortex</title><meta name="description" content="Flash a Raspberry Pi Pico with RPCortex v2 straight from this page over USB. Optional: the drag-and-drop install does the same and always works."><meta name="theme-color" content="#090f1d"><link rel="canonical" href="https://rpc.novalabs.app/flash.html"><meta property="og:site_name" content="RPCortex"><meta property="og:type" content="website"><meta property="og:title" content="Install in your browser | RPCortex"><meta property="og:description" content="Flash a Raspberry Pi Pico with RPCortex v2 straight from this page over USB. Optional: the drag-and-drop install does the same and always works."><meta property="og:url" content="https://rpc.novalabs.app/flash.html"><meta property="og:image" content="https://rpc.novalabs.app/img/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img class="wordmark" src="./img/rpcortex-wordmark-sm.png" alt="RPCortex"></a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html" aria-current="page">Get</a><a href="./docs/v2.html">Docs</a><a href="./packages.html">Packages</a><a href="./releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
+<section class="wrap page-head">
+  <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Optional</div>
+  <h1>Install from your browser.</h1>
+  <p class="lede">Flash a Pico with RPCortex v2 from this page, over USB, without dragging a file. It needs Chrome, Edge or Opera on a desktop. The <a href="./get.html">drag-and-drop install</a> does exactly the same thing and always works.</p>
+</section>
+<section class="wrap" style="padding-bottom:48px">
+  <p class="warn is-hidden" id="noUsb" style="margin-bottom:22px"><strong>This browser cannot talk to USB devices.</strong> Use Chrome, Edge or Opera on a desktop, or use the <a href="./get.html">drag-and-drop install</a>. Firefox and Safari do not support WebUSB.</p>
+  <div class="steps">
+    <div class="step"><span class="n"></span><div>
+      <h3>Choose your board</h3>
+      <div class="get-grid" id="boardCards"><p class="dl-meta">Loading&hellip;</p></div>
+    </div></div>
+    <div class="step"><span class="n"></span><div>
+      <h3>Put it in BOOTSEL mode</h3>
+      <p>Hold the <strong>BOOTSEL</strong> button and plug the board into USB. A drive called <strong>RP2350</strong> or <strong>RPI-RP2</strong> appears; leave it alone.</p>
+      <div class="info" style="margin-top:14px" id="touchBox"><strong>Already running RPCortex?</strong> The page can restart it into BOOTSEL for you: choose its serial port below. Nothing is erased by this step.<div class="actions" style="margin-top:12px"><button class="btn btn-ghost" id="touchBtn" type="button">Restart it into BOOTSEL</button></div></div>
+    </div></div>
+    <div class="step"><span class="n"></span><div>
+      <h3>Install it</h3>
+      <p id="what" class="dl-meta">Choose a board first.</p>
+      <div class="actions" style="margin-top:6px"><button class="btn btn-primary" id="goBtn" type="button" disabled>Connect and install</button></div>
+      <div class="bar is-hidden" id="barWrap" aria-hidden="true"><div class="bar-fill" id="barFill"></div></div>
+      <p id="stage" class="dl-meta" role="status" aria-live="polite"></p>
+      <p class="warn is-hidden" id="untested" style="margin-top:14px"><strong>This board has not been booted yet.</strong> The image builds and passes its checks, but no one has run it on this hardware.</p>
+      <pre class="log is-hidden" id="log"></pre>
+    </div></div>
+  </div>
+  <div class="info" style="margin-top:26px"><strong>What this does.</strong> It downloads the same <code>.uf2</code> as the Get page, checks it against the published SHA-256, and writes it to the board through the boot ROM, the way <code>picotool</code> does: erase, write, read back, restart. Your files and settings are not touched; only the firmware area is written. When it finishes the board restarts; open a serial terminal at <strong>115200 baud</strong>.</div>
+  <div class="info" style="margin-top:14px"><strong>If the board cannot be opened.</strong> Another program may be using it (close picotool, other tabs or serial tools). On Windows the browser can only open the board when a WinUSB driver is bound to its boot interface; if it cannot, the drag-and-drop install is the way. On Linux the board needs a udev rule that lets your user open it.</div>
+</section>
+</main>
+<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img class="wordmark" src="./img/rpcortex-wordmark-sm.png" alt="RPCortex"></a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/picoboot.js"></script><script src="./js/flash.js"></script></body></html>

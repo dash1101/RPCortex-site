@@ -125,6 +125,7 @@
         '<li>Drag the <code>.uf2</code> onto it. The board restarts by itself.</li>' +
         '<li>Open a serial terminal at <strong>115200 baud</strong>: PuTTY, <code>screen</code>, anything. The first start asks for a root password once.</li>' +
       '</ol>' +
+      '<p class="dl-meta">Prefer not to drag a file? <a href="flash.html?board=' + esc(board.id) + '">Install from your browser</a> (Chrome, Edge or Opera, optional).</p>' +
       '<div class="info"><strong>After the first install</strong> the device updates itself. <code>update check</code> looks for a newer release and ' +
       '<code>update install</code> applies it, checked against a checksum before anything is written, with a copy of the old firmware kept to go back to. ' +
       'You should not need this page again. The raw image, for your own flashing tools, is <a href="' + esc(binUrl) + '">the .bin</a>.</div>' +

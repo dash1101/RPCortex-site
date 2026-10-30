@@ -14,7 +14,7 @@
 
   function getSelectedVersion() {
     var sel = document.getElementById('versionSelect');
-    if (!sel || !sel.value) return { file: 'releases/download/v0.9.1/RPC-Pulsar-b9-Final.rpc', label: 'RPCortex Pulsar v0.9.1' };
+    if (!sel || !sel.value) return { file: 'releases/download/v1.0.0/RPC-Vela-v1.0.rpc', label: 'RPCortex Vela v1.0' };
     var opt = sel.options[sel.selectedIndex];
     var label = opt ? opt.text.replace(/\s+\u2014.*$/, '').trim() : 'unknown';
     return { file: sel.value, label: label };
@@ -56,7 +56,7 @@
 
       sel.disabled = false;
     } catch (e) {
-      sel.innerHTML = '<option value="releases/download/v0.9.1/RPC-Pulsar-b9-Final.rpc">RPCortex Pulsar v0.9.1 \u2014 latest</option>';
+      sel.innerHTML = '<option value="releases/download/v1.0.0/RPC-Vela-v1.0.rpc">RPCortex Vela v1.0 \u2014 latest</option>';
       sel.disabled  = false;
     }
   }
@@ -201,7 +201,18 @@
       var zipData;
       if (typeof getZipData === 'string') {
         onLog('[:] Downloading ' + getSelectedVersion().label + '...');
-        var resp = await fetch(getZipData);
+        var resp;
+        try {
+          resp = await fetch(getZipData);
+        } catch (netErr) {
+          // A fetch that throws before any status means the browser refused or could not make the
+          // request. For a cross-origin file that is almost always CORS: GitHub release downloads, for
+          // one, are sent without the header a browser needs. The same files on this site, or in a
+          // repository served by raw.githubusercontent.com, are fine.
+          throw new Error('The browser could not download this archive. If it is hosted on another site, that site '
+            + 'has to allow downloads from other origins (this site and raw.githubusercontent.com do; GitHub '
+            + 'release downloads do not). Download the .rpc yourself and use \u201cSelect local .rpc file\u201d instead.');
+        }
         if (!resp.ok) throw new Error('Download failed: HTTP ' + resp.status);
         zipData = await resp.arrayBuffer();
         onLog('[@] Downloaded ' + (zipData.byteLength / 1024).toFixed(0) + ' KB.');

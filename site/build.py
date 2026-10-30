@@ -55,7 +55,9 @@ def front_matter(text):
     return meta, m.group(2)
 
 
-def rel_root(path):
+def rel_root(path, absolute=False):
+    if absolute:
+        return "/"
     depth = path.count("/")
     return "../" * depth if depth else "./"
 
@@ -103,10 +105,19 @@ class Site:
         self.docs_cfg = load("docs.json")
         if releases_base:
             self.site["releases_base"] = releases_base
+        self.noindex = set()
+        self.social = ""
         if status_override is not None:
             self.site["status"] = {"text": status_override, "tone": "warn"}
 
     # ---- chrome -----------------------------------------------------------
+    def brand(self, root, key):
+        """The brand in the nav and footer: the product's own wordmark where it has one, else mark and name."""
+        img = self.site.get(key)
+        if img:
+            return '<img class="wordmark" src="%s%s" alt="%s">' % (root, img, self.site["name"])
+        return '<img src="%slogo.svg" alt="">%s' % (root, self.site["name"])
+
     def statusbars(self, root):
         out = ""
         s = self.site.get("status") or {}
@@ -127,10 +138,10 @@ class Site:
         e = self.site["external"]
         links += '<a class="ext" href="%s" target="_blank" rel="noopener">%s</a>' % (e["href"], e["label"])
         return ('<header class="nav"><div class="wrap nav-in">'
-                '<a class="brand" href="%s"><img src="%slogo.svg" alt="">%s</a>'
+                '<a class="brand" href="%s">%s</a>'
                 '<button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button>'
                 '<nav id="menu" class="menu" aria-label="Main">%s</nav></div></header>'
-                % (root, root, self.site["name"], links))
+                % (root, self.brand(root, "brand_image_sm"), links))
 
     def footer(self, root):
         links = ""
@@ -138,9 +149,9 @@ class Site:
             ext = ' target="_blank" rel="noopener"' if n["href"].startswith("http") else ""
             links += '<a href="%s"%s>%s</a>' % (resolve(n["href"], root), ext, n["label"])
         return ('<footer class="foot"><div class="wrap foot-in">'
-                '<a class="brand" href="%s"><img src="%slogo.svg" alt="">%s</a>'
+                '<a class="brand" href="%s">%s</a>'
                 '<div class="foot-links">%s</div><small>%s</small></div></footer>'
-                % (root, root, self.site["name"], links, self.site["copyright"]))
+                % (root, self.brand(root, "brand_image_sm"), links, self.site["copyright"]))
 
     def page(self, meta, body, root):
         title = meta.get("window_title") or (meta["title"] if meta["title"] == self.site["name"]
@@ -153,17 +164,33 @@ class Site:
         for s in filter(None, [x.strip() for x in meta.get("scripts", "").split(",")]):
             scripts += '<script src="%s%s"></script>' % (root, s)
         body = body.replace("<main>", '<main id="main">', 1)
+        path = meta.get("path", "")
+        url = self.site["url"] + ("" if path in ("", "index.html") else path)
+        desc = html.escape(meta.get("description", ""), quote=True)
+        ttl = html.escape(title, quote=True)
+        social = (
+            '<meta name="theme-color" content="#090f1d">'
+            '<link rel="canonical" href="%s">'
+            '<meta property="og:site_name" content="%s"><meta property="og:type" content="website">'
+            '<meta property="og:title" content="%s"><meta property="og:description" content="%s">'
+            '<meta property="og:url" content="%s"><meta property="og:image" content="%simg/og.png">'
+            '<meta name="twitter:card" content="summary_large_image">'
+            % (url, self.site["name"], ttl, desc, url, self.site["url"]))
+        if meta.get("noindex"):
+            social += '<meta name="robots" content="noindex">'
+            self.noindex.add(path)
+        self.social = social
         legacy = '<link rel="stylesheet" href="%scss/legacy.css">' % root if meta.get("legacy") else ""
         return ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
                 '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">'
-                '<title>%s</title><meta name="description" content="%s">'
+                '<title>%s</title><meta name="description" content="%s">%s'
                 '<meta name="releases-base" content="%s">'
                 '<link rel="icon" type="image/svg+xml" href="%sfavicon.svg">'
                 '<link rel="preload" as="font" type="font/woff2" crossorigin href="%sds/fonts/BricolageGrotesque-latin.woff2">'
                 '<link rel="preload" as="font" type="font/woff2" crossorigin href="%sds/fonts/InstrumentSans-latin.woff2">'
                 '<link rel="stylesheet" href="%sds/ds.css"><link rel="stylesheet" href="%scss/rpc.css">%s%s'
                 '</head><body><a class="skip" href="#main">Skip to content</a>%s%s%s%s%s</body></html>\n'
-                % (html.escape(title), html.escape(meta.get("description", ""), quote=True),
+                % (html.escape(title), html.escape(meta.get("description", ""), quote=True), self.social,
                    html.escape(self.site.get("releases_base", ""), quote=True),
                    root, root, root, root, root, legacy, head_scripts,
                    self.statusbars(root), self.nav(meta.get("nav", ""), root), body,
@@ -215,7 +242,7 @@ class Site:
                     '<div class="pills" role="navigation" aria-label="Documentation version">%s</div></section>'
                     '<div class="wrap docs">%s<article class="docs-body prose legacy-prose">%s</article></div></main>'
                     % (d["title"], d["hero"], pills, nav, fix_links(art.group(1), "../")))
-            meta = {"title": d["title"], "description": d["hero"], "nav": "docs", "legacy": "1", "scripts": "js/spy.js"}
+            meta = {"title": d["title"], "description": d["hero"], "nav": "docs", "legacy": "1", "scripts": "js/spy.js", "path": "docs/%s.html" % d["slug"]}
             write("docs/%s.html" % d["slug"], self.page(meta, main, "../"))
         default = [d for d in cfg if d.get("default")][0]["slug"]
         mapping = {d["version"]: d["slug"] for d in cfg if d.get("version")}
@@ -225,7 +252,7 @@ class Site:
                     'var s=q&&m[decodeURIComponent(q[1])];location.replace("docs/"+(s||"%s")+".html"+location.hash);})();</script>'
                     % ("".join('<a class="pill" href="docs/%s.html">%s</a>' % (d["slug"], d["label"]) for d in cfg),
                        json.dumps(mapping), default))
-        write("docs.html", self.page({"title": "Documentation", "description": "RPCortex documentation.", "nav": "docs"},
+        write("docs.html", self.page({"title": "Documentation", "description": "RPCortex documentation.", "nav": "docs", "path": "docs.html", "noindex": "1"},
                                      redirect, "./"))
 
 
@@ -244,7 +271,7 @@ def build(out_dir, status=None, releases_base=None):
     for fn in sorted(os.listdir(pdir)):
         with open(os.path.join(pdir, fn), encoding="utf-8") as f:
             meta, body = front_matter(f.read())
-        root = rel_root(meta["path"])
+        root = rel_root(meta["path"], bool(meta.get("absolute")))
         body = s.fill(body, root)
         if meta.get("legacy"):
             body = fix_links(body, root)
@@ -253,7 +280,16 @@ def build(out_dir, status=None, releases_base=None):
     # the older-releases data the browser reads: one source (site/data), one published copy
     os.makedirs(os.path.join(out_dir, "data"), exist_ok=True)
     shutil.copy(os.path.join(HERE, "data", "legacy.json"), os.path.join(out_dir, "data", "legacy.json"))
+    # the files a crawler asks for
+    base = s.site["url"]
+    urls = [base + ("" if r == "index.html" else r) for r in written if r not in s.noindex]
+    with open(os.path.join(out_dir, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n%s</urlset>\n'
+                % "".join("  <url><loc>%s</loc></url>\n" % u for u in sorted(urls)))
+    with open(os.path.join(out_dir, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write("User-agent: *\nAllow: /\n\nSitemap: %ssitemap.xml\n" % base)
     return written
+
 
 
 def check(out_dir, written):
@@ -272,9 +308,14 @@ def check(out_dir, written):
                 continue
             path, _, frag = url.partition("#")
             path = path.partition("?")[0]
-            target = p if not path else os.path.normpath(os.path.join(os.path.dirname(p), path))
+            if path.startswith("/"):
+                target = path[1:]
+                if not target or target.endswith("/"):
+                    target += "index.html"
+            else:
+                target = p if not path else os.path.normpath(os.path.join(os.path.dirname(p), path))
             full = os.path.join(out_dir, target)
-            if path.endswith("/") or (path and os.path.isdir(full)):
+            if os.path.isdir(full):
                 target = os.path.join(target, "index.html")
                 full = os.path.join(out_dir, target)
             if not os.path.exists(full):
@@ -282,6 +323,22 @@ def check(out_dir, written):
             elif frag and target in ids and frag not in ids[target]:
                 problems.append("%s: %s has no #%s" % (p, target, frag))
     return problems
+
+
+def ds_drift():
+    """Warn when ds/ differs from the other site's copy; the two are meant to be identical."""
+    import hashlib
+    mine, theirs = os.path.join(ROOT, "ds"), os.path.join(os.path.dirname(ROOT), "NovaLabs", "ds")
+    if not os.path.isdir(theirs):
+        return []
+    out = []
+    for dp, _, fs in os.walk(mine):
+        for f in fs:
+            a = os.path.join(dp, f)
+            b = os.path.join(theirs, os.path.relpath(a, mine))
+            if not os.path.exists(b) or hashlib.sha256(open(a, "rb").read()).hexdigest() != hashlib.sha256(open(b, "rb").read()).hexdigest():
+                out.append(os.path.relpath(a, ROOT))
+    return out
 
 
 def main():
@@ -302,6 +359,8 @@ def main():
                 shutil.copytree(src, dst, dirs_exist_ok=True)
             elif os.path.exists(src):
                 shutil.copy(src, dst)
+    for f in ds_drift():
+        print("  ~ %s differs from the other site's copy (see ds/README.md)" % f)
     written = build(out, a.status, a.releases_base)
     problems = check(out, written)
     for p in problems:

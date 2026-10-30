@@ -33,10 +33,10 @@
     <article class="docs-article">
 
       <div class="warn-box">
-        <strong>v2.0 is a beta pre-release.</strong> It boots, joins a network, runs packages
-        and updates itself, and it is still changing week to week. The version stays at 2.0.0
-        for the whole beta &mdash; what moves between builds is the build number &mdash; and
-        anything here can change before 2.0 is called finished. For the settled system,
+        <strong>v2.00 is a beta pre-release.</strong> It boots, joins a network, runs packages
+          and updates itself, and it is still changing week to week. It is written
+          <code>v2.00-beta (build N)</code>: the build number is what moves between pre-releases,
+          and anything here can change before v2.00 is called finished. For the settled system,
         <a href="?v=v1.0.0">v1.0 &ldquo;Vela&rdquo;</a> is the stable MicroPython release and is
         documented separately.
       </div>
@@ -80,8 +80,8 @@
       <div class="codeblock">
         <div class="codeblock-label">serial &mdash; 115200 baud</div>
         <pre><code>root@vela:/&gt; ver
-  RPCortex v2.0.0 "Vela II"
-  pico2_w  RP2350  150 MHz  520 KB RAM
+  RPCortex v2.00-beta (build 486)  &mdash;  Vela II
+    pico2_w  RP2350  150 MHz  520 KB RAM
 
 root@vela:/&gt; help
   Type 'help &lt;category&gt;' for details, or 'help all' for every command.</code></pre>
@@ -100,18 +100,18 @@ root@vela:/&gt; help
           <tr><th>Board</th><th>Chip</th><th>Firmware</th><th>Filesystem</th><th>Sandbox</th><th>Status</th></tr>
         </thead>
         <tbody>
-          <tr><td>Pico 2 W</td><td>RP2350</td><td>916 KB</td><td>2 MB</td><td>Yes</td><td>Primary target</td></tr>
-          <tr><td>Pico 2</td><td>RP2350</td><td>320 KB</td><td>3 MB</td><td>Yes</td><td>Supported, no radio</td></tr>
-          <tr><td>Pico W</td><td>RP2040</td><td>748 KB</td><td>384 KB</td><td>No</td><td>Built, not yet booted</td></tr>
-          <tr><td>Pico</td><td>RP2040</td><td>247 KB</td><td>1.25 MB</td><td>No</td><td>Built, not yet booted</td></tr>
+          <tr><td>Pico 2 W</td><td>RP2350</td><td>855 KB</td><td>1.75 MB</td><td>Yes</td><td>Primary target; the board every result here came from</td></tr>
+          <tr><td>Pico 2</td><td>RP2350</td><td>352 KB</td><td>2.75 MB</td><td>Yes</td><td>Built, not yet booted (no radio)</td></tr>
+          <tr><td>Pico W</td><td>RP2040</td><td>805 KB</td><td>384 KB</td><td>No</td><td>Built, not yet booted</td></tr>
+          <tr><td>Pico</td><td>RP2040</td><td>297 KB</td><td>1.25 MB</td><td>No</td><td>Built, not yet booted</td></tr>
         </tbody>
       </table>
 
       <div class="warn-box">
-        <strong>The RP2040 images have not been booted.</strong> They build, both image checks
-        pass on them, and the flash layout was verified by reading the constant back out of the
-        compiled firmware &mdash; but no Pico or Pico W has run one, and every hardware number
-        quoted in these docs came off a Pico 2 W. That is what a pre-release means.
+        <strong>Only the Pico 2 W has been booted.</strong> The other three images build, both image
+        checks pass on them, and the flash layout was verified by reading the constant back out of
+        the compiled firmware &mdash; but no Pico, Pico W or Pico 2 has run one, and every hardware
+        number quoted in these docs came off a Pico 2 W. That is what a pre-release means.
         <br><br>
         <strong>What an RP2040 board does not get is the package sandbox.</strong> ARMv6-M
         protection regions are power-of-two sized and aligned to their own size, so the five a
