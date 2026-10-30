@@ -1,0 +1,53 @@
+/* rpc.novalabs.app: the shared design system plus what only this site has.
+   The accent is teal; everything else is the shared system. */
+:root {
+  --accent: #2dd4be;
+  --on-accent: #03221d;
+  --accent-hover: #5eead4;
+}
+.stripes i:nth-child(1) { background: #f7262f; } .stripes i:nth-child(2) { background: #2563ff; } .stripes i:nth-child(3) { background: #a31ff0; }
+
+/* version pills on documentation pages */
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.pill { font: 500 13px/1 var(--mono); color: var(--dim); text-decoration: none; border: 1px solid var(--line-hi); border-radius: 999px; padding: 10px 14px; min-height: 40px; display: inline-flex; align-items: center; gap: 8px; }
+.pill:hover { color: var(--text); border-color: var(--accent); }
+.pill.on { color: var(--text); border-color: var(--accent); background: rgba(45,212,190,.08); }
+.pill small { color: var(--faint); font-size: 11px; }
+.docs-nav a.active { color: var(--text); border-left-color: var(--accent); }
+
+/* the get page */
+.get-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 14px; }
+.get-card { text-align: left; display: grid; gap: 6px; padding: 18px 20px; background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--r); cursor: pointer; color: var(--text); font: inherit; transition: border-color .18s, background .18s; }
+.get-card:hover { border-color: var(--line-hi); }
+.get-card[aria-pressed="true"] { border-color: var(--accent); background: var(--ink-3); }
+.get-card b { font: 700 1.1rem/1.2 var(--display); }
+.get-card small { color: var(--dim); font-size: .88rem; }
+.get-card .badge { justify-self: start; }
+.get-result { display: grid; gap: 16px; }
+.get-result ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; color: var(--dim); max-width: 66ch; }
+.get-result ol strong { color: var(--text); font-weight: 600; }
+.is-hidden { display: none !important; }
+.dl-meta { font: 400 12.5px/1.6 var(--mono); color: var(--faint); }
+
+/* stat line, hardware table and commands on the home page */
+.cmds { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+.cmds .panel h3 { font-size: 1rem; margin-bottom: 10px; color: var(--accent); font-family: var(--mono); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; font-size: 12px; }
+.cmds pre { margin: 0; font: 400 13px/1.8 var(--mono); color: var(--text); overflow-x: auto; }
+.cmds pre .m { color: var(--faint); }
+.inside { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--ink-2); }
+.inside > div { padding: 22px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; }
+.inside h3 { font-size: 1.05rem; margin-bottom: 6px; }
+.inside p { color: var(--dim); font-size: .93rem; }
+.inside code { font-size: .82em; }
+
+/* the roadmap */
+.road { display: grid; gap: 0; }
+.road-row { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 6px 28px; padding-block: 26px; border-top: 1px solid var(--line); }
+.road-row:last-child { border-bottom: 1px solid var(--line); }
+.road-row .v { font: 700 1.15rem/1.2 var(--display); }
+.road-row .when { font: 400 12.5px/1.4 var(--mono); color: var(--faint); margin-top: 4px; }
+.road-row h3 { margin-bottom: 8px; }
+.road-row ul { margin: 0; padding-left: 1.2em; color: var(--dim); display: grid; gap: 5px; max-width: 72ch; }
+.road-row li.done { list-style: none; margin-left: -1.2em; padding-left: 1.2em; position: relative; }
+.road-row li.done::before { content: "\2713"; position: absolute; left: 0; color: var(--ok); }
+@media (max-width: 760px) { .road-row { grid-template-columns: minmax(0, 1fr); } }

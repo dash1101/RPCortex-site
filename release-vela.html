@@ -1,62 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPCortex &mdash; v1.0.0 Vela Release Notes</title>
-  <meta name="description" content="What's new in RPCortex v1.0 &quot;Vela&quot; &mdash; the multitasking release.">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <!-- NAV -->
-  <nav>
-    <div class="nav-inner">
-      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
-      <div class="nav-links">
-        <a href="docs">Docs</a>
-        <a href="packages">Packages</a>
-        <a href="roadmap">Roadmap</a>
-        <a href="get">Get</a>
-        <a href="https://github.com/dash1101/RPCortex-OS" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <header class="docs-hero">
-    <div class="inner">
-      <h1>Vela Release Notes</h1>
-      <p>v1.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela</strong> &nbsp;&bull;&nbsp; Stable &nbsp;&bull;&nbsp; Succeeds v0.9.1 &ldquo;Pulsar&rdquo;</p>
-    </div>
-  </header>
-
-  <!-- CONTENT -->
-  <div class="docs-page-layout">
-    <nav class="docs-toc">
-      <h4>Contents</h4>
-      <a href="#status">Status</a>
-      <a href="#hardware">Supported hardware</a>
-      <a href="#multitasking">Multitasking</a>
-      <a href="#shell">Shell &amp; terminal</a>
-      <a href="#networking">Networking</a>
-      <a href="#memory">Memory &amp; reliability</a>
-      <a href="#updates">Packages &amp; updates</a>
-      <a href="#storage">Storage</a>
-      <a href="#platform">Platform</a>
-      <a href="#novad1">Nova D1</a>
-      <a href="#installation">Installing</a>
-      <a href="#limitations">Known limitations</a>
-    </nav>
-
-    <article class="docs-article">
-
-      <h2 id="status">Status</h2>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>v1.0.0 Vela Release Notes | RPCortex</title><meta name="description" content="What&#x27;s new in RPCortex v1.0 &amp;quot;Vela&amp;quot; &amp;mdash; the multitasking release."><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"><link rel="stylesheet" href="./css/legacy.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img src="./logo.svg" alt="">RPCortex</a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html">Get</a><a href="./docs/v2.html">Docs</a><a href="./packages.html">Packages</a><a href="./releases.html" aria-current="page">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Release notes</div><h1>Vela Release Notes</h1><p class="lede">v1.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela</strong> &nbsp;&bull;&nbsp; Stable &nbsp;&bull;&nbsp; Succeeds v0.9.1 &ldquo;Pulsar&rdquo;</p></section>
+<div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#status">Status</a><a href="#hardware">Supported hardware</a><a href="#multitasking">Multitasking</a><a href="#shell">Shell &amp; terminal</a><a href="#networking">Networking</a><a href="#memory">Memory &amp; reliability</a><a href="#updates">Packages &amp; updates</a><a href="#storage">Storage</a><a href="#platform">Platform</a><a href="#novad1">Nova D1</a><a href="#installation">Installing</a><a href="#limitations">Known limitations</a></nav><article class="docs-body prose legacy-prose"><h2 id="status">Status</h2>
       <p><strong>Stable.</strong> v1.0 is the current release on the default channel &mdash; the Install and Update default, superseding v0.9.1 &ldquo;Pulsar&rdquo;.</p>
       <div class="note-box">
-        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>. For the full command reference see the <a href="docs?v=v1.0.0">v1.0.0 docs</a>. v1.0 is also the last MicroPython release &mdash; what comes next is a native rewrite, explained in <a href="switch">the switch to C++</a>.
+        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>. For the full command reference see the <a href="./docs/v1.html">v1.0.0 docs</a>. v1.0 is also the last MicroPython release &mdash; what comes next is a native rewrite, explained in <a href="./switch.html">the switch to C++</a>.
       </div>
       <p>The data directory moves from <code>/Pulsar/</code> to <code>/Vela/</code>. Updating devices migrate automatically &mdash; accounts, WiFi profiles, settings and installed packages are all preserved.</p>
 
@@ -129,10 +77,10 @@
       </ul>
 
       <h2 id="novad1">Nova D1</h2>
-      <p>The <a href="https://novalabs.app/d1" target="_blank" rel="noopener">Nova D1</a> multi-tool runs on Vela as a package suite. It is developed alongside this release and has its own version line; see the <a href="packages">packages</a> page for the current build.</p>
+      <p>The <a href="https://novalabs.app/d1" target="_blank" rel="noopener">Nova D1</a> multi-tool runs on Vela as a package suite. It is developed alongside this release and has its own version line; see the <a href="./packages.html">packages</a> page for the current build.</p>
 
       <h2 id="installation">Installing</h2>
-      <p><strong>Fresh install:</strong> pick <em>RPCortex Vela</em> in the <a href="install">Web Installer</a> &mdash; it is the default.</p>
+      <p><strong>Fresh install:</strong> pick <em>RPCortex Vela</em> in the <a href="./install.html">Web Installer</a> &mdash; it is the default.</p>
       <p><strong>Updating from v0.9.1</strong> on a Pico 2 W or ESP32-S3:</p>
       <pre><code>update channel beta
 update check
@@ -147,45 +95,6 @@ safeboot update online -y</code></pre>
         <li><strong>Hardware-verified on the Pico 2 W and the ESP32-S3</strong>, which are the two boards this release targets. Please report anything rough.</li>
       </ul>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela &mdash; v1.0.0, stable &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome. The C++ rewrite, <a href="release-vela2">v2.0 Vela II</a>, is in beta; the older line is <a href="release">v0.9.1 Pulsar</a>.</p>
-
-    </article>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="inner">
-      <div class="footer-row">
-        <span class="footer-brand">RPCortex</span>
-        <div class="footer-links">
-          <a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a>
-          <a href="https://github.com/dash1101/RPCortex-OS" target="_blank">GitHub</a>
-          <a href="https://github.com/dash1101/RPCortex-OS/releases" target="_blank">Releases</a>
-          <a href="docs">Docs</a>
-          <a href="roadmap">Roadmap</a>
-          <a href="https://github.com/dash1101/RPCortex-OS/issues" target="_blank">Issues</a>
-          <a href="privacy">Privacy</a>
-        </div>
-      </div>
-      <p class="footer-note">Built by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. &copy; 2026 &mdash; all rights reserved.</p>
-    </div>
-  </footer>
-
-  <script>
-    const sections = document.querySelectorAll('.docs-article h2[id]');
-    const tocLinks = document.querySelectorAll('.docs-toc a');
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          tocLinks.forEach(l => l.classList.remove('active'));
-          const link = document.querySelector('.docs-toc a[href="#' + e.target.id + '"]');
-          if (link) link.classList.add('active');
-        }
-      });
-    }, { rootMargin: '-20% 0px -70% 0px' });
-    sections.forEach(s => obs.observe(s));
-  </script>
-
-  <script src="js/nav.js"></script>
-</body>
-</html>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela &mdash; v1.0.0, stable &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome. The C++ rewrite, <a href="./release-vela2.html">v2.0 Vela II</a>, is in beta; the older line is <a href="./release.html">v0.9.1 Pulsar</a>.</p></article></div>
+</main>
+<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img src="./logo.svg" alt="">RPCortex</a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/spy.js"></script></body></html>

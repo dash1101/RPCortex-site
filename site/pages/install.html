@@ -1,0 +1,190 @@
+---
+title: Web Installer
+nav: install
+path: install.html
+legacy: 1
+scripts: js/serial-device.js,js/installer.js
+head_scripts: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
+---
+<main>
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Web Installer</div><h1>Web Installer</h1><p class="lede">Flash RPCortex directly from your browser. No desktop software, no drivers, no Thonny required.</p></section>
+<!-- MAIN CONTENT -->
+  <section class="section">
+    <div class="inner">
+
+      <!-- Browser compatibility banner -->
+      <div class="compat-banner" id="compatBanner">
+        <strong>Web Serial API not supported.</strong>
+        Use Chrome 89+, Edge 89+, or Opera. Firefox and Safari are not supported. Switch to a Chromium-based browser to use this installer.
+      </div>
+
+      <!-- PREREQUISITES -->
+      <div id="installerContent">
+        <div class="prereq-grid">
+          <div class="prereq-card">
+            <div class="prereq-num">1</div>
+            <h3>Flash MicroPython</h3>
+            <p>Flash MicroPython firmware v1.25+ to your board first (v1.28 recommended). <a href="https://micropython.org/download/" target="_blank" rel="noopener">Download from micropython.org &rarr;</a></p>
+          </div>
+          <div class="prereq-card">
+            <div class="prereq-num">2</div>
+            <h3>Connect via USB</h3>
+            <p>Plug your board into USB. Make sure no other serial program (PuTTY, Thonny) is connected to the same port.</p>
+          </div>
+          <div class="prereq-card">
+            <div class="prereq-num">3</div>
+            <h3>Open in Chrome</h3>
+            <p>This installer requires Chrome 89+, Edge 89+, or any Chromium-based browser. The Web Serial API is not available in Firefox or Safari.</p>
+          </div>
+        </div>
+
+        <!-- ── VERSION PICKER ────────────────────────────────────── -->
+        <div class="version-picker-wrap">
+          <span class="version-label">Version:</span>
+          <select id="versionSelect" class="version-select" disabled>
+            <option>Loading versions&hellip;</option>
+          </select>
+        </div>
+
+        <!-- ── INSTALLER PANEL ────────────────────────────────────── -->
+        <div class="installer-panel">
+
+          <!-- STATE: idle -->
+          <div class="inst-state active" id="stateIdle">
+            <p class="panel-h">Ready to install</p>
+            <p class="panel-sub">Select a version above, connect your board, and click the button below.</p>
+            <button class="btn-primary" id="connectBtn">Connect Device</button>
+            <p class="panel-hint">Chrome will open a port picker dialog.</p>
+          </div>
+
+          <!-- STATE: connected -->
+          <div class="inst-state" id="stateConnected">
+            <div class="conn-status">
+              <span class="conn-dot"></span>
+              <span id="portLabel">Connected</span>
+            </div>
+
+            <div class="source-options" id="sourceOptions">
+              <label class="source-option selected" id="optGithub">
+                <input type="radio" name="source" value="github" checked>
+                <div class="source-option-body">
+                  <strong>Download from GitHub</strong>
+                  <span>Fetches the selected release from GitHub Releases automatically.</span>
+                </div>
+              </label>
+              <label class="source-option" id="optLocal">
+                <input type="radio" name="source" value="local">
+                <div class="source-option-body">
+                  <strong>Select local .rpc file</strong>
+                  <span>Use a locally saved release file.</span>
+                  <div id="fileInputWrap">
+                    <input type="file" id="localFileInput" accept=".rpc,.zip">
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <div class="install-info-box" id="installInfoBox">
+              <strong id="dataMsgTitle">&#10003; Your data is kept.</strong>
+              <p id="dataMsgBody">This installs or updates the OS and removes only the old OS code (<code>/Core</code>). Your accounts, WiFi networks, settings, and installed packages are preserved.</p>
+              <label class="wipe-confirm-label">
+                <input type="checkbox" id="wipeConfirmCheck">
+                Clean install &mdash; erase <em>everything</em> first (accounts, settings, packages). Can't be undone.
+              </label>
+            </div>
+
+            <div class="gap-btn">
+              <button class="btn-primary" id="installBtn">Install Now</button>
+              <button class="btn-secondary" id="downloadRpcBtn" title="Save the selected .rpc image to your computer">Download .rpc</button>
+            </div>
+            <button class="disconnect-link" id="disconnectLink">Disconnect</button>
+          </div>
+
+          <!-- STATE: installing -->
+          <div class="inst-state" id="stateInstalling">
+            <p class="panel-h">Installing&hellip;</p>
+            <div class="progress-wrap" style="margin-bottom:20px;">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="install-status-text" id="installStatusText">Preparing&hellip;</p>
+            <div class="log-term">
+              <div class="term-bar">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="term-title">installer log</span>
+              </div>
+              <div class="log-body" id="logBody"></div>
+            </div>
+            <button class="btn-secondary" id="cancelBtn">Cancel</button>
+          </div>
+
+          <!-- STATE: done -->
+          <div class="inst-state" id="stateDone">
+            <div class="done-icon">&#10003;</div>
+            <p class="panel-h">Installation complete!</p>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin:0 0 4px;">All files have been written to the device.</p>
+            <ol class="done-next">
+              <li><strong>Disconnect and reconnect</strong> your device from USB.</li>
+              <li>Open <strong>PuTTY</strong> (or any serial terminal) at <strong>115200 baud</strong>.</li>
+              <li><strong>Fresh or clean install:</strong> complete the first-run setup wizard (root password, WiFi, timezone, clock). <strong>Kept your data:</strong> just log in as usual &mdash; your accounts and settings are intact.</li>
+            </ol>
+            <div style="margin-top:28px;">
+              <button class="btn-secondary" id="installAgainBtn">Install Again</button>
+            </div>
+          </div>
+
+          <!-- STATE: error -->
+          <div class="inst-state" id="stateError">
+            <div class="error-icon">&#10007;</div>
+            <p class="panel-h">Installation failed</p>
+            <div id="errorMsg"></div>
+            <button class="btn-primary" id="retryBtn">Try Again</button>
+          </div>
+
+        </div><!-- /.installer-panel -->
+
+        <!-- COPY A FILE (shown while connected; non-destructive) -->
+        <div id="transferPanel" class="transfer-panel">
+          <p class="panel-h">Copy a file to the device</p>
+          <p class="panel-sub">Push any file to the connected board over USB &mdash; nothing is wiped. Handy for staging a <code>.pkg</code>, a script, or a config file without dropping to the REPL.</p>
+          <label class="transfer-pick">
+            <span class="transfer-pick-btn">Choose file&hellip;</span>
+            <input type="file" id="transferFileInput">
+            <span class="transfer-file-name" id="transferFileName">No file selected</span>
+          </label>
+          <label class="transfer-path-label">
+            Destination path on device
+            <input type="text" id="transferPath" class="transfer-path-input" value="/" placeholder="/Packages/MyFile.pkg" spellcheck="false">
+          </label>
+          <button class="btn-primary" id="transferBtn">Send to device</button>
+          <div class="transfer-log" id="transferLog"></div>
+        </div>
+
+        <!-- HOW IT WORKS -->
+        <div class="how-box" style="margin-top:40px;">
+          <h2>How it works</h2>
+          <p>
+            The installer establishes a serial connection to your device's MicroPython REPL,
+            fetches the RPCortex <code>.rpc</code> release archive, extracts it in-browser,
+            and transfers each file using MicroPython's raw REPL mode &mdash; the same protocol
+            used by tools like <code>mpremote</code> and Thonny.
+          </p>
+          <p>
+            A <code>.rpc</code> file is a standard ZIP archive with a custom extension.
+            Select a version above or choose a locally-saved release file.
+            No desktop software, drivers, or WiFi required.
+          </p>
+          <p>
+            <strong>Already running RPCortex?</strong> No need to do anything manually &mdash;
+            the installer automatically drops the device to the MicroPython REPL (via the
+            built-in <code>rawrepl</code> escape) before flashing, whether it is sitting at the
+            shell or the login screen.
+          </p>
+        </div>
+
+      </div><!-- /#installerContent -->
+
+    </div><!-- /.inner -->
+  </section>
+</main>

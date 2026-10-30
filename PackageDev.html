@@ -1,56 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPCortex &mdash; Package Development Guide</title>
-  <meta name="description" content="Write, build and publish a package for RPCortex v2 — compiled .app files that register their own shell commands.">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <!-- NAV -->
-  <nav>
-    <div class="nav-inner">
-      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
-      <div class="nav-links">
-        <a href="docs">Docs</a>
-        <a href="packages">Packages</a>
-        <a href="roadmap">Roadmap</a>
-        <a href="get">Get</a>
-        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <header class="docs-hero">
-    <div class="inner">
-      <h1>Build a Package</h1>
-      <p>RPCortex v2 &mdash; a package is C, compiled, loaded at runtime</p>
-    </div>
-  </header>
-
-  <!-- CONTENT -->
-  <div class="docs-page-layout">
-    <nav class="docs-toc">
-      <h4>Contents</h4>
-      <a href="#shortest">The shortest one</a>
-      <a href="#build">Building it</a>
-      <a href="#push">Getting it onto a device</a>
-      <a href="#abi">What a package can call</a>
-      <a href="#rules">The four rules</a>
-      <a href="#sandbox">What the sandbox does</a>
-      <a href="#tui">Full-screen packages</a>
-      <a href="#publish">Getting it listed</a>
-      <a href="#v1">Coming from v1</a>
-    </nav>
-
-    <article class="docs-article">
-
-      <p>A package is a compiled <code>.app</code> file. The OS loads it, relocates it, runs its
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Package Development Guide | RPCortex</title><meta name="description" content="Write, build and publish a package for RPCortex v2 — compiled .app files that register their own shell commands."><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"><link rel="stylesheet" href="./css/legacy.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img src="./logo.svg" alt="">RPCortex</a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html">Get</a><a href="./docs/v2.html" aria-current="page">Docs</a><a href="./packages.html">Packages</a><a href="./releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Guide</div><h1>Build a Package</h1><p class="lede">RPCortex v2 &mdash; a package is C, compiled, loaded at runtime</p></section>
+<div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#shortest">The shortest one</a><a href="#build">Building it</a><a href="#push">Getting it onto a device</a><a href="#abi">What a package can call</a><a href="#rules">The four rules</a><a href="#sandbox">What the sandbox does</a><a href="#tui">Full-screen packages</a><a href="#publish">Getting it listed</a><a href="#v1">Coming from v1</a></nav><article class="docs-body prose legacy-prose"><p>A package is a compiled <code>.app</code> file. The OS loads it, relocates it, runs its
          <code>app_main</code>, and the commands it registers are live immediately &mdash; no
          reboot. It is real machine code, not a script, and on RP2350 it runs
          <strong>unprivileged</strong>.</p>
@@ -123,7 +74,7 @@ extern "C" int app_main(int arg) {
          appears, press a key, then <code>pkg install /usb/greet.app</code>.</p>
 
       <h3>From the browser</h3>
-      <p>The <a href="packages">Packages</a> page connects over Web Serial and installs with one
+      <p>The <a href="./packages.html">Packages</a> page connects over Web Serial and installs with one
          click, including packages you drag onto it from your own machine.</p>
 
       <h2 id="abi">What a package can call</h2>
@@ -243,36 +194,12 @@ fw_shell_run("ntp sync", NULL, 0);   // for its effect, output ignored</code></p
          v2, so it needs rewriting rather than converting. The shape carries over &mdash; register
          a command, do a thing, return &mdash; and the <code>fw_*</code> calls line up closely with
          what the v1 API offered.</p>
-      <p>The <a href="PackageDev-v1">v1 guide</a> is still here for devices still running it.</p>
+      <p>The <a href="./PackageDev-v1.html">v1 guide</a> is still here for devices still running it.</p>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">
         Questions, or something here that does not match the source? Open an
         <a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">issue</a>
         or ask in <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a>.
-      </p>
-
-    </article>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="inner">
-      <div class="footer-row">
-        <span class="footer-brand">RPCortex</span>
-        <div class="footer-links">
-          <a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a>
-          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
-          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
-          <a href="docs">Docs</a>
-          <a href="roadmap">Roadmap</a>
-          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
-          <a href="privacy">Privacy</a>
-        </div>
-      </div>
-      <p class="footer-note">Built by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. &copy; 2026 &mdash; all rights reserved.</p>
-    </div>
-  </footer>
-
-  <script src="js/nav.js"></script>
-</body>
-</html>
+      </p></article></div>
+</main>
+<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img src="./logo.svg" alt="">RPCortex</a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/spy.js"></script></body></html>

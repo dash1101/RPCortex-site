@@ -5,3 +5,5 @@ CLAUDE.md
 .DS_Store
 Thumbs.db
 *.swp
+# Python bytecode from the build
+__pycache__/

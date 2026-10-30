@@ -1,0 +1,396 @@
+{
+ "entries": [
+  {
+   "ver": "v0.8.1 — Nebula",
+   "status": "Shipped",
+   "tone": "done",
+   "blocks": [
+    {
+     "type": "p",
+     "html": "The final stable release of the β8 \"Nebula\" line. Closed out the beta backlog: unlimited WiFi profiles, manual recovery mode, <code>--help</code> flags, <code>pkg commands</code>, tilde expansion everywhere, password masking, a functional <code>Program_Execution</code> toggle, echo file redirection, and POST <code>.mpy</code> fallback."
+    }
+   ]
+  },
+  {
+   "ver": "v0.9.1 — Pulsar",
+   "status": "Shipped · Stable",
+   "tone": "done",
+   "blocks": [
+    {
+     "type": "p",
+     "html": "The definitive β9 \"Pulsar\" release &mdash; succeeds v0.8.1 directly. Turns RPCortex from an interactive shell into something you can script, automate, and leave running headlessly. Every previous v0.9.0 goal is included and the scope was expanded to cover shell-power, packages, and the <code>/Pulsar/</code> storage layout in one shot."
+    },
+    {
+     "type": "label",
+     "html": "Shell &amp; Filesystem"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong>Persistent aliases</strong> &mdash; survive reboots via <code>aliases.cfg</code>",
+       "done": true
+      },
+      {
+       "html": "<strong>Pipes</strong> &mdash; <code>cat file | grep ERROR | wc</code>, real output-capture / exit-code convention",
+       "done": true
+      },
+      {
+       "html": "<strong><code>&amp;&amp;</code> / <code>||</code> chaining</strong> &mdash; <code>wifi connect &amp;&amp; pkg update</code>",
+       "done": true
+      },
+      {
+       "html": "<strong>Scripting (<code>.rps</code>)</strong> &mdash; <code>set</code>/<code>$vars</code>, <code>if</code>/<code>else</code>, <code>while</code>; run by filename",
+       "done": true
+      },
+      {
+       "html": "<strong>Streamed <code>cp</code> / <code>mv</code></strong> &mdash; 1&nbsp;KB chunks; <code>mv</code> uses instant same-FS rename for zero copy",
+       "done": true
+      },
+      {
+       "html": "<strong>Configurable prompt hostname</strong>, <strong><code>date set</code></strong> RTC, <strong><code>du</code></strong>, <strong><code>watch</code></strong>",
+       "done": true
+      },
+      {
+       "html": "<strong><code>/Pulsar/</code> storage</strong> &mdash; registry, logs, and pkg cache moved from <code>/Nebula/</code>; auto-migrated on update",
+       "done": true
+      }
+     ]
+    },
+    {
+     "type": "label",
+     "html": "Automation"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong>Startup tasks</strong> &mdash; <code>startup add &lt;cmd&gt;</code> runs commands automatically at login",
+       "done": true
+      },
+      {
+       "html": "<strong>Scheduled tasks</strong> &mdash; <code>task add &lt;secs&gt; &lt;cmd&gt;</code> + foreground <code>task run</code> scheduler",
+       "done": true
+      },
+      {
+       "html": "<strong>Unattended mode</strong> &mdash; <code>startup add task run</code> boots straight into a headless scheduler",
+       "done": true
+      }
+     ]
+    },
+    {
+     "type": "label",
+     "html": "Packages &amp; Updates"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong>Over-the-air updates</strong> &mdash; <code>update check</code> / <code>update online</code> over WiFi",
+       "done": true
+      },
+      {
+       "html": "<strong>PicoFetch &amp; RPCMark</strong> (benchmark, formerly NebulaMark/PulseMark) &mdash; real updatable packages",
+       "done": true
+      },
+      {
+       "html": "<strong>NTP built-in</strong> &mdash; <code>ntp sync</code> sets the clock; <code>startup add ntp sync -s</code> for silent boot sync",
+       "done": true
+      },
+      {
+       "html": "<strong>New packages</strong> &mdash; <code>calc</code>, <code>gpio</code>, <code>i2cscan</code>",
+       "done": true
+      },
+      {
+       "html": "<strong>Compiled <code>.mpy</code> packages</strong> &mdash; <code>make_pkg.py --compile</code>; loader auto-falls-back to <code>.mpy</code>",
+       "done": true
+      },
+      {
+       "html": "<strong><code>pkg install</code> multiple names</strong>; PicoFetch / NTP user-removable",
+       "done": true
+      }
+     ]
+    },
+    {
+     "type": "label",
+     "html": "Networking &amp; UX"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong>Download progress bars</strong> &mdash; <code>[####----] 47%</code> on <code>wget</code>",
+       "done": true
+      },
+      {
+       "html": "<strong>Extended <code>curl</code> flags</strong> &mdash; <code>-X</code>, <code>-d</code>, <code>-H</code>, <code>-o</code>, <code>-s</code>, <code>-I</code>, <code>--timeout</code>",
+       "done": true
+      },
+      {
+       "html": "<strong><code>wifi autoconnect</code></strong> &mdash; connect to the strongest saved network, no prompts",
+       "done": true
+      },
+      {
+       "html": "<strong>Silent flags</strong> &mdash; <code>ntp sync -s</code>, <code>wifi connect -s</code> (errors only)",
+       "done": true
+      },
+      {
+       "html": "<strong>Owner &amp; timezone</strong> &mdash; <code>System.Owner</code>, <code>System.TZ_Offset</code>",
+       "done": true
+      }
+     ]
+    },
+    {
+     "type": "label",
+     "html": "Recovery &amp; Build"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong>Recovery tools</strong> &mdash; <code>fscheck</code>, <code>diag</code>, <code>logdump</code>, <code>regreset</code>, <code>pkgdisable</code>",
+       "done": true
+      },
+      {
+       "html": "<strong>Faster deploy</strong> &mdash; single chained <code>mpremote</code> session (~30&times; faster than per-file)",
+       "done": true
+      }
+     ]
+    },
+    {
+     "type": "note",
+     "html": "Shipped as the stable baseline &mdash; the current Install / Update default."
+    }
+   ]
+  },
+  {
+   "ver": "v0.9.5 — Pulsar",
+   "status": "Folded into v1.0",
+   "tone": "done",
+   "blocks": [
+    {
+     "type": "p",
+     "html": "The multitasking exploration &mdash; getting <code>uasyncio</code> working alongside the shell safely. It did its job as a stepping stone, so rather than ship a throwaway incremental release it was <strong>folded directly into v1.0</strong>; v0.9.1 stays the stable v0.9.x. The foundation below is now the v1.0 base."
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong><code>uasyncio</code> integration</strong> &mdash; background services run while the shell stays interactive",
+       "done": true
+      },
+      {
+       "html": "<strong>Concurrency safety</strong> &mdash; cooperative model, screen-ownership, crash-isolated services",
+       "done": true
+      },
+      {
+       "html": "<strong>Background tasks</strong> &mdash; scheduled tasks fire while idle, no foreground blocker",
+       "done": true
+      },
+      {
+       "html": "<strong>Supervised background services</strong> &mdash; <code>httpd --bg</code>, the <code>service</code> manager, <code>services.cfg</code>",
+       "done": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "ver": "v1.0 — Vela",
+   "status": "Shipped · Stable",
+   "tone": "done",
+   "blocks": [
+    {
+     "type": "p",
+     "html": "The 1.0 milestone &mdash; <strong>true multitasking</strong>. The shell is <strong>async by default</strong>: a foreground app (e.g. <code>sysmon</code>) runs cooperatively alongside background services (e.g. <code>httpd&nbsp;--bg</code>) on one event loop and one terminal. The classic synchronous shell stays as the crash / recovery fallback so older setups never break. <strong>This is the current stable release</strong> &mdash; the Install and Update default."
+    },
+    {
+     "type": "label",
+     "html": "Done &mdash; verified on hardware (Pico&nbsp;2W + ESP32-S3)"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong>Cooperative app framework</strong> (<code>appkit</code>) &mdash; screen ownership + non-blocking <code>read_key</code>; apps yield so services keep ticking",
+       "done": true
+      },
+      {
+       "html": "<strong>Async by default</strong> &mdash; background services run while you keep using the prompt (<code>asyncmode off</code> returns the classic shell)",
+       "done": true
+      },
+      {
+       "html": "<strong>Full async line editor</strong> &mdash; history, Tab completion, cursor + word navigation, shared with the classic shell",
+       "done": true
+      },
+      {
+       "html": "<strong>Async networking (Tier&nbsp;2)</strong> &mdash; <code>ping</code>/<code>wget</code>/<code>curl</code> (incl. HTTPS) yield to the loop, and <code>httpd&nbsp;--bg</code> streams responses without freezing services",
+       "done": true
+      },
+      {
+       "html": "<strong>Cooperative TUIs</strong> &mdash; <code>sysmon</code>, <code>settings</code>, and the file managers (<code>files</code>/<code>desktop</code>/<code>ide</code>) plus the <code>edit</code>or all run on the loop",
+       "done": true
+      },
+      {
+       "html": "<strong>Opt-in beta updates</strong> &mdash; <code>update channel beta</code> + a separate OTA manifest; stable devices are never auto-moved",
+       "done": true
+      }
+     ]
+    },
+    {
+     "type": "note",
+     "html": "v1.0 is the stable release &mdash; grab it from the <a href=\"install\">installer</a>, or run <code>update online</code> on any device to move up to it. Hardware-verified on the Pico&nbsp;2W and ESP32-S3. It is also the <strong>last MicroPython release</strong>: what comes next is a native rewrite. See <a href=\"switch\">the switch to C++</a>."
+    }
+   ]
+  },
+  {
+   "ver": "v2.0 — Vela II",
+   "status": "Pre-release · Beta",
+   "tone": "active",
+   "blocks": [
+    {
+     "type": "p",
+     "html": "RPCortex <strong>rewritten in C++</strong>, native on the hardware, with no interpreter underneath. Same shell, same commands, same accounts, same package system &mdash; and RPCMark scores roughly <strong>190&times;</strong> what a v1 device does on the same workload at the same clock. There is no v1.1: the effort that would have gone into it went here. <a href=\"switch\">The full reasoning is here.</a>"
+    },
+    {
+     "type": "label",
+     "html": "Shipped, and confirmed on hardware"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong>Runtime package loader</strong> &mdash; compiled apps are loaded, relocated and run at runtime, then unloaded cleanly. This was the go/no-go for keeping a package system without an interpreter, and it went",
+       "done": true
+      },
+      {
+       "html": "<strong>The shell</strong> &mdash; more commands than v1 had, plus its aliases, pipes, <code>&amp;&amp;</code>&thinsp;/&thinsp;<code>||</code>, redirection, quoting",
+       "done": true
+      },
+      {
+       "html": "<strong>Line editing</strong> &mdash; cursor and word navigation, history, Tab completion over commands and paths",
+       "done": true
+      },
+      {
+       "html": "<strong>Accounts</strong> &mdash; salted SHA-256, roles, the guided first-run setup, login backoff",
+       "done": true
+      },
+      {
+       "html": "<strong>Filesystem</strong> &mdash; littlefs, in the same on-disk format a v1 device already uses",
+       "done": true
+      },
+      {
+       "html": "<strong>WiFi</strong> &mdash; scan, connect, saved networks, autoconnect",
+       "done": true
+      },
+      {
+       "html": "<strong>The console</strong> &mdash; v1&rsquo;s tagged output, colours and boot banner, reproduced rather than reinterpreted",
+       "done": true
+      },
+      {
+       "html": "<strong>Package repository</strong> &mdash; <code>pkg</code> against a real index, installing over the air",
+       "done": true
+      },
+      {
+       "html": "<strong>The whole command set</strong> &mdash; <code>ping</code>, <code>ntp</code>, <code>wget</code>/<code>curl</code>, <code>watch</code>, the editor, and more than v1 had",
+       "done": true
+      },
+      {
+       "html": "<strong>Over-the-air updates</strong> &mdash; staged in a second flash slot and verified before a byte of firmware is written",
+       "done": true
+      },
+      {
+       "html": "<strong>Packages cannot take the device down</strong> &mdash; unprivileged on RP2350, every pointer range-checked, and all three ways one can misbehave contained",
+       "done": true
+      },
+      {
+       "html": "<strong>Bluetooth</strong> &mdash; an LE scan, confirmed on a Pico&nbsp;2&nbsp;W. Classic and audio are written and host-tested, still to be met by a real device",
+       "done": true
+      },
+      {
+       "html": "<strong>A USB drive</strong> &mdash; drag files on and off, in both directions",
+       "done": true
+      },
+      {
+       "html": "Recovery and rollback &mdash; a device that fails to start three times loads nothing, a fourth start restores the saved firmware, and <code>update rollback</code> writes it back by hand. Confirmed on a Pico 2 W",
+       "done": true
+      }
+     ]
+    },
+    {
+     "type": "label",
+     "html": "Still to come"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong>The Pico&nbsp;1 and 1&nbsp;W, on a real board</strong> &mdash; without an interpreter, 264&nbsp;KB stopped being the wall it was, and the images build and pass their checks. Nobody has booted one yet",
+       "done": false
+      },
+      {
+       "html": "<strong>The rest of v1&rsquo;s packages</strong> &mdash; the v2 index is still the shorter of the two, and the gap is what a user notices",
+       "done": false
+      },
+      {
+       "html": "<strong>SD cards, on a real card</strong> &mdash; the driver, the read-only FAT reader and the <code>sd</code> command are written and host-tested; what is left is running them against a card in a slot",
+       "done": false
+      },
+      {
+       "html": "<strong>ESP32-S3 and the other ESP32 parts</strong> &mdash; the portable core moves unchanged; the context switch, storage and network layers are the work",
+       "done": false
+      },
+      {
+       "html": "<strong>USB HID</strong> &mdash; BadUSB, U2F, and the composite-device work that needs native USB",
+       "done": false
+      }
+     ]
+    },
+    {
+     "type": "note",
+     "html": "v1.0 keeps working and stays installable, and remains the answer on an ESP32 until the port lands &mdash; nothing is being taken away. Direction, not a contract; priorities shift with what people actually want."
+    }
+   ]
+  },
+  {
+   "ver": "Package ideas",
+   "status": "Anytime",
+   "tone": "planned",
+   "blocks": [
+    {
+     "type": "p",
+     "html": "Packages install and update independently of the OS, so these don&rsquo;t gate any release &mdash; they can land whenever someone builds them."
+    },
+    {
+     "type": "label",
+     "html": "Available now (in the repo)"
+    },
+    {
+     "type": "p",
+     "html": "<strong>v2:</strong> <code>httpd</code> &middot; <code>websearch</code> &middot; <code>speedtest</code> &middot; <code>dht</code> &middot; <code>gpio</code> &middot; <code>i2cscan</code> &middot; <code>ws2812</code> &middot; <code>calc</code> &middot; <code>tuidemo</code> &middot; <code>greet</code> &middot; <code>novad1</code>, plus <code>bench</code>, <code>probe</code>, <code>stress</code> and <code>havoc</code> for measuring and breaking things. Browse and one-click install them on the <a href=\"packages\">Packages</a> page, which detects which OS your device runs."
+    },
+    {
+     "type": "label",
+     "html": "Still ideas"
+    },
+    {
+     "type": "items",
+     "items": [
+      {
+       "html": "<strong><code>mqtt</code></strong> &mdash; publish / subscribe so RPCortex can talk to Home Assistant, Node-RED, and friends.",
+       "done": false
+      },
+      {
+       "html": "<strong><code>git</code></strong> &mdash; clone / fetch repositories (read-mostly); the heaviest of the set.",
+       "done": false
+      }
+     ]
+    },
+    {
+     "type": "note",
+     "html": "Got an idea for a package? Open an issue or drop it in <a href=\"https://discord.gg/hcEWwSNDBa\" target=\"_blank\" rel=\"noopener\">Discord</a> &mdash; see the <a href=\"PackageDev\">Package Dev guide</a> to build your own."
+    }
+   ]
+  }
+ ]
+}

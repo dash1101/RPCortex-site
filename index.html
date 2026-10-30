@@ -1,351 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPCortex — A real OS for your microcontroller</title>
-  <!-- Mark JS-enabled before paint so reveal animations only hide content when
-       JavaScript can actually un-hide it (fail-open if JS is off/blocked). -->
-  <script>document.documentElement.className += ' js';</script>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <!-- Animated summer scene (parallax orbs + twinkling stars) -->
-  <div class="home-scene" aria-hidden="true">
-    <span class="scene-orb scene-orb-1"></span>
-    <span class="scene-orb scene-orb-2"></span>
-    <span class="scene-orb scene-orb-3"></span>
-    <div class="scene-stars"></div>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>RPCortex: an operating system for microcontrollers</title><meta name="description" content="RPCortex is a full operating system for the Raspberry Pi Pico family, written in C++: a shell, accounts, Wi-Fi, a package manager and over-the-air updates, with packages that cannot take the board down."><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img src="./logo.svg" alt="">RPCortex</a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html">Get</a><a href="./docs/v2.html">Docs</a><a href="./packages.html">Packages</a><a href="./releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
+<section class="wrap hero" id="home">
+  <div>
+    <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span><span data-rel="display">v2.0-beta</span>&nbsp;&middot; C++ &middot; RP2040 &amp; RP2350</div>
+    <h1>An operating system for microcontrollers.</h1>
+    <p class="lede">RPCortex gives a Raspberry Pi Pico a shell, a filesystem, accounts, Wi-Fi, a package manager and over-the-air updates. The packages you write run without being able to take the board down.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="./get.html">Get RPCortex</a>
+      <a class="btn btn-ghost" href="./docs/v2.html">Read the docs</a>
+    </div>
+    <p class="progress-note" style="margin-top:22px">v1.0 &ldquo;Vela&rdquo; is the stable release: the MicroPython build, and the one to install if you want something finished. v2 is a beta, worth running on a spare board and not on anything you depend on. <a href="./switch.html">Why it moved to C++</a></p>
   </div>
+  <div class="term" role="img" aria-label="A terminal session on a Pico 2 W: the version command, then the task list showing six tasks across both cores">
+    <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">pico2_w &middot; 115200 baud</span></div>
+<pre><span class="p">root@vela:/&gt;</span> ver
+RPCortex v2.0-beta (build <span data-rel="build">486</span>)  &mdash;  Vela II
+Commit: badbb459  (dev)  [C++ native]
+GCC 14.2.1   Platform: pico2_w (RP2350)
 
-  <!-- NAV -->
-  <nav>
-    <div class="nav-inner">
-      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
-      <div class="nav-links">
-        <a href="docs">Docs</a>
-        <a href="packages">Packages</a>
-        <a href="roadmap">Roadmap</a>
-        <a href="get">Get</a>
-        <a href="https://novalabs.app/d1" target="_blank" rel="noopener">Nova&nbsp;D1&nbsp;&#8599;</a>
-        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
-      </div>
-    </div>
-  </nav>
+<span class="p">root@vela:/&gt;</span> ps
+PID  NAME       STATE  CORE  STACK       CPU
+1    init       ready  0     0B/4.0K     3354.9s
+2    usb        ready  0     468B/8.0K   3531.4s
+3    shell      run    0     2.7K/8.0K   3863.9s
+4    novad1     done   1     792B/3.0K   12ms
+5    novainput  sleep  1     400B/2.0K   58ms
+6    novagui    sleep  1     344B/2.0K   1.7s
+<span class="m">6 tasks &middot; CPU 8% &middot; 92 KB free</span></pre>
+  </div>
+</section>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero-inner">
-      <div class="hero-pulse-ring"></div>
-      <div class="hero-emblem">
-        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RPCortex"
-             style="filter: drop-shadow(0 0 16px rgba(255,255,255,0.22));">
-          <!-- red flag accent -->
-          <polygon points="196,42 230,42 214,76 180,76" fill="#f7262f"/>
-          <!-- bold italic R (outlined path — font-independent) -->
-          <g transform="skewX(-13) translate(79.158,176.0) scale(0.089844,-0.089844)"><path d="M735 831Q856 831 908.5 876.0Q961 921 961 1024Q961 1126 908.5 1170.0Q856 1214 735 1214H573V831ZM573 565V0H188V1493H776Q1071 1493 1208.5 1394.0Q1346 1295 1346 1081Q1346 933 1274.5 838.0Q1203 743 1059 698Q1138 680 1200.5 616.5Q1263 553 1327 424L1536 0H1126L944 371Q889 483 832.5 524.0Q776 565 682 565Z" fill="#ffffff"/></g>
-          <!-- red / blue / purple speed stripes (gently pulse) -->
-          <g class="emblem-star" transform="skewX(-13)">
-            <rect x="92" y="196" width="150" height="12" rx="2" fill="#f7262f"/>
-            <rect x="92" y="212" width="150" height="12" rx="2" fill="#2563ff"/>
-            <rect x="92" y="228" width="150" height="12" rx="2" fill="#a31ff0"/>
-          </g>
-        </svg>
-      </div>
-      <div class="badge">v1.0 &ldquo;Vela&rdquo; &nbsp;&bull;&nbsp; Stable &nbsp;&nbsp;|&nbsp;&nbsp; v2.0 &ldquo;Vela II&rdquo; &nbsp;&bull;&nbsp; C++ beta</div>
-      <h1>A real OS. On your microcontroller.</h1>
-      <p class="hero-sub">
-        RPCortex is a full CLI operating system for the RP2 family, written in
-        <strong>native C++</strong>. User accounts, WiFi, HTTPS, a package manager, a text editor,
-        scripting, and a shell that genuinely multitasks across both cores. No interpreter
-        underneath &mdash; the whole OS is one file you drag onto the board.
-      </p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="get">Get RPCortex</a>
-        <a class="btn-secondary" href="docs">Documentation</a>
-        <a class="btn-secondary" href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
-      </div>
-      <p class="hero-note">
-        <strong>v1.0 &ldquo;Vela&rdquo; is the stable release</strong> &mdash; the MicroPython build, and
-        the one to install if you want something finished. <strong>v2.0 &ldquo;Vela II&rdquo; is the C++
-        rewrite, and it is a beta pre-release</strong>: worth running on a spare board, not on
-        anything you depend on. <a href="switch">What changed, and why &rarr;</a>
-      </p>
-      <div class="hero-term">
-        <div class="term-bar">
-          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-          <span class="term-title">launchpad &mdash; 115200 baud</span>
-        </div>
-        <div class="term-body" id="term-body"></div>
-      </div>
-      <div class="stat-band">
-        <div class="stat-chip"><div class="stat-num" data-target="200" data-suffix="&times;">0</div><div class="stat-cap">Faster than v1</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="100" data-suffix="+">0</div><div class="stat-cap">Shell commands</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="99"  data-suffix="&nbsp;KB">0</div><div class="stat-cap">RAM in use idle</div></div>
-        <div class="stat-chip"><div class="stat-num" data-target="2"   data-suffix="">0</div><div class="stat-cap">Cores, real threads</div></div>
-      </div>
-    </div>
-  </header>
+<section class="wrap sec" id="proof">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Measured on a Pico 2 W</div><h2>What changed in v2</h2></div>
+  <div class="facts4">
+    <div class="fact"><b>190&times;</b><span>vs v1, same workload</span><p>RPCMark scores 1.05 million at 230 MHz, against v1's 5,000 to 6,000 at the same clock. At the 150 MHz it starts at, about 700,000.</p></div>
+    <div class="fact"><b>2 cores</b><span>both in use</span><p>Tasks run on either core. <code>ps</code> shows every one with its stack and CPU time, and <code>kill</code> stops one.</p></div>
+    <div class="fact"><b>5 regions</b><span>package sandbox</span><p>On RP2350 a package runs unprivileged. A bad pointer costs that command, not the board.</p></div>
+    <div class="fact"><b>OTA</b><span>and a way back</span><p>Update over Wi-Fi with a checksum. The old firmware is kept, and a device that fails to start restores it.</p></div>
+  </div>
+</section>
 
-  <!-- FEATURES -->
-  <section id="features" class="section">
-    <div class="inner">
-      <h2>What's inside</h2>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="feature-icon">⌨</div>
-          <h3>Interactive Shell</h3>
-          <p>Coloured prompt, cursor navigation, history that survives a reboot, and Tab completion that adapts to case. Pipe commands (<code>cat log | grep ERR</code>), chain them with <code>&amp;&amp;</code> / <code>||</code>, redirect with <code>&gt;</code>. Status lines stay on the console rather than going down the pipe.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔀</div>
-          <h3>Real Multithreading</h3>
-          <p>Both cores, one task table. v1 could not touch core 1 at all &mdash; MicroPython's heap is not safe across cores &mdash; and here an unpinned task lives on core 1 about 99% of the time. <code>ps</code> shows pid, state, core, stack and CPU time; <code>kill</code> stops one.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🤖</div>
-          <h3>Automation &amp; Scripting</h3>
-          <p>Run commands at boot (<code>startup</code>) or on a timer (<code>task</code>), and write <code>.rps</code> scripts with variables, <code>if</code>, and <code>while</code>. <code>startup add task run</code> makes the device fully autonomous.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📁</div>
-          <h3>Filesystem</h3>
-          <p><code>ls</code>, <code>cd</code>, <code>mv</code>, <code>cp</code>, <code>rm</code>, <code>tree</code>, <code>df</code>, <code>du</code>, <code>head</code>, <code>tail</code>. Everything you'd expect from a real shell, including colored output and file metadata.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>User Accounts</h3>
-          <p>Salted SHA256 passwords, multi-user support, per-user home directories. Accounts are created and managed entirely from the shell.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📡</div>
-          <h3>WiFi &amp; Networking</h3>
-          <p>Scan, connect, and save networks. Autoconnect on boot. Includes <code>wget</code>, <code>curl</code>, <code>runurl</code>, <code>ping</code>, and <code>nslookup</code>. HTTP and HTTPS supported.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📦</div>
-          <h3>Package Manager</h3>
-          <p>Install by name from a repository, search the index, upgrade everything outdated, remove cleanly. Packages are compiled <code>.app</code> files that load at runtime &mdash; and on RP2350 they run <strong>unprivileged</strong>, so a bad one costs you a command rather than the device.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">✏</div>
-          <h3>Built-in Editor</h3>
-          <p>A full terminal text editor accessible via <code>edit</code>, <code>nano</code>, or <code>vi</code>. Supports find, go-to-line, cut/paste, and save. Works over any serial connection.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🚀</div>
-          <h3>Boot &amp; POST</h3>
-          <p>Every boot reports what it found and what the last run was doing if it ended badly &mdash; a log ring and a black box in memory the reset does not clear. <code>safeboot</code> starts with no services or packages, and three failed boots rebuild the filesystem rather than needing another computer.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🎛</div>
-          <h3>Settings Panel</h3>
-          <p>An interactive settings panel accessible via <code>settings</code>. Toggle boot overclock, WiFi autoconnect, verbose boot, dynamic CPU clocking, and more &mdash; with arrow-key navigation. No registry editing needed.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Performance Tools</h3>
-          <p>Clock control with <code>pulse</code>, memory and fragmentation with <code>meminfo</code>, the protection unit with <code>mpu</code>, and what the board actually supports with <code>compat</code>. <code>bench</code> and <code>probe</code> install from the repository when you want numbers.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+<section class="wrap sec" id="inside">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>What is in it</div><h2>A real shell, not a menu</h2></div>
+  <div class="inside">
+    <div><h3>Shell</h3><p>Coloured prompt, history that survives a reboot, Tab completion. Pipe with <code>|</code>, chain with <code>&amp;&amp;</code> and <code>||</code>, redirect with <code>&gt;</code>.</p></div>
+    <div><h3>Both cores</h3><p>v1 could not touch core 1 at all. Here an unpinned task lives on core 1 about 99% of the time.</p></div>
+    <div><h3>Scripting and automation</h3><p>Run commands at boot (<code>startup</code>) or on a timer (<code>task</code>), and write <code>.rps</code> scripts with variables, <code>if</code> and <code>while</code>.</p></div>
+    <div><h3>Filesystem</h3><p>littlefs in the format a v1 device already uses. <code>ls</code>, <code>cd</code>, <code>cp</code>, <code>tree</code>, <code>df</code>, and a USB drive to drag files on and off.</p></div>
+    <div><h3>Accounts</h3><p>Salted SHA-256 passwords, roles, per-user home directories, and a guided first run.</p></div>
+    <div><h3>Wi-Fi and the network</h3><p>Scan, connect, saved networks with sealed passwords, autoconnect. <code>wget</code>, <code>curl</code>, <code>ping</code>, <code>nslookup</code>, HTTPS.</p></div>
+    <div><h3>Packages</h3><p>Install by name from a repository, upgrade, remove. Compiled <code>.app</code> files that load at runtime and cannot take the device down.</p></div>
+    <div><h3>Recovery</h3><p>A black box that survives a reset. <code>safeboot</code> loads nothing. Three failed starts load nothing, then restore the saved firmware, and only then rebuild the filesystem.</p></div>
+  </div>
+</section>
 
-  <!-- DOCS -->
-  <section class="section alt">
-    <div class="inner">
-      <h2>Documentation</h2>
-      <div class="docs-grid">
-        <div class="docs-card">
-          <h3>Full Reference</h3>
-          <p>Complete command tables, shell controls, registry keys, POST details, security model, and known limitations.</p>
-          <a href="docs">docs &rarr;</a>
-        </div>
-        <div class="docs-card">
-          <h3>Release Notes</h3>
-          <p>What changed in each release. v2.0 is the C++ rewrite: no interpreter, both cores, and packages that cannot take the device down.</p>
-          <a href="release-vela2">Release Notes &rarr;</a>
-        </div>
-        <div class="docs-card">
-          <h3>Issue Tracker</h3>
-          <p>Found a bug or have a feature request? Open an issue on GitHub.</p>
-          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">GitHub Issues &rarr;</a>
-        </div>
-        <div class="docs-card">
-          <h3>Build a Package</h3>
-          <p>Write a command in C, build a <code>.app</code> against the SDK, push it over serial, and get it listed in the repository.</p>
-          <a href="PackageDev">Package Dev Guide &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HARDWARE -->
-  <section class="section">
-    <div class="inner">
-      <h2>Supported Hardware</h2>
-      <table class="hw-table">
-        <thead>
-          <tr><th>Board</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Raspberry Pi Pico 2 W (RP2350 + WiFi)</td><td><span class="tag cyan-tag">Recommended</span></td></tr>
-          <tr><td>Raspberry Pi Pico 2 (RP2350)</td><td><span class="tag green">Supported</span></td></tr>
-          <tr><td>Raspberry Pi Pico W (RP2040 + WiFi)</td><td><span class="tag green">Supported</span></td></tr>
-          <tr><td>Raspberry Pi Pico (RP2040)</td><td><span class="tag green">Supported</span></td></tr>
-          <tr><td>ESP32-S3 and other ESP32</td><td><span class="tag yellow">v1.0 today &mdash; v2 port underway</span></td></tr>
-        </tbody>
-      </table>
-      <p class="note">No firmware underneath &nbsp;&bull;&nbsp; 2&ndash;4 MB flash &nbsp;&bull;&nbsp; Serial terminal at 115200 baud</p>
-      <p class="note"><strong>The RP2040 boards are back.</strong> v1.0 had to leave them on v0.9.1 because
-        its multitasking runtime would not fit in 264&nbsp;KB of RAM; without an interpreter it does.
-        They hold 2 MB of flash against the RP2350's 4, so the firmware is built for size there and
-        the filesystem is smaller &mdash; 384 KB on a Pico W, 1.25 MB on a Pico &mdash; with wireless,
-        Bluetooth, TLS and over-the-air updates all still in. What they do not get is the package
-        sandbox: ARMv6-M protection regions are power-of-two sized and aligned to their own size,
-        so the five a package needs cost more RAM than those boards have.</p>
-    </div>
-  </section>
-
-  <!-- SCREENSHOTS -->
-  <section class="section">
-    <div class="inner">
-      <h2>In action</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 28px;">The MicroPython build &mdash; v0.9.1 &ldquo;Pulsar&rdquo; on a Pico&nbsp;2&nbsp;W, over serial at 115200 baud.</p>
-      <div class="screenshot-grid">
-        <div class="screenshot-wrap">
-          <div class="screenshot-label">fetch — system info</div>
-          <img src="img/esp32s3_fetch_rpcb8x.png" alt="The RPCortex fetch command showing board and system information" loading="lazy">
-        </div>
-        <div class="screenshot-wrap">
-          <div class="screenshot-label">pkg — package manager</div>
-          <img src="img/esp32s3_fetch_pkg_rpcb8x.png" alt="The RPCortex pkg command installing a package from the repository" loading="lazy">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMMANDS -->
-  <section id="commands" class="section alt">
-    <div class="inner">
-      <h2>Commands at a glance</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 4px;">A sampling of what the shell gives you out of the box. Full reference in the <a href="docs">docs</a>.</p>
-      <div class="cmd-grid">
-        <div class="cmd-block">
-          <div class="cmd-block-label">Filesystem</div>
-          <pre>ls              <span class="dim"># list with size + timestamp</span>
-tree /os        <span class="dim"># recursive directory tree</span>
-rm -r /old      <span class="dim"># or rm /logs/*.txt</span>
-df              <span class="dim"># flash usage</span>
-download        <span class="dim"># drag files on and off over USB</span>
-edit notes.txt  <span class="dim"># nano, vi and vim open the same one</span></pre>
-        </div>
-        <div class="cmd-block">
-          <div class="cmd-block-label">Networking</div>
-          <pre>wifi connect          <span class="dim"># interactive connect</span>
-wget http://...       <span class="dim"># stream to flash</span>
-curl http://...       <span class="dim"># print response</span>
-runurl http://a.py    <span class="dim"># fetch and run</span>
+<section class="wrap sec" id="commands">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>A sampling</div><h2>Commands at a glance</h2><p>What the shell gives you out of the box. The full reference is in the <a href="./docs/v2.html">docs</a>.</p></div>
+  <div class="cmds">
+    <div class="panel"><h3>Filesystem</h3><pre>ls            <span class="m"># size and timestamp</span>
+tree /os      <span class="m"># recursive tree</span>
+rm -r /old    <span class="m"># or rm /logs/*.txt</span>
+df            <span class="m"># flash usage</span>
+download      <span class="m"># drag files over USB</span>
+edit notes.txt</pre></div>
+    <div class="panel"><h3>Networking</h3><pre>wifi connect  <span class="m"># interactive</span>
+wget http://...
+curl -I https://...
 ping 8.8.8.8
-nslookup example.com</pre>
-        </div>
-        <div class="cmd-block">
-          <div class="cmd-block-label">System</div>
-          <pre>fetch           <span class="dim"># system info with the logo</span>
-meminfo         <span class="dim"># RAM, and how fragmented it is</span>
-pulse set 250   <span class="dim"># clock speed, now or at boot</span>
-mpu             <span class="dim"># what the protection unit enforces</span>
-compat          <span class="dim"># what this board actually supports</span>
-settings        <span class="dim"># the settings panel</span></pre>
-        </div>
-        <div class="cmd-block">
-          <div class="cmd-block-label">Tasks &amp; diagnostics</div>
-          <pre>ps              <span class="dim"># pid, state, core, stack, CPU</span>
-bg httpd        <span class="dim"># run something in the background</span>
-kill 7          <span class="dim"># stop it at its next yield</span>
-task add 60 ntp sync   <span class="dim"># every 60 seconds</span>
-service add httpd      <span class="dim"># started at boot, stays up</span>
-logdump         <span class="dim"># survives a reboot</span></pre>
-        </div>
-      </div>
-    </div>
-  </section>
+nslookup example.com
+update check</pre></div>
+    <div class="panel"><h3>System</h3><pre>fetch         <span class="m"># system info</span>
+meminfo       <span class="m"># RAM, fragmentation</span>
+pulse set 250 <span class="m"># clock speed</span>
+mpu           <span class="m"># what the guard enforces</span>
+compat        <span class="m"># what this board supports</span>
+settings</pre></div>
+    <div class="panel"><h3>Tasks and diagnostics</h3><pre>ps            <span class="m"># pid, core, stack, CPU</span>
+bg httpd      <span class="m"># in the background</span>
+kill 7
+task add 60 ntp sync
+service add httpd
+logdump       <span class="m"># survives a reboot</span></pre></div>
+  </div>
+</section>
 
-  <!-- INSTALL -->
-  <section id="install" class="section">
-    <div class="inner">
-      <h2>Installation</h2>
-      <p style="margin-bottom: 1.5rem;">One file, dragged onto the board. No drivers, no serial
-        tool, nothing to install on your computer &mdash; hold <strong>BOOTSEL</strong>, plug in,
-        and drop the <code>.uf2</code> onto the drive that appears. The board reboots by itself,
-        asks for a <code>root</code> password once, and after that updates itself over the air.</p>
-      <p style="margin-bottom: 1.5rem;">The Get page picks the right file for your board and walks
-        through it. Installing <strong>v1.0</strong> instead uses the browser installer, since it
-        needs MicroPython underneath.</p>
-      <div class="hero-actions" style="margin-bottom: 0;">
-        <a class="btn-primary" href="get">Get RPCortex &rarr;</a>
-        <a class="btn-secondary" href="docs">Read the docs</a>
-      </div>
-    </div>
-  </section>
+<section class="wrap sec" id="boards">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Boards</div><h2>Four boards, one of them proven</h2>
+    <p>Every result on this page came from a Pico 2 W. The other three build and pass the image checks and have not been booted yet. They have no package sandbox on RP2040: the protection regions cost more RAM than those boards have. v1 remains the answer on an ESP32-S3 until the port lands.</p></div>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Board</th><th>Firmware</th><th>Filesystem</th><th>Package sandbox</th><th>Status</th></tr></thead>
+    <tbody id="boardRows">
+      <tr data-board="pico2_w"><td>Pico 2 W</td><td data-size>855 KB</td><td>1.75 MB</td><td>yes</td><td data-status>Run on hardware</td></tr>
+      <tr data-board="pico2"><td>Pico 2</td><td data-size>352 KB</td><td>2.75 MB</td><td>yes</td><td data-status>Not booted yet</td></tr>
+      <tr data-board="pico_w"><td>Pico W</td><td data-size>805 KB</td><td>384 KB</td><td>no</td><td data-status>Not booted yet</td></tr>
+      <tr data-board="pico"><td>Pico</td><td data-size>297 KB</td><td>1.25 MB</td><td>no</td><td data-status>Not booted yet</td></tr>
+    </tbody></table></div>
+</section>
 
-  <!-- PACKAGES -->
-  <section id="packages" class="section alt">
-    <div class="inner">
-      <h2>Package Manager</h2>
-      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Packages are compiled
-        <code>.app</code> files that load at runtime and register their own commands. Install one
-        and it is live immediately &mdash; no reboot. On RP2350 they run <strong>unprivileged</strong>,
-        with the memory protection unit describing exactly what each may touch, so a package that
-        misbehaves costs you a command rather than the device.</p>
-      <div class="codeblock">
-        <div class="codeblock-label">The whole of it</div>
-        <pre>pkg update               <span class="dim"># refresh the list</span>
-pkg search web           <span class="dim"># or bare, to list everything</span>
-pkg install httpd
-pkg list                 <span class="dim"># what is installed</span>
-pkg upgrade              <span class="dim"># everything with a newer version</span>
-pkg remove httpd</pre>
-      </div>
-      <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 20px;">
-        The official repository is hosted here and configured out of the box. Browse what is in it,
-        or write your own &mdash; a package is C compiled against the SDK, and the worked example is
-        about twenty lines.
-      </p>
-      <div class="hero-actions" style="margin-bottom: 0;">
-        <a class="btn-primary" href="packages">Browse packages &rarr;</a>
-        <a class="btn-secondary" href="PackageDev">Write one</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="inner">
-      <div class="footer-row">
-        <span class="footer-brand">RPCortex</span>
-        <div class="footer-links">
-          <a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a>
-          <a href="https://novalabs.app/d1" target="_blank" rel="noopener">Nova&nbsp;D1</a>
-          <a href="https://novalabs.app/d1-sim" target="_blank" rel="noopener">D1&nbsp;Simulator</a>
-          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
-          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
-          <a href="docs">Docs</a>
-          <a href="roadmap">Roadmap</a>
-          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
-          <a href="privacy">Privacy</a>
-        </div>
-      </div>
-      <p class="footer-note">Built by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. &copy; 2026 &mdash; all rights reserved.</p>
-    </div>
-  </footer>
-
-  <script src="js/terminal-demo.js"></script>
-  <script src="js/nav.js"></script>
-  <script src="js/home.js"></script>
-
-</body>
-</html>
+<section class="wrap sec" id="more">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Next</div><h2>Where to go from here</h2></div>
+  <div class="links">
+    <a class="link-card" href="./docs/v2.html"><h3>Documentation</h3><p>Command tables, shell controls, registry keys, the security model and known limitations.</p></a>
+    <a class="link-card" href="./releases.html"><h3>Releases</h3><p>What changed in each release, and the roadmap.</p></a>
+    <a class="link-card" href="./PackageDev.html"><h3>Build a package</h3><p>Write a command in C, build a <code>.app</code> against the SDK, push it over serial.</p></a>
+    <a class="link-card" href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener"><h3>Issue tracker</h3><p>Found a bug or want a feature? Open an issue on GitHub.</p></a>
+  </div>
+</section>
+</main>
+<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img src="./logo.svg" alt="">RPCortex</a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/home.js"></script></body></html>

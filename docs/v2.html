@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>RPCortex v2 documentation | RPCortex</title><meta name="description" content="Vela II, the native C++ rewrite, in beta. Full reference for the shell, commands, packages and hardware."><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="../ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="../ds/ds.css"><link rel="stylesheet" href="../css/rpc.css"><link rel="stylesheet" href="../css/legacy.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="../"><img src="../logo.svg" alt="">RPCortex</a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="../get.html">Get</a><a href="../docs/v2.html" aria-current="page">Docs</a><a href="../packages.html">Packages</a><a href="../releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main"><section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Documentation</div><h1>RPCortex v2 documentation</h1><p class="lede">Vela II, the native C++ rewrite, in beta. Full reference for the shell, commands, packages and hardware.</p><div class="pills" role="navigation" aria-label="Documentation version"><a class="pill on" href="v2.html">v2 Vela II <small>beta</small></a><a class="pill" href="v1.html">v1 Vela <small>stable</small></a><a class="pill" href="v0.9.1.html">v0.9.1 Pulsar</a><a class="pill" href="v0.8.1.html">v0.8.1 Nebula</a></div></section><div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#getting-started">Getting Started</a><a href="#boards">Which Boards Work</a><a href="#boot-sequence">Boot Sequence</a><a href="#the-shell">The Shell</a><a href="#shell-syntax">Shell Syntax</a><a href="#filesystem">Filesystem</a><a href="#text-commands">Text Processing</a><a href="#system-commands">System Commands</a><a href="#users">Users &amp; Sessions</a><a href="#registry">Registry &amp; Settings</a><a href="#multitasking">Tasks &amp; Multitasking</a><a href="#automation">Automation</a><a href="#scripting">Scripting (.rps)</a><a href="#networking">Networking</a><a href="#web-tools">Web Tools</a><a href="#bluetooth">Bluetooth</a><a href="#usb-drive">USB Drive</a><a href="#package-manager">Packages</a><a href="#sandbox">The Sandbox</a><a href="#writing-packages">Writing Packages</a><a href="#editor">The Editor</a><a href="#os-updates">Updates</a><a href="#diagnostics">Diagnostics</a><a href="#recovery">Recovery</a><a href="#moving-from-v1">Moving from v1</a><a href="#known-limitations">Known Limitations</a></nav><article class="docs-body prose legacy-prose">
+
+      <div class="warn-box">
+        <strong>v2.0 is a beta pre-release.</strong> It boots, joins a network, runs packages
+        and updates itself, and it is still changing week to week. The version stays at 2.0.0
+        for the whole beta &mdash; what moves between builds is the build number &mdash; and
+        anything here can change before 2.0 is called finished. For the settled system,
+        <a href="?v=v1.0.0">v1.0 &ldquo;Vela&rdquo;</a> is the stable MicroPython release and is
+        documented separately.
+      </div>
+
+      <!-- GETTING STARTED -->
+      <h2 id="getting-started">Getting Started</h2>
+      <p><strong>What you need:</strong></p>
+      <ul>
+        <li>A <strong>Raspberry Pi Pico 2</strong> or <strong>Pico 2 W</strong> &mdash; read
+            <a href="#boards">Which Boards Work</a> before reaching for an older Pico</li>
+        <li>A serial terminal at <strong>115200 baud</strong> &mdash; PuTTY on Windows,
+            <code>minicom</code> or <code>screen</code> on Linux and macOS</li>
+      </ul>
+      <p>That is the whole list. v2 is a single firmware image rather than a set of files
+         copied on top of something else, so there is nothing to install underneath it and no
+         runtime version to match.</p>
+
+      <h3>Installation</h3>
+      <ol>
+        <li>Hold <strong>BOOTSEL</strong> and plug the board into USB. It appears as a drive
+            named <strong>RP2350</strong>.</li>
+        <li>Drag the <code>.uf2</code> for your board onto it. Pick it from the
+            <a href="../get.html">Get</a> page.</li>
+        <li>The board reboots by itself. Open a serial terminal at 115200 baud.</li>
+      </ol>
+      <div class="note-box">
+        <strong>After the first install you should not need that page again.</strong> The
+        device updates itself over the network &mdash; see <a href="#os-updates">Updates</a>.
+      </div>
+
+      <h3>First boot</h3>
+      <p>A short setup runs once, the first time the device starts:</p>
+      <ol>
+        <li>You choose the <code>root</code> password</li>
+        <li>A <code>guest</code> account is created, which accepts any password</li>
+        <li>On boards with a radio, you are offered a WiFi connection</li>
+      </ol>
+      <p>After that you land at the shell prompt. The setup does not run again unless the
+         device is factory reset.</p>
+
+      <div class="codeblock">
+        <div class="codeblock-label">serial &mdash; 115200 baud</div>
+        <pre><code>root@vela:/&gt; ver
+  RPCortex v2.0.0 "Vela II"
+  pico2_w  RP2350  150 MHz  520 KB RAM
+
+root@vela:/&gt; help
+  Type 'help &lt;category&gt;' for details, or 'help all' for every command.</code></pre>
+      </div>
+      <p><code>help</code> is the index. <code>help all</code> lists every command registered
+         right now, which is the only listing that also includes commands added by a package
+         you have loaded.</p>
+
+      <!-- BOARDS -->
+      <h2 id="boards">Which Boards Work</h2>
+      <p>v2 builds for four boards. All four have a filesystem; what separates them is the
+         package sandbox, and that is worth being blunt about.</p>
+
+      <table>
+        <thead>
+          <tr><th>Board</th><th>Chip</th><th>Firmware</th><th>Filesystem</th><th>Sandbox</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Pico 2 W</td><td>RP2350</td><td>916 KB</td><td>2 MB</td><td>Yes</td><td>Primary target</td></tr>
+          <tr><td>Pico 2</td><td>RP2350</td><td>320 KB</td><td>3 MB</td><td>Yes</td><td>Supported, no radio</td></tr>
+          <tr><td>Pico W</td><td>RP2040</td><td>748 KB</td><td>384 KB</td><td>No</td><td>Built, not yet booted</td></tr>
+          <tr><td>Pico</td><td>RP2040</td><td>247 KB</td><td>1.25 MB</td><td>No</td><td>Built, not yet booted</td></tr>
+        </tbody>
+      </table>
+
+      <div class="warn-box">
+        <strong>The RP2040 images have not been booted.</strong> They build, both image checks
+        pass on them, and the flash layout was verified by reading the constant back out of the
+        compiled firmware &mdash; but no Pico or Pico W has run one, and every hardware number
+        quoted in these docs came off a Pico 2 W. That is what a pre-release means.
+        <br><br>
+        <strong>What an RP2040 board does not get is the package sandbox.</strong> ARMv6-M
+        protection regions are power-of-two sized and aligned to their own size, so the five a
+        package needs cost more RAM than those parts have. Wireless, Bluetooth, TLS and
+        over-the-air updates are all still in.
+      </div>
+
+      <h3>What RP2350 adds</h3>
+      <ul>
+        <li><strong>A memory protection unit with regions to spare.</strong> That is what lets
+            a package run unprivileged with its code, data, stack and heap each described
+            separately. On ARMv6-M the regions are power-of-two sized and aligned to their own
+            size, which would cost more RAM than an RP2040 has.</li>
+        <li><strong>A hardware stack limit.</strong> A task that runs past the end of its stack
+            faults at the instruction that did it, instead of quietly corrupting whatever the
+            heap put below it and being blamed on something else later.</li>
+        <li><strong>520 KB of RAM</strong> against 264 KB &mdash; the difference between
+            multitasking comfortably and counting bytes.</li>
+      </ul>
+
+      <!-- BOOT SEQUENCE -->
+      <h2 id="boot-sequence">Boot Sequence</h2>
+      <p>Every boot runs a short power-on check and prints what it found. Worth reading once,
+         because it is also the first place a problem shows up.</p>
+      <div class="codeblock">
+        <div class="codeblock-label">boot</div>
+        <pre><code>[:] [POST] Checking the machine...
+[@] [POST] pico2_w  321 KB RAM, 321 KB free
+[:] [POST] Mounting storage...
+[@] [POST] Filesystem mounted  (1848 KB free)
+[:] [POST] Reading the registry...
+[@] [POST] 14 settings, 2 accounts
+[?] [POST] The clock is not set. Use 'date set' or 'ntp sync'.
+[@] [POST] System ready.</code></pre>
+      </div>
+      <p>The prefixes are consistent everywhere in the shell, not just at boot:</p>
+      <table>
+        <thead><tr><th>Prefix</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>[:]</td><td>Something is in progress</td></tr>
+          <tr><td>[@]</td><td>It worked</td></tr>
+          <tr><td>[?]</td><td>Worth knowing, not a failure</td></tr>
+          <tr><td>[!]</td><td>Something failed</td></tr>
+        </tbody>
+      </table>
+      <p>If the last run ended badly, the boot says so before anything else and names the
+         command that was running. See <a href="#diagnostics">Diagnostics</a>.</p>
+      <p>A boot counts as failed until the shell starts. Three failures in a row and the device
+         starts repairing itself, cheapest step first &mdash; see
+         <a href="#recovery">Recovery</a>.</p>
+
+      <!-- THE SHELL -->
+      <h2 id="the-shell">The Shell</h2>
+      <p>The line editor is the part you touch most, so it behaves the way a shell is expected
+         to.</p>
+      <table>
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>Tab</td><td>Complete a command or a path</td></tr>
+          <tr><td>Up / Down</td><td>Walk back through history</td></tr>
+          <tr><td>Left / Right</td><td>Move within the line</td></tr>
+          <tr><td>Ctrl+A / Ctrl+E</td><td>Start / end of line</td></tr>
+          <tr><td>Ctrl+W</td><td>Delete the word before the cursor</td></tr>
+          <tr><td>Ctrl+U</td><td>Clear the line</td></tr>
+          <tr><td>Ctrl+C</td><td>Interrupt what is running</td></tr>
+          <tr><td>Ctrl+D</td><td>Log out</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Completion</h3>
+      <p>Tab completes commands, then paths. It is case-adaptive: typing <code>scr</code> and
+         pressing Tab finds <code>Screenshot.jpg</code>, and the completed word <em>replaces</em>
+         what you typed rather than being appended to it, so the case ends up matching the file
+         that actually exists. Names containing spaces are quoted for you.</p>
+      <div class="note-box">
+        The device filesystem is <strong>case-sensitive</strong>. <code>/Packages</code> and
+        <code>/packages</code> are different directories. Completion adapting to case is a
+        convenience for typing, not a change to how paths are matched.
+      </div>
+
+      <h3>History</h3>
+      <p><code>history</code> lists recent commands and the arrow keys recall them. History
+         survives a reboot.</p>
+
+      <!-- SHELL SYNTAX -->
+      <h2 id="shell-syntax">Shell Syntax</h2>
+      <table>
+        <thead><tr><th>Form</th><th>Means</th></tr></thead>
+        <tbody>
+          <tr><td>a ; b</td><td>Run b regardless of how a finished</td></tr>
+          <tr><td>a &amp;&amp; b</td><td>Run b only if a succeeded</td></tr>
+          <tr><td>a || b</td><td>Run b only if a failed</td></tr>
+          <tr><td>a | b</td><td>Send a's output into b</td></tr>
+          <tr><td>a &gt; file</td><td>Write a's output to a file</td></tr>
+          <tr><td>a &gt;&gt; file</td><td>Append instead of replacing</td></tr>
+          <tr><td>"two words"</td><td>Quote an argument containing spaces</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        <strong>Only the data channel is piped or redirected.</strong> Status lines &mdash; the
+        <code>[@]</code> and <code>[!]</code> messages &mdash; still reach the console, so an
+        error during <code>ls &gt; f</code> is not silently written into <code>f</code> where
+        nobody will see it.
+      </div>
+      <p>Aliases are set with <code>alias name=command</code> and removed with
+         <code>unalias</code>. A bare <code>alias</code> lists them. They persist.</p>
+
+      <!-- FILESYSTEM -->
+      <h2 id="filesystem">Filesystem</h2>
+      <p>Storage is littlefs, which is power-loss tolerant by design: an interrupted write
+         leaves the previous version of the file rather than half of the new one.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>ls [path]</td><td>List a directory</td></tr>
+          <tr><td>cd [path]</td><td>Change directory; no argument goes to the root</td></tr>
+          <tr><td>pwd</td><td>Print the working directory</td></tr>
+          <tr><td>tree [path]</td><td>Recursive listing</td></tr>
+          <tr><td>touch &lt;file&gt;</td><td>Create an empty file</td></tr>
+          <tr><td>mkdir &lt;dir&gt;</td><td>Create a directory</td></tr>
+          <tr><td>cat &lt;file&gt;</td><td>Print a file</td></tr>
+          <tr><td>head &lt;f&gt; [n]</td><td>First n lines (default 10)</td></tr>
+          <tr><td>tail &lt;f&gt; [n]</td><td>Last n lines (default 10)</td></tr>
+          <tr><td>rename &lt;old&gt; &lt;new&gt;</td><td>Rename in place</td></tr>
+          <tr><td>mv &lt;src&gt; &lt;dst&gt;</td><td>Move</td></tr>
+          <tr><td>cp &lt;src&gt; &lt;dst&gt;</td><td>Copy, streamed rather than read whole</td></tr>
+          <tr><td>rm &lt;path&gt;</td><td>Delete; <code>-r</code> for a directory and its contents</td></tr>
+          <tr><td>df</td><td>Filesystem usage</td></tr>
+          <tr><td>du [path]</td><td>Size of a file or a whole tree</td></tr>
+          <tr><td>put &lt;name&gt; &lt;len&gt;</td><td>Upload raw bytes over serial</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Removing things</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">shell</div>
+        <pre><code>rm /logs/*.txt          # every match in one directory
+rm -r /old              # a directory and everything under it
+rm "my notes.txt"       # a name with spaces</code></pre>
+      </div>
+      <p>A name with spaces also works unquoted when there is no ambiguity. When
+         <code>rm</code> refuses, it says which reason applies &mdash; the path does not exist,
+         the directory is not empty, the file is in use &mdash; rather than one generic
+         failure.</p>
+
+      <h3>Layout</h3>
+      <table>
+        <thead><tr><th>Path</th><th>Holds</th></tr></thead>
+        <tbody>
+          <tr><td>/os</td><td>Registry, accounts, CA certificates, logs</td></tr>
+          <tr><td>/apps</td><td>Installed packages, one <code>.app</code> each</td></tr>
+          <tr><td>/usb</td><td>The transfer area &mdash; see <a href="#usb-drive">USB Drive</a></td></tr>
+          <tr><td>/</td><td>Everything else is yours</td></tr>
+        </tbody>
+      </table>
+
+      <!-- TEXT -->
+      <h2 id="text-commands">Text Processing</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>grep &lt;pattern&gt; &lt;file&gt;</td><td>Search a file for a substring</td></tr>
+          <tr><td>wc &lt;file&gt;</td><td>Line, word and byte count</td></tr>
+          <tr><td>find &lt;name&gt; [path]</td><td>Recursive search by name</td></tr>
+          <tr><td>sort &lt;file&gt;</td><td>Print lines sorted</td></tr>
+          <tr><td>uniq &lt;file&gt;</td><td>Drop consecutive duplicate lines</td></tr>
+          <tr><td>hex &lt;file&gt; [n]</td><td>Hexdump the first n bytes (default 256)</td></tr>
+          <tr><td>basename &lt;path&gt;</td><td>The file name part</td></tr>
+          <tr><td>dirname &lt;path&gt;</td><td>The directory part</td></tr>
+          <tr><td>echo &lt;text&gt;</td><td>Print text</td></tr>
+        </tbody>
+      </table>
+      <p>These compose with pipes, so <code>cat log.txt | grep error | wc</code> does what it
+         looks like.</p>
+
+      <!-- SYSTEM -->
+      <h2 id="system-commands">System Commands</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>sysinfo</td><td>System overview</td></tr>
+          <tr><td>fetch</td><td>The same, with the logo</td></tr>
+          <tr><td>ver</td><td>Version and board</td></tr>
+          <tr><td>uptime</td><td>Time since boot</td></tr>
+          <tr><td>meminfo</td><td>RAM usage and fragmentation</td></tr>
+          <tr><td>freeup</td><td>Report reclaimable memory</td></tr>
+          <tr><td>date [set ...]</td><td>Read or set the clock</td></tr>
+          <tr><td>pulse set|boot</td><td>CPU clock management</td></tr>
+          <tr><td>power</td><td>Sleep, and what the board draws</td></tr>
+          <tr><td>which &lt;cmd&gt;</td><td>Where a command comes from</td></tr>
+          <tr><td>sleep &lt;secs&gt;</td><td>Pause</td></tr>
+          <tr><td>clear</td><td>Clear the screen</td></tr>
+          <tr><td>reboot</td><td>Restart</td></tr>
+          <tr><td>bootloader</td><td>Restart into USB flashing mode</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note-box">
+        <strong>On <code>meminfo</code> and fragmentation.</strong> Free memory and
+        <em>usable</em> memory are different numbers. A heap can report a large total free and
+        still refuse a modest allocation, because the free space is in pieces rather than one
+        run. <code>meminfo</code> prints the largest single block alongside the total, and that
+        second number is the one that decides whether something will fit.
+      </div>
+
+      <h3>Clock speed</h3>
+      <p><code>pulse set &lt;mhz&gt;</code> changes the system clock now;
+         <code>pulse boot &lt;mhz&gt;</code> makes it the value used at every boot. Lower is
+         cooler and cheaper on power, higher is faster. The range that is actually safe is a
+         property of the part, and <code>pulse</code> refuses values outside it rather than
+         letting the board hang.</p>
+
+      <!-- USERS -->
+      <h2 id="users">Users &amp; Sessions</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>whoami</td><td>The logged-in account</td></tr>
+          <tr><td>users</td><td>List accounts</td></tr>
+          <tr><td>mkacct &lt;name&gt; [--admin] [--nopass]</td><td>Create an account</td></tr>
+          <tr><td>passwd [user]</td><td>Change a password</td></tr>
+          <tr><td>usermod &lt;user&gt; passwd | admin on|off | nopass on|off</td><td>Change an account</td></tr>
+          <tr><td>rmuser &lt;username&gt;</td><td>Remove an account</td></tr>
+          <tr><td>sudo &lt;command&gt;</td><td>Run one command as an admin</td></tr>
+          <tr><td>logout</td><td>Return to the login prompt</td></tr>
+        </tbody>
+      </table>
+      <p>Two accounts exist after setup: <code>root</code>, an admin with the password you
+         chose, and <code>guest</code>, which is not an admin and accepts any password. Admin
+         is what gates the commands that can lose data &mdash; account changes, factory reset,
+         firmware updates.</p>
+
+      <h3>Running without a login</h3>
+      <p><code>autonomy</code> turns the login prompt off, so the device boots straight to a
+         shell. That is the right setting for something installed in a box on a shelf and the
+         wrong one for something on a desk with other people around. It is a registry setting
+         like any other and can be turned back on the same way.</p>
+
+      <!-- REGISTRY -->
+      <h2 id="registry">Registry &amp; Settings</h2>
+      <p>Every persistent setting lives in one registry, stored on the filesystem and read at
+         boot.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>settings</td><td>A full-screen panel &mdash; the easy way</td></tr>
+          <tr><td>env [section]</td><td>List settings, grouped by section</td></tr>
+          <tr><td>reg get &lt;key&gt;</td><td>Read one key</td></tr>
+          <tr><td>reg set &lt;key&gt; &lt;value&gt;</td><td>Write one key</td></tr>
+          <tr><td>regreset</td><td>Restore every setting to its default</td></tr>
+        </tbody>
+      </table>
+      <p>Keys are <code>Section.Name</code>. <code>env</code> with no argument shows the
+         sections; <code>env Settings</code> shows one. The panel and the commands write the
+         same store, so it does not matter which you use.</p>
+      <div class="note-box">
+        <code>regreset</code> restores settings. It does <strong>not</strong> remove accounts,
+        files or packages &mdash; that is <a href="#recovery"><code>factoryreset</code></a>.
+      </div>
+
+      <!-- MULTITASKING -->
+      <h2 id="multitasking">Tasks &amp; Multitasking</h2>
+      <p>v2 runs tasks on both cores. The scheduler is <strong>cooperative</strong>: a task
+         keeps the core until it yields, and it yields at defined points &mdash; printing,
+         sleeping, waiting on the network, reading a file.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>ps</td><td>Running tasks: pid, state, stack, CPU</td></tr>
+          <tr><td>ps -l</td><td>...and the path each was started from</td></tr>
+          <tr><td>kill &lt;pid&gt;</td><td>Ask a task to stop</td></tr>
+          <tr><td>bg &lt;command&gt;</td><td>Run a command as a background task</td></tr>
+        </tbody>
+      </table>
+
+      <h3>What cooperative means in practice</h3>
+      <p>A <code>kill</code> takes effect at the task's next yield point &mdash; somewhere it
+         is not holding a lock or part-way through a write. That is a deliberate trade: a task
+         that never yields cannot be killed, which is better than one that can be torn down in
+         the middle of writing a file.</p>
+      <p>There is a backstop. A task that stops yielding entirely is noticed by a timer
+         interrupt, and if the stall is inside a package the OS takes the <em>call</em> back
+         without ending the task &mdash; a package command runs on the shell's task, so killing
+         the task would take your session with it. From the shell's point of view the package
+         simply returned. See <a href="#sandbox">The Sandbox</a>.</p>
+
+      <h3>Stack</h3>
+      <p><code>ps</code> reports how much of each task's stack has ever been used, measured
+         from a fill pattern rather than estimated. A number close to its limit names the task
+         to give more room.</p>
+
+      <!-- AUTOMATION -->
+      <h2 id="automation">Automation</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>startup add &lt;cmd&gt;</td><td>Run something at every boot</td></tr>
+          <tr><td>startup list | remove</td><td>Manage the list</td></tr>
+          <tr><td>task add &lt;secs&gt; &lt;cmd&gt;</td><td>Run something every N seconds</td></tr>
+          <tr><td>task start | stop</td><td>Start or stop the timer scheduler</td></tr>
+          <tr><td>service add &lt;cmd&gt;</td><td>A long-running command, started at boot</td></tr>
+          <tr><td>watch [-n secs] &lt;cmd&gt;</td><td>Re-run in the foreground until Ctrl+C</td></tr>
+        </tbody>
+      </table>
+      <p>The three persistent ones differ in shape rather than power. <strong>startup</strong>
+         runs once at boot and finishes. <strong>task</strong> runs on a repeating timer.
+         <strong>service</strong> is for something that starts at boot and stays running
+         &mdash; a web server, a logger.</p>
+      <div class="note-box">
+        A startup command that hangs will hang the boot.
+        <a href="#recovery"><code>safeboot</code></a> exists for exactly that: it restarts with
+        no services, no startup commands and no packages, so there is always a way back to a
+        prompt.
+      </div>
+
+      <!-- SCRIPTING -->
+      <h2 id="scripting">Scripting (.rps)</h2>
+      <p>An <code>.rps</code> file is a list of shell commands with enough structure around
+         them to make decisions. Run one with <code>script &lt;file&gt;</code> or
+         <code>run &lt;file.rps&gt;</code>; <code>runurl &lt;url&gt;</code> fetches one and runs
+         it.</p>
+      <p>Every line that is not a keyword is a shell line, run exactly as if typed &mdash;
+         pipes, chaining and redirection included.</p>
+
+      <h3>Variables</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">script.rps</div>
+        <pre><code>set name world
+echo hello $name
+
+set n 0
+inc n              # n is now 1
+dec n              # back to 0
+
+echo a literal $$  # prints: a literal $</code></pre>
+      </div>
+      <p><code>$NAME</code> expands anywhere in a line. An unset variable expands to
+         <strong>nothing</strong> rather than to its own name, which is what makes
+         <code>if empty $x</code> work before <code>x</code> has ever been set.</p>
+
+      <h3>Conditions</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">script.rps</div>
+        <pre><code>if exists /os/registry.json
+  echo the registry is there
+else
+  echo fresh device
+end
+
+if eq $mode fast
+  pulse set 250
+end
+
+if not empty $ssid
+  wifi connect $ssid
+end</code></pre>
+      </div>
+      <table>
+        <thead><tr><th>Test</th><th>True when</th></tr></thead>
+        <tbody>
+          <tr><td>eq a b</td><td>a equals b</td></tr>
+          <tr><td>ne a b</td><td>a does not equal b</td></tr>
+          <tr><td>gt / lt a b</td><td>a is greater / less than b</td></tr>
+          <tr><td>ge / le a b</td><td>greater or equal / less or equal</td></tr>
+          <tr><td>contains a b</td><td>b appears inside a</td></tr>
+          <tr><td>exists path</td><td>the path exists</td></tr>
+          <tr><td>empty a</td><td>a is empty</td></tr>
+          <tr><td>not &lt;test&gt;</td><td>the inverse of any of the above</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        <strong>Anything else is a command, and its success is the condition.</strong> That is
+        what makes <code>if ping -c 1 example.com</code> work without the language knowing
+        anything about <code>ping</code>.
+      </div>
+
+      <h3>Loops</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">script.rps</div>
+        <pre><code>set i 0
+while lt $i 5
+  echo pass $i
+  inc i
+end</code></pre>
+      </div>
+      <p><code>break</code> leaves the loop, <code>continue</code> starts the next pass, and
+         <code>stop</code> ends the whole script.</p>
+
+      <h3>Capturing output and asking questions</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">script.rps</div>
+        <pre><code>capture lines wc -l /os/log.txt
+echo the log has $lines
+
+prompt name What should I call you?
+echo hello $name</code></pre>
+      </div>
+      <p><code>capture</code> runs a command and puts its output in a variable. It sees exactly
+         what a pipe would see, because it reuses the same machinery. <code>prompt</code> asks
+         and waits.</p>
+      <p>Ctrl+C stops a running script at the end of the current line.</p>
+
+      <!-- NETWORKING -->
+      <h2 id="networking">Networking</h2>
+      <p>On boards with a radio. <code>compat</code> reports whether yours has one.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>wifi</td><td>Connection status</td></tr>
+          <tr><td>wifi scan</td><td>Nearby networks</td></tr>
+          <tr><td>wifi connect [ssid]</td><td>Join a network; asks for the password</td></tr>
+          <tr><td>wifi autoconnect</td><td>Join the strongest saved network</td></tr>
+          <tr><td>wifi add &lt;ssid&gt;</td><td>Save a network without connecting</td></tr>
+          <tr><td>wifi list | forget &lt;ssid&gt;</td><td>Manage saved networks</td></tr>
+          <tr><td>wifi auto on|off</td><td>Rejoin a saved network at boot</td></tr>
+          <tr><td>wifi disconnect</td><td>Drop the connection</td></tr>
+          <tr><td>wifi on | off</td><td>Power the radio up or down</td></tr>
+          <tr><td>net</td><td>Addressing, DNS and connection detail</td></tr>
+          <tr><td>ping &lt;host&gt; [count]</td><td>ICMP echo with round-trip times</td></tr>
+          <tr><td>nslookup &lt;host&gt;</td><td>Resolve a name</td></tr>
+          <tr><td>ntp [sync|show|server]</td><td>Set the clock from a time server</td></tr>
+          <tr><td>radio</td><td>Lock every radio off, or release it</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        An SSID with spaces needs no quoting: <code>wifi connect my home network</code> joins
+        the network of that name.
+      </div>
+      <p>Saved networks are stored with their passwords in the registry. <code>radio</code> is
+         a hard override that keeps every radio off regardless of other settings &mdash; the
+         equivalent of aeroplane mode &mdash; and it survives a reboot until released.</p>
+
+      <h3>The clock</h3>
+      <p>There is no battery-backed clock, so the time is wrong after every power cycle until
+         it is set. <code>ntp sync</code> sets it from the network and <code>date set</code>
+         sets it by hand. <code>ntp show</code> reads the time without changing the clock,
+         which is useful for checking the server is reachable.</p>
+
+      <!-- WEB TOOLS -->
+      <h2 id="web-tools">Web Tools</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>wget &lt;url&gt; [file]</td><td>Download to a file</td></tr>
+          <tr><td>curl &lt;url&gt;</td><td>Fetch and print</td></tr>
+          <tr><td>runurl &lt;url&gt;</td><td>Fetch a script and run it</td></tr>
+        </tbody>
+      </table>
+      <p>HTTPS works. Root certificates live in <code>/os</code> and are installed with the
+         firmware, so a fresh device can reach an ordinary <code>https://</code> URL with no
+         setup.</p>
+
+      <h3>Packages that use the network</h3>
+      <table>
+        <thead><tr><th>Package</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>httpd</td><td>Serve the filesystem, or a site directory, over HTTP</td></tr>
+          <tr><td>websearch</td><td><code>search</code> and <code>wiki</code> from the shell</td></tr>
+          <tr><td>speedtest</td><td>Measure the connection</td></tr>
+          <tr><td>dht</td><td>Read a DHT11 or DHT22 temperature and humidity sensor</td></tr>
+        </tbody>
+      </table>
+
+      <h3>httpd</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">shell</div>
+        <pre><code>httpd                    # browse the filesystem on port 80
+httpd --root /web        # serve /web as a site; / is /web/index.html
+httpd --port 8080
+bg httpd --root /web     # keep it running in the background</code></pre>
+      </div>
+      <p>In site mode nothing outside the root is reachable. In filesystem mode you get a
+         listing with download links, and downloads keep their real filenames. Ctrl+C stops it
+         in the foreground; <code>kill</code> stops it when it is not.</p>
+
+      <!-- BLUETOOTH -->
+      <h2 id="bluetooth">Bluetooth</h2>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>bt</td><td>Status</td></tr>
+          <tr><td>bt scan</td><td>Nearby devices</td></tr>
+          <tr><td>btaudio</td><td>Play audio to a Bluetooth speaker</td></tr>
+        </tbody>
+      </table>
+      <p>Bluetooth and WiFi share one radio on the Pico W family, so heavy use of both at once
+         costs throughput on each.</p>
+
+      <!-- USB DRIVE -->
+      <h2 id="usb-drive">USB Drive</h2>
+      <p><code>download</code> makes the board appear on your computer as a small removable
+         drive, so files move by drag and drop instead of over the serial line.</p>
+      <div class="codeblock">
+        <div class="codeblock-label">shell</div>
+        <pre><code>download                 # everything in /usb goes out
+download report.txt      # or just these files</code></pre>
+      </div>
+      <p>It works in both directions. Whatever is in <code>/usb</code> appears on the drive;
+         anything you copy onto the drive lands in <code>/usb</code> when you leave the mode,
+         and anything you delete there is deleted on the device.</p>
+      <div class="note-box">
+        <strong>The drive is a transfer area, not a view of the filesystem.</strong> It is a
+        real FAT volume the device fills and empties, which is what makes it work with every
+        operating system without a driver. Exposing littlefs directly would mean two
+        filesystems writing the same flash with no idea about each other.
+      </div>
+      <div class="note-box">
+        Windows caches removable-media directory listings aggressively. If a file you deleted
+        still shows after re-entering download mode, the device is right and the cache is
+        stale &mdash; the volume serial changes on each entry specifically to reduce this.
+      </div>
+
+      <!-- PACKAGES -->
+      <h2 id="package-manager">Packages</h2>
+      <p>A package is a compiled <code>.app</code> file: real machine code, loaded and
+         relocated at runtime. Not a script.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>pkg install &lt;file&gt;</td><td>Validate and install</td></tr>
+          <tr><td>pkg remove &lt;name&gt;</td><td>Remove</td></tr>
+          <tr><td>pkg list</td><td>Installed packages</td></tr>
+          <tr><td>apps</td><td>Packages resident in RAM right now</td></tr>
+          <tr><td>run &lt;file.app&gt; [arg]</td><td>Load and run without installing</td></tr>
+          <tr><td>unload &lt;name&gt;</td><td>Unload a resident package</td></tr>
+          <tr><td>pkgdisable / pkgenable &lt;name&gt;</td><td>Stop or allow loading at boot</td></tr>
+          <tr><td>stock &lt;name&gt;</td><td>Restore a package built into the firmware</td></tr>
+        </tbody>
+      </table>
+      <p>Installing puts the file in <code>/apps</code> and loads it. A package registers its
+         commands when it loads, which is why <code>help all</code> shows them and
+         <code>help</code> by category does not.</p>
+      <p><code>pkgdisable</code> is the escape hatch for a package that misbehaves at boot: it
+         stays installed but is not loaded, so there is no need to remove and reinstall it to
+         test a theory.</p>
+
+      <!-- SANDBOX -->
+      <h2 id="sandbox">The Sandbox</h2>
+      <p>On RP2350 a package runs <strong>unprivileged</strong>, with the memory protection
+         unit describing exactly five regions it may touch: its code, its data, its call
+         veneers, its stack and its heap. Everything else in the machine is denied &mdash; the
+         OS's own tables, the peripherals, and flash.</p>
+
+      <h3>What that buys</h3>
+      <ul>
+        <li><strong>A package cannot reach outside itself.</strong> A bad pointer is refused by
+            hardware rather than corrupting something a minute later.</li>
+        <li><strong>Every pointer a package hands the OS is range-checked</strong> against the
+            regions that package owns. A package cannot ask the firmware to read or write
+            memory on its behalf that it could not touch directly.</li>
+        <li><strong>Its own stack and heap.</strong> A package running out of memory runs out
+            of <em>its</em> memory, and the message says so instead of looking like the device
+            being out of RAM.</li>
+      </ul>
+
+      <h3>What happens when a package misbehaves</h3>
+      <table>
+        <thead><tr><th>The package...</th><th>Costs you</th></tr></thead>
+        <tbody>
+          <tr><td>Uses a bad pointer</td><td>The command. A report names the package and the offset, and the shell carries on.</td></tr>
+          <tr><td>Stops responding entirely</td><td>The command. The call is taken back at a timer interrupt; the session survives.</td></tr>
+          <tr><td>Asks for something that does not exist</td><td>Nothing. The call is refused and an error returned.</td></tr>
+          <tr><td>Runs out of its own stack</td><td>The command. A report names the package, and the shell carries on.</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        <strong>Even a stack overflow.</strong> That one took two things to survive. The
+        fault handler stands on a stack of its own, rather than the one that just ran out
+        &mdash; it has to release the stack guard to run at all, so anything it did on the
+        exhausted stack would be written past the bottom of it. And the guard sits a little
+        above the bottom of the package's stack rather than at it, so the instruction that
+        overflows is <em>refused</em> with the stack pointer intact and there is still room
+        to take the exception. Without that second part the stack pointer walks straight out
+        of the region, the exception frame lands in the heap, and there is nothing valid left
+        to redirect.
+      </div>
+      <p>On RP2040 none of this applies: there are not enough protection regions to spare, so
+         packages there run with the OS's own privileges.</p>
+
+      <!-- WRITING PACKAGES -->
+      <h2 id="writing-packages">Writing Packages</h2>
+      <p>Packages are written in C or C++ and built on a computer with the SDK, then copied to
+         the device. The <a href="../PackageDev.html">package development guide</a> is the long
+         version; this is the shape of it.</p>
+      <div class="codeblock">
+        <div class="codeblock-label">hello.c</div>
+        <pre><code>#include "rpc_app.h"
+
+static int cmd_hello(int argc, char **argv) {
+    fw_printf("hello from a package\n");
+    return 0;
+}
+
+int app_main(int arg) {
+    rpc_register_command("hello", "say hello", cmd_hello);
+    return 0;
+}</code></pre>
+      </div>
+      <p><code>app_main</code> runs when the package loads and is where commands are
+         registered. Everything the OS offers is reached through <code>fw_*</code> functions
+         &mdash; around 166 of them, covering printing, memory, files, directories, tasks,
+         networking, TCP, HTTP, GPIO, I2C, SPI, PIO, ADC and a full-screen text interface.</p>
+      <div class="note-box">
+        A sandboxed package cannot branch into the firmware, because flash is not reachable
+        from unprivileged code. Every <code>fw_*</code> call is therefore a supervisor call
+        underneath. The SDK builds that for you; it matters only in that an ABI call is not
+        free, so a tight loop calling one is worth restructuring.
+      </div>
+      <p>Four packages ship with source as examples: <code>httpd</code>,
+         <code>websearch</code>, <code>speedtest</code> and <code>dht</code>. They are ordinary
+         packages with no privileges yours does not have.</p>
+
+      <!-- EDITOR -->
+      <h2 id="editor">The Editor</h2>
+      <p><code>edit &lt;file&gt;</code> opens a full-screen text editor. <code>nano</code>,
+         <code>vi</code> and <code>vim</code> all open the same one, so muscle memory for the
+         name does not matter.</p>
+      <table>
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td>Ctrl+S</td><td>Save</td></tr>
+          <tr><td>Ctrl+Q</td><td>Quit, asking first if there are changes</td></tr>
+          <tr><td>Arrows</td><td>Move</td></tr>
+          <tr><td>Page Up / Down</td><td>Scroll</td></tr>
+          <tr><td>Ctrl+K</td><td>Delete the line</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        Use a real serial terminal for this. PuTTY, minicom and screen all send arrow keys the
+        way the editor expects; some IDE consoles do not. <code>inputstat</code> shows exactly
+        what your terminal is sending if something behaves oddly.
+      </div>
+
+      <!-- UPDATES -->
+      <h2 id="os-updates">Updates</h2>
+      <p>The device updates itself over the network. There is no need to return to the
+         installer page after the first flash.</p>
+      <div class="codeblock">
+        <div class="codeblock-label">shell</div>
+        <pre><code>update check              # is there a newer version?
+update install            # download, verify and apply it
+update install --force    # reinstall the current version
+update from-file &lt;path&gt;   # apply an image already on the device
+update rollback           # what is saved to go back to</code></pre>
+      </div>
+      <p>An update downloads the new image to the filesystem, copies it into a staging slot,
+         and only then writes it over the running firmware. Source and destination are the same
+         flash chip, so the staging step is what makes it safe: by the time the firmware region
+         is erased, the new image is somewhere the erase does not touch.</p>
+      <div class="warn-box">
+        Do not power the board off during the final write. The staging slot means an
+        interrupted <em>download</em> is harmless, but an interrupted <em>write</em> needs a
+        BOOTSEL reflash.
+      </div>
+
+      <h3>Rollback</h3>
+      <p>An update saves the version it replaces before it writes anything, so there is
+         something to go back to.</p>
+      <div class="codeblock">
+        <div class="codeblock-label">shell</div>
+        <pre><code>update rollback           # what is saved, and how big it is
+update rollback --now     # write it back and reboot
+update rollback --save    # save what is running now
+update rollback --forget  # delete it and free the space</code></pre>
+      </div>
+      <p>The copy is a plain file, read straight out of the running firmware's own flash and
+         hashed on the way out. Restoring it stages it back into the update slot and applies it
+         exactly as an update does &mdash; same verification, same reboot. Files, settings and
+         accounts are untouched; only the firmware changes.</p>
+      <p>The device does this by itself if it has to. Three starts that never reach a shell and
+         it walks the <a href="#recovery">recovery ladder</a>, of which restoring the saved
+         firmware is the second rung.</p>
+      <p>A version that was rolled back from is remembered, so <code>update check</code> stops
+         offering it and says why. A later release clears that by itself;
+         <code>update install --force</code> installs it anyway if you want to try again.</p>
+      <div class="note-box">
+        <strong>It needs room.</strong> The copy is the size of the firmware &mdash; around
+        900&nbsp;KB on a Pico 2&nbsp;W &mdash; and it lives in the filesystem beside everything
+        else. On the Pico&nbsp;W, where the firmware is larger than the whole filesystem, no copy
+        can be kept at all and <code>update rollback</code> says so. If an update cannot find the
+        room it goes ahead without a copy and tells you, rather than refusing to update.
+      </div>
+      <div class="warn-box">
+        <strong>Rollback cannot rescue an image that does not boot at all.</strong> The restore
+        runs inside the firmware being replaced, so that firmware has to get as far as the boot
+        sequence. An image that faults before then still needs a BOOTSEL reflash &mdash; only a
+        bootloader that never changes could do better, and this device does not have one.
+      </div>
+
+      <!-- DIAGNOSTICS -->
+      <h2 id="diagnostics">Diagnostics</h2>
+      <p>More effort has gone into this than into any other part of v2, because a device with
+         no screen that stops responding is otherwise a guessing game.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Shows</th></tr></thead>
+        <tbody>
+          <tr><td>diag</td><td>System state, and whether the last run crashed</td></tr>
+          <tr><td>logdump</td><td>The log ring &mdash; survives a reboot</td></tr>
+          <tr><td>logdump save &lt;file&gt;</td><td>Write it to a file</td></tr>
+          <tr><td>meminfo</td><td>RAM, and how fragmented it is</td></tr>
+          <tr><td>mpu</td><td>What the memory protection is enforcing</td></tr>
+          <tr><td>compat</td><td>What this board actually supports</td></tr>
+          <tr><td>inputstat</td><td>The bytes your terminal is sending</td></tr>
+          <tr><td>ps</td><td>Tasks, with stack high-water marks</td></tr>
+          <tr><td>fscheck</td><td>Check and repair the OS layout</td></tr>
+          <tr><td>fscheck --scan</td><td>Read every file, to find flash that has gone bad</td></tr>
+        </tbody>
+      </table>
+
+      <h3>After a crash</h3>
+      <p>The next boot leads with what happened:</p>
+      <div class="codeblock">
+        <div class="codeblock-label">boot</div>
+        <pre><code>[!] [Crash] Last run stopped while running 'shell' (pid 3, core 0).
+   Command   : havoc stack
+   Reached   : STKOF stack overflow in havoc+1b28   &lt;- it stopped here
+   Yields    : 118644 before it stopped
+   Stack     : 1952 of 8192 bytes used</code></pre>
+      </div>
+      <p>That record is written continuously into memory the reset does not clear, so it
+         survives whatever took the device down. <code>logdump</code> has the lines leading up
+         to it, from before and after the reboot both.</p>
+      <div class="note-box">
+        <strong>A watchdog restart and a fault are different things,</strong> and the report
+        says which. A fault names an instruction. A watchdog restart means something stopped
+        responding, and the <code>Reached</code> line names the last checkpoint the code got
+        to.
+      </div>
+
+      <h3>compat</h3>
+      <p><code>compat</code> probes the board and reports what is actually present rather than
+         what the build assumed &mdash; radio, Bluetooth, the temperature sensor, the number of
+         protection regions, the clock range. It is the first thing to run when something is
+         missing that you expected to be there.</p>
+
+      <!-- RECOVERY -->
+      <h2 id="recovery">Recovery</h2>
+      <p>Six ways back, in increasing order of what they cost.</p>
+      <table>
+        <thead><tr><th>Command</th><th>Does</th><th>Loses</th></tr></thead>
+        <tbody>
+          <tr><td>safeboot</td><td>Restart with no services, startup commands or packages</td><td>Nothing</td></tr>
+          <tr><td>fscheck</td><td>Check and repair the OS layout</td><td>Nothing</td></tr>
+          <tr><td>fscheck --scan</td><td>Read every file, to find damaged flash</td><td>Nothing</td></tr>
+          <tr><td>update rollback --now</td><td>Put the previous firmware back</td><td>Nothing</td></tr>
+          <tr><td>regreset</td><td>Restore every setting to its default</td><td>Settings</td></tr>
+          <tr><td>factoryreset</td><td>Erase all data and restart</td><td>Everything on the device</td></tr>
+        </tbody>
+      </table>
+      <p><code>pkgdisable &lt;name&gt;</code> is worth knowing alongside these: it stops one
+         package loading at boot without removing it, which is usually enough to get back to a
+         working shell without losing anything.</p>
+      <p>If none of those get you a prompt, hold BOOTSEL and reflash. That always works,
+         because it does not depend on anything on the device being correct.</p>
+
+      <h3>What the device does without being asked</h3>
+      <p>A boot counts as failed until the shell starts, and the count survives a reset. Three
+         failures in a row and the device works down the same ladder by itself, cheapest first.</p>
+      <table>
+        <thead><tr><th>Failed starts</th><th>It tries</th><th>Costs</th></tr></thead>
+        <tbody>
+          <tr><td>3</td><td>Starting with nothing loaded &mdash; no packages, services or startup items</td><td>Nothing; it undoes itself next boot</td></tr>
+          <tr><td>4</td><td>Writing the saved firmware back</td><td>Nothing; files and settings are kept</td></tr>
+          <tr><td>5</td><td>Rebuilding the filesystem</td><td>Everything on the device</td></tr>
+        </tbody>
+      </table>
+      <p>The order is the point. Something that was added to the device &mdash; a package, a
+         service, a startup command &mdash; is the most common reason a working device stops
+         working, and skipping all of them costs nothing to try. Rebuilding the filesystem is
+         the only step that loses anything, so it is last, and it only happens when a bare start
+         failed too and there is no firmware left to restore.</p>
+      <p><code>failboot</code> sets the counter on a healthy device, so the ladder can be
+         watched rather than taken on trust. It says which rung the next boot will reach before
+         it does anything.</p>
+
+      <h3>Damage it repairs on its own</h3>
+      <p>Settings and accounts are written twice, to a file and a copy beside it. If the primary
+         will not read back, the copy is loaded and the primary rewritten from it &mdash; and the
+         boot says so, out loud, because a device that heals silently teaches nobody that its
+         flash is wearing out.</p>
+      <p>Every file the OS owns is read at boot. littlefs checksums every block it writes, so a
+         block that has gone bad does not return wrong data &mdash; it returns a read error.
+         Anything that cannot be read is removed and rebuilt from the copy or from defaults.
+         <code>fscheck --scan</code> reads the rest of the device the same way and only reports,
+         because files in a home directory are yours and not the OS's to delete.</p>
+
+      <!-- MOVING FROM V1 -->
+      <h2 id="moving-from-v1">Moving from v1</h2>
+      <p>v2 is a rewrite in C++, not an upgrade of v1. The shell is deliberately familiar and
+         almost everything underneath is different.</p>
+      <table>
+        <thead><tr><th>&nbsp;</th><th>v1 &ldquo;Vela&rdquo;</th><th>v2 &ldquo;Vela II&rdquo;</th></tr></thead>
+        <tbody>
+          <tr><td>Written in</td><td>MicroPython</td><td>C++</td></tr>
+          <tr><td>Ships as</td><td>Files on top of a runtime</td><td>One firmware image</td></tr>
+          <tr><td>Packages</td><td>Python source, <code>.pkg</code></td><td>Compiled <code>.app</code></td></tr>
+          <tr><td>Package isolation</td><td>None</td><td>Unprivileged, hardware-enforced</td></tr>
+          <tr><td>Boards</td><td>RP2040, RP2350, ESP32-S3</td><td>RP2350 and RP2040 (no ESP32 yet)</td></tr>
+          <tr><td>Scripts</td><td><code>.rps</code></td><td><code>.rps</code>, same language</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Scripts carry over.</strong> The <code>.rps</code> language is the same, and
+         <code>capture</code> deliberately sees what a pipe would, so lines like
+         <code>capture n wc -l file</code> behave identically on both.</p>
+      <p><strong>Packages do not.</strong> A v1 <code>.pkg</code> is Python source and there is
+         no Python in v2. The ones in the repository have been rewritten in C; a package of your
+         own needs the same treatment.</p>
+      <p><strong>The two cannot share a board.</strong> v2 replaces the firmware entirely, so
+         installing it removes MicroPython and everything stored under it. Save anything you
+         want to keep first.</p>
+      <p><a href="../switch.html">The full comparison</a> covers why the rewrite happened.</p>
+
+      <!-- LIMITATIONS -->
+      <h2 id="known-limitations">Known Limitations</h2>
+      <p>The honest list, as of v2.0.0.</p>
+      <ul>
+        <li><strong>The RP2040 images have not been booted.</strong> They build and both image
+            checks pass, but no Pico or Pico W has run one. See
+            <a href="#boards">Which Boards Work</a>.</li>
+        <li><strong>The package catalogue is small.</strong> v1's twenty packages have not all
+            been ported. That work is the main thing between v2 and parity.</li>
+        <li><strong>No ESP32 port.</strong> v1 runs there; v2 does not, yet. The core is
+            portable, the context switch, storage and network layers are not.</li>
+        <li><strong>SD cards are built but unproven.</strong> The driver, a read-only FAT
+            reader and the <code>sd</code> command are in the RP2350 images. Everything above
+            the wire is host-tested; none of it has been run with a card in the slot.</li>
+        <li><strong><code>help</code> by category does not list every command.</strong> The
+            categories cover the common set; <code>help all</code> is the complete list.</li>
+        <li><strong>Cooperative scheduling.</strong> A task that never yields cannot be killed
+            from the shell. The timer backstop covers packages, not firmware.</li>
+        <li><strong>Beta.</strong> Things move. If something here does not match the
+            device, the device is right &mdash; and it is worth
+            <a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">saying so</a>.</li>
+      </ul>
+
+    </article></div></main><footer class="foot"><div class="wrap foot-in"><a class="brand" href="../"><img src="../logo.svg" alt="">RPCortex</a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="../roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="../privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="../ds/ds.js"></script><script src="../js/releases.js"></script><script src="../js/spy.js"></script></body></html>

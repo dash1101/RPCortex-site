@@ -1,0 +1,143 @@
+---
+title: Package Repository
+nav: packages
+path: packages.html
+legacy: 1
+scripts: js/serial-device.js,js/packages.js
+---
+<main>
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Packages</div><h1>Package Repository</h1><p class="lede">Browse available packages for RPCortex. Install directly to a connected device over USB &mdash; no WiFi, no REPL, no reboot required.</p></section>
+<!-- MAIN -->
+  <section class="section">
+    <div class="inner">
+
+      <!-- WHICH VERSION THIS PAGE IS FOR -->
+      <div class="codeblock" style="margin-bottom:24px;">
+        <div class="codeblock-label">This page is the v1.0 catalogue</div>
+        <pre style="white-space:pre-wrap;">Everything below is a <strong>.pkg</strong> file: a Python module for RPCortex v1.0 "Vela",
+installed over USB from this page or with <strong>pkg install</strong> on the device.
+
+v2.0 "Vela II" has no Python in it, so a .pkg cannot run there. Its packages are
+native <strong>.app</strong> objects from a separate index, and they are installed from the
+shell rather than from here. See below.</pre>
+      </div>
+
+      <!-- CONNECT BAR -->
+      <div class="connect-bar" id="connectBar">
+        <div class="connect-bar-left">
+          <span class="connect-dot off" id="connectDot"></span>
+          <span class="connect-status" id="connectLabel">No device connected</span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-primary" id="connectBtn" style="padding:10px 24px;font-size:0.88rem;">Connect Device</button>
+          <button class="btn-secondary" id="getInstalledBtn" style="padding:10px 24px;font-size:0.88rem;display:none;">Get Installed</button>
+          <button class="btn-secondary" id="disconnectBtn" style="padding:10px 24px;font-size:0.88rem;display:none;">Disconnect</button>
+        </div>
+      </div>
+
+      <!-- INSTALLED PACKAGES PANEL (shown after "Get Installed") -->
+      <div id="installedPanel" style="display:none;margin-bottom:28px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <span style="font-size:0.95rem;font-weight:600;color:var(--text);">Installed on device</span>
+          <button id="installedCloseBtn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0 4px;">&times;</button>
+        </div>
+        <div id="installedList" style="font-family:var(--mono);font-size:0.83rem;color:var(--text-muted);line-height:1.7;white-space:pre-wrap;"></div>
+      </div>
+      <p class="serial-note" id="serialNote">
+        Requires Chrome 89+ or Edge 89+. Close PuTTY or any other terminal before connecting.
+        Reading what is installed works from the shell or the login prompt; installing to a v2
+        device needs an admin session, because writing files does.
+      </p>
+
+      <!-- WHICH CATALOGUE -->
+      <div class="os-picker">
+        <label for="osSelect">Packages for</label>
+        <select id="osSelect">
+          <option value="v2">RPCortex v2 &mdash; compiled .app</option>
+          <option value="v1">RPCortex v1 &mdash; MicroPython .pkg</option>
+        </select>
+        <span id="osNote" class="os-note">Showing the v2 catalogue. Connect a device to match it automatically.</span>
+      </div>
+
+      <!-- PACKAGE GRID -->
+      <div id="pkgContainer">
+        <div class="pkg-loading" id="pkgLoading">Loading packages&hellip;</div>
+      </div>
+
+      <!-- LOCAL PKG DROP ZONE -->
+      <div class="local-pkg-section">
+        <h3 style="margin:0 0 10px;font-size:1rem;color:var(--text-muted);font-weight:500;">Install a local <code>.pkg</code> file</h3>
+        <div class="drop-zone" id="pkgDropZone">
+          <div class="drop-zone-inner">
+            <span class="drop-zone-icon">&#x1F4E6;</span>
+            <p>Drag &amp; drop a <code>.pkg</code> file here</p>
+            <span class="drop-zone-or">or</span>
+            <label class="btn-secondary drop-pick-label">
+              Browse&hellip;
+              <input type="file" id="pkgLocalFileInput" accept=".pkg">
+            </label>
+          </div>
+          <div class="drop-file-info" id="dropFileInfo" style="display:none">
+            <span class="drop-file-name" id="dropFileName"></span>
+            <button class="btn-primary" id="dropInstallBtn" disabled>Install to Device</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLI REFERENCE -->
+      <div style="margin-top:40px;">
+        <div class="codeblock">
+          <div class="codeblock-label">v2 &mdash; or from the shell</div>
+          <pre>pkg update               <span class="dim"># refresh the list</span>
+pkg search web           <span class="dim"># or bare, to list everything</span>
+pkg install httpd
+pkg list                 <span class="dim"># what is installed</span>
+pkg upgrade              <span class="dim"># everything with a newer version</span>
+pkg remove httpd</pre>
+        </div>
+        <p class="note" style="margin-top:14px;">The official repository is configured out of the
+          box, so <code>pkg update</code> works on a device that has never been told where to look.
+          Packages are native <code>.app</code> objects built for ARMv6-M, which is why one binary
+          runs on both the RP2040 and RP2350 parts &mdash; and on RP2350 they run
+          <strong>unprivileged</strong>, on a stack and a heap of their own, unable to reach the
+          rest of the system.</p>
+      </div>
+
+      <div style="margin-top:28px;">
+        <div class="codeblock">
+          <div class="codeblock-label">v1 &mdash; the MicroPython line</div>
+          <pre>pkg repo add https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json
+pkg update
+pkg available
+pkg install &lt;name&gt;</pre>
+        </div>
+      </div>
+
+      <!-- DEVELOPER CTA -->
+      <div class="pkgdev-cta">
+        <div class="pkgdev-cta-text">
+          <h3>Build your own package</h3>
+          <p>A v2 package is C compiled against the firmware ABI &mdash; about twenty lines for one
+             that registers a working shell command. The guide walks through writing it, building
+             it, the three ways to get it onto a device, what the sandbox means while you are
+             developing, and publishing it here.</p>
+        </div>
+        <a class="btn-primary pkgdev-cta-btn" href="PackageDev">Package Dev Guide &rarr;</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TRANSFER OVERLAY -->
+  <div class="xfer-overlay" id="xferOverlay">
+    <div class="xfer-panel">
+      <h3 id="xferTitle">Installing package&hellip;</h3>
+      <p class="xfer-panel-sub" id="xferSub">Transferring to device over serial.</p>
+      <div class="xfer-progress-wrap">
+        <div class="xfer-progress-fill" id="xferProgress"></div>
+      </div>
+      <div class="xfer-log" id="xferLog"></div>
+      <button class="xfer-close-btn" id="xferCloseBtn" style="display:none;">Close</button>
+    </div>
+  </div>
+</main>

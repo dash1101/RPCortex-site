@@ -1,0 +1,28 @@
+---
+title: Releases
+description: Every RPCortex release, newest first, with what changed. Majors have a name; everything between them is a numbered iteration.
+nav: releases
+path: releases.html
+scripts: js/releases-page.js
+needs_releases: 1
+---
+<main>
+<section class="wrap page-head">
+  <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Releases</div>
+  <h1>Every release, newest first.</h1>
+  <p class="lede">Each entry lists what was added, changed and fixed, and what is still open. The <a href="{{root}}roadmap.html">roadmap</a> is the direction rather than the history.</p>
+</section>
+<section class="wrap sec first" style="padding-top:8px">
+  <div id="releaseList"><p class="dl-meta">Loading releases&hellip;</p></div>
+  <noscript><p class="warn">This list needs JavaScript. The releases are on <a href="https://github.com/dash1101/RPCortex/releases">GitHub</a>.</p></noscript>
+</section>
+<section class="wrap sec" id="how">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Versions</div><h2>How versions work</h2></div>
+  <ul class="rules">
+    <li><strong>v2.11 means the eleventh iteration of the second generation.</strong> There is no patch number, and the count does not stop at nine: v2.9 is followed by v2.10.</li>
+    <li><strong>Only a generation has a name.</strong> Vela, Vela II, and whatever comes after. An iteration is a plain patch release.</li>
+    <li><strong>A change that breaks packages is a new generation.</strong> That is what lets an iteration be installed without reading the notes first.</li>
+    <li><strong>The build number is separate.</strong> <code>ver</code> shows <code>v2.11 (build 1203)</code>; the device uses it to decide what is newer. A pre-release is written <code>v2.0-beta</code>.</li>
+  </ul>
+</section>
+</main>

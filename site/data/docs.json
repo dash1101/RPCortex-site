@@ -1,0 +1,39 @@
+[
+  {
+    "slug": "v2",
+    "version": "v2.0.0",
+    "source": "v2.0.0.html",
+    "label": "v2 Vela II",
+    "tag": "beta",
+    "title": "RPCortex v2 documentation",
+    "hero": "Vela II, the native C++ rewrite, in beta. Full reference for the shell, commands, packages and hardware.",
+    "default": true
+  },
+  {
+    "slug": "v1",
+    "version": "v1.0.0",
+    "source": "v1.0.0.html",
+    "label": "v1 Vela",
+    "tag": "stable",
+    "title": "RPCortex v1 documentation",
+    "hero": "Vela v1.0, the stable MicroPython release. Full reference for the shell, commands, registry and hardware."
+  },
+  {
+    "slug": "v0.9.1",
+    "version": "v0.9.1",
+    "source": "v0.9.1.html",
+    "label": "v0.9.1 Pulsar",
+    "tag": "",
+    "title": "RPCortex v0.9.1 documentation",
+    "hero": "Pulsar v0.9.1. Full reference for the shell, commands, registry and hardware."
+  },
+  {
+    "slug": "v0.8.1",
+    "version": "v0.8.1",
+    "source": "v0.8.1.html",
+    "label": "v0.8.1 Nebula",
+    "tag": "",
+    "title": "RPCortex v0.8.1 documentation",
+    "hero": "Nebula v0.8.1. Full reference for the shell, commands, registry and hardware."
+  }
+]

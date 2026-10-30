@@ -1,0 +1,64 @@
+{
+  "name": "RPCortex",
+  "releases_base": "https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/",
+  "release_bar": true,
+  "status": {
+    "text": "",
+    "tone": "warn",
+    "link": "",
+    "link_text": ""
+  },
+  "nav": [
+    {
+      "label": "Get",
+      "href": "get.html",
+      "key": "get"
+    },
+    {
+      "label": "Docs",
+      "href": "docs/v2.html",
+      "key": "docs"
+    },
+    {
+      "label": "Packages",
+      "href": "packages.html",
+      "key": "packages"
+    },
+    {
+      "label": "Releases",
+      "href": "releases.html",
+      "key": "releases"
+    }
+  ],
+  "external": {
+    "label": "NovaLabs &#8599;",
+    "href": "https://novalabs.app"
+  },
+  "footer": [
+    {
+      "label": "NovaLabs",
+      "href": "https://novalabs.app"
+    },
+    {
+      "label": "GitHub",
+      "href": "https://github.com/dash1101/RPCortex"
+    },
+    {
+      "label": "Discord",
+      "href": "https://discord.gg/hcEWwSNDBa"
+    },
+    {
+      "label": "Roadmap",
+      "href": "roadmap.html"
+    },
+    {
+      "label": "Issues",
+      "href": "https://github.com/dash1101/RPCortex/issues"
+    },
+    {
+      "label": "Privacy",
+      "href": "privacy.html"
+    }
+  ],
+  "copyright": "Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved"
+}

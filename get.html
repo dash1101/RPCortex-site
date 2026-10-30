@@ -1,85 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPCortex &mdash; Get RPCortex</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <!-- NAV -->
-  <nav>
-    <div class="nav-inner">
-      <a class="nav-logo" href="https://rpc.novalabs.app">RPCortex</a>
-      <div class="nav-links">
-        <a href="docs">Docs</a>
-        <a href="packages">Packages</a>
-        <a href="roadmap">Roadmap</a>
-        <a href="get">Get</a>
-        <a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener" class="nav-discord">Discord</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <header class="docs-hero">
-    <div class="inner">
-      <h1>Get RPCortex</h1>
-      <p>Pick a version and a board. What you get depends on which &mdash; v2 is a
-         single file you drag onto the device, v1 installs over USB from this page.</p>
-    </div>
-  </header>
-
-  <section class="section">
-    <div class="inner">
-
-      <!-- STEP 1 — version -->
-      <div class="get-step" id="stepVersion">
-        <div class="get-step-head"><span class="get-step-num">1</span><h2>Choose a version</h2></div>
-        <div class="get-cards" id="versionCards">
-          <p class="get-loading">Loading releases&hellip;</p>
-        </div>
-      </div>
-
-      <!-- STEP 2 — board -->
-      <div class="get-step is-hidden" id="stepDevice">
-        <div class="get-step-head"><span class="get-step-num">2</span><h2>Choose your board</h2></div>
-        <div class="get-cards get-cards-sm" id="deviceCards"></div>
-      </div>
-
-      <!-- STEP 3 — what to do -->
-      <div class="get-step is-hidden" id="stepResult">
-        <div class="get-step-head"><span class="get-step-num">3</span><h2>Install it</h2></div>
-        <div class="get-result" id="resultPanel"></div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="inner">
-      <div class="footer-row">
-        <span class="footer-brand">RPCortex</span>
-        <div class="footer-links">
-          <a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a>
-          <a href="https://github.com/dash1101/RPCortex" target="_blank">GitHub</a>
-          <a href="https://github.com/dash1101/RPCortex/releases" target="_blank">Releases</a>
-          <a href="docs">Docs</a>
-          <a href="roadmap">Roadmap</a>
-          <a href="https://github.com/dash1101/RPCortex/issues" target="_blank">Issues</a>
-          <a href="privacy">Privacy</a>
-        </div>
-      </div>
-      <p class="footer-note">Built by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. &copy; 2026 &mdash; all rights reserved.</p>
-    </div>
-  </footer>
-
-  <script src="js/nav.js"></script>
-  <script src="js/announce.js"></script>
-  <script src="js/get.js"></script>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Get RPCortex | RPCortex</title><meta name="description" content="Choose a version and a board, then install RPCortex. v2 is a single file you drag onto the board; v1 installs over USB from the web installer."><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img src="./logo.svg" alt="">RPCortex</a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html" aria-current="page">Get</a><a href="./docs/v2.html">Docs</a><a href="./packages.html">Packages</a><a href="./releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
+<section class="wrap page-head">
+  <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Get RPCortex</div>
+  <h1>Pick a board. Drop a file.</h1>
+  <p class="lede">v2 is a single file you drag onto the board. v1 installs over USB from the web installer.</p>
+</section>
+<section class="wrap" style="padding-bottom:48px">
+  <div class="steps">
+    <div class="step" id="stepVersion"><span class="n"></span><div>
+      <h3>Choose a version</h3>
+      <div class="get-grid" id="versionCards"><p class="dl-meta">Loading releases&hellip;</p></div>
+      <noscript><p class="warn" style="margin-top:14px">This page needs JavaScript to list the releases. The downloads are on <a href="https://github.com/dash1101/RPCortex/releases">GitHub</a>.</p></noscript>
+    </div></div>
+    <div class="step is-hidden" id="stepBoard"><span class="n"></span><div>
+      <h3>Choose your board</h3>
+      <div class="get-grid" id="boardCards"></div>
+    </div></div>
+    <div class="step is-hidden" id="stepResult"><span class="n"></span><div>
+      <h3>Install it</h3>
+      <div class="get-result" id="resultPanel" style="margin-top:10px"></div>
+    </div></div>
+  </div>
+</section>
+</main>
+<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img src="./logo.svg" alt="">RPCortex</a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/get.js"></script></body></html>

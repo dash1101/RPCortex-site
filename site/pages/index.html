@@ -1,0 +1,116 @@
+---
+title: RPCortex
+window_title: RPCortex: an operating system for microcontrollers
+description: RPCortex is a full operating system for the Raspberry Pi Pico family, written in C++: a shell, accounts, Wi-Fi, a package manager and over-the-air updates, with packages that cannot take the board down.
+nav: home
+path: index.html
+scripts: js/home.js
+---
+<main>
+<section class="wrap hero" id="home">
+  <div>
+    <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span><span data-rel="display">v2.0-beta</span>&nbsp;&middot; C++ &middot; RP2040 &amp; RP2350</div>
+    <h1>An operating system for microcontrollers.</h1>
+    <p class="lede">RPCortex gives a Raspberry Pi Pico a shell, a filesystem, accounts, Wi-Fi, a package manager and over-the-air updates. The packages you write run without being able to take the board down.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="{{root}}get.html">Get RPCortex</a>
+      <a class="btn btn-ghost" href="{{root}}docs/v2.html">Read the docs</a>
+    </div>
+    <p class="progress-note" style="margin-top:22px">v1.0 &ldquo;Vela&rdquo; is the stable release: the MicroPython build, and the one to install if you want something finished. v2 is a beta, worth running on a spare board and not on anything you depend on. <a href="{{root}}switch.html">Why it moved to C++</a></p>
+  </div>
+  <div class="term" role="img" aria-label="A terminal session on a Pico 2 W: the version command, then the task list showing six tasks across both cores">
+    <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">pico2_w &middot; 115200 baud</span></div>
+<pre><span class="p">root@vela:/&gt;</span> ver
+RPCortex v2.0-beta (build <span data-rel="build">486</span>)  &mdash;  Vela II
+Commit: badbb459  (dev)  [C++ native]
+GCC 14.2.1   Platform: pico2_w (RP2350)
+
+<span class="p">root@vela:/&gt;</span> ps
+PID  NAME       STATE  CORE  STACK       CPU
+1    init       ready  0     0B/4.0K     3354.9s
+2    usb        ready  0     468B/8.0K   3531.4s
+3    shell      run    0     2.7K/8.0K   3863.9s
+4    novad1     done   1     792B/3.0K   12ms
+5    novainput  sleep  1     400B/2.0K   58ms
+6    novagui    sleep  1     344B/2.0K   1.7s
+<span class="m">6 tasks &middot; CPU 8% &middot; 92 KB free</span></pre>
+  </div>
+</section>
+
+<section class="wrap sec" id="proof">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Measured on a Pico 2 W</div><h2>What changed in v2</h2></div>
+  <div class="facts4">
+    <div class="fact"><b>190&times;</b><span>vs v1, same workload</span><p>RPCMark scores 1.05 million at 230 MHz, against v1's 5,000 to 6,000 at the same clock. At the 150 MHz it starts at, about 700,000.</p></div>
+    <div class="fact"><b>2 cores</b><span>both in use</span><p>Tasks run on either core. <code>ps</code> shows every one with its stack and CPU time, and <code>kill</code> stops one.</p></div>
+    <div class="fact"><b>5 regions</b><span>package sandbox</span><p>On RP2350 a package runs unprivileged. A bad pointer costs that command, not the board.</p></div>
+    <div class="fact"><b>OTA</b><span>and a way back</span><p>Update over Wi-Fi with a checksum. The old firmware is kept, and a device that fails to start restores it.</p></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="inside">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>What is in it</div><h2>A real shell, not a menu</h2></div>
+  <div class="inside">
+    <div><h3>Shell</h3><p>Coloured prompt, history that survives a reboot, Tab completion. Pipe with <code>|</code>, chain with <code>&amp;&amp;</code> and <code>||</code>, redirect with <code>&gt;</code>.</p></div>
+    <div><h3>Both cores</h3><p>v1 could not touch core 1 at all. Here an unpinned task lives on core 1 about 99% of the time.</p></div>
+    <div><h3>Scripting and automation</h3><p>Run commands at boot (<code>startup</code>) or on a timer (<code>task</code>), and write <code>.rps</code> scripts with variables, <code>if</code> and <code>while</code>.</p></div>
+    <div><h3>Filesystem</h3><p>littlefs in the format a v1 device already uses. <code>ls</code>, <code>cd</code>, <code>cp</code>, <code>tree</code>, <code>df</code>, and a USB drive to drag files on and off.</p></div>
+    <div><h3>Accounts</h3><p>Salted SHA-256 passwords, roles, per-user home directories, and a guided first run.</p></div>
+    <div><h3>Wi-Fi and the network</h3><p>Scan, connect, saved networks with sealed passwords, autoconnect. <code>wget</code>, <code>curl</code>, <code>ping</code>, <code>nslookup</code>, HTTPS.</p></div>
+    <div><h3>Packages</h3><p>Install by name from a repository, upgrade, remove. Compiled <code>.app</code> files that load at runtime and cannot take the device down.</p></div>
+    <div><h3>Recovery</h3><p>A black box that survives a reset. <code>safeboot</code> loads nothing. Three failed starts load nothing, then restore the saved firmware, and only then rebuild the filesystem.</p></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="commands">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>A sampling</div><h2>Commands at a glance</h2><p>What the shell gives you out of the box. The full reference is in the <a href="{{root}}docs/v2.html">docs</a>.</p></div>
+  <div class="cmds">
+    <div class="panel"><h3>Filesystem</h3><pre>ls            <span class="m"># size and timestamp</span>
+tree /os      <span class="m"># recursive tree</span>
+rm -r /old    <span class="m"># or rm /logs/*.txt</span>
+df            <span class="m"># flash usage</span>
+download      <span class="m"># drag files over USB</span>
+edit notes.txt</pre></div>
+    <div class="panel"><h3>Networking</h3><pre>wifi connect  <span class="m"># interactive</span>
+wget http://...
+curl -I https://...
+ping 8.8.8.8
+nslookup example.com
+update check</pre></div>
+    <div class="panel"><h3>System</h3><pre>fetch         <span class="m"># system info</span>
+meminfo       <span class="m"># RAM, fragmentation</span>
+pulse set 250 <span class="m"># clock speed</span>
+mpu           <span class="m"># what the guard enforces</span>
+compat        <span class="m"># what this board supports</span>
+settings</pre></div>
+    <div class="panel"><h3>Tasks and diagnostics</h3><pre>ps            <span class="m"># pid, core, stack, CPU</span>
+bg httpd      <span class="m"># in the background</span>
+kill 7
+task add 60 ntp sync
+service add httpd
+logdump       <span class="m"># survives a reboot</span></pre></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="boards">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Boards</div><h2>Four boards, one of them proven</h2>
+    <p>Every result on this page came from a Pico 2 W. The other three build and pass the image checks and have not been booted yet. They have no package sandbox on RP2040: the protection regions cost more RAM than those boards have. v1 remains the answer on an ESP32-S3 until the port lands.</p></div>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Board</th><th>Firmware</th><th>Filesystem</th><th>Package sandbox</th><th>Status</th></tr></thead>
+    <tbody id="boardRows">
+      <tr data-board="pico2_w"><td>Pico 2 W</td><td data-size>855 KB</td><td>1.75 MB</td><td>yes</td><td data-status>Run on hardware</td></tr>
+      <tr data-board="pico2"><td>Pico 2</td><td data-size>352 KB</td><td>2.75 MB</td><td>yes</td><td data-status>Not booted yet</td></tr>
+      <tr data-board="pico_w"><td>Pico W</td><td data-size>805 KB</td><td>384 KB</td><td>no</td><td data-status>Not booted yet</td></tr>
+      <tr data-board="pico"><td>Pico</td><td data-size>297 KB</td><td>1.25 MB</td><td>no</td><td data-status>Not booted yet</td></tr>
+    </tbody></table></div>
+</section>
+
+<section class="wrap sec" id="more">
+  <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Next</div><h2>Where to go from here</h2></div>
+  <div class="links">
+    <a class="link-card" href="{{root}}docs/v2.html"><h3>Documentation</h3><p>Command tables, shell controls, registry keys, the security model and known limitations.</p></a>
+    <a class="link-card" href="{{root}}releases.html"><h3>Releases</h3><p>What changed in each release, and the roadmap.</p></a>
+    <a class="link-card" href="{{root}}PackageDev.html"><h3>Build a package</h3><p>Write a command in C, build a <code>.app</code> against the SDK, push it over serial.</p></a>
+    <a class="link-card" href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener"><h3>Issue tracker</h3><p>Found a bug or want a feature? Open an issue on GitHub.</p></a>
+  </div>
+</section>
+</main>

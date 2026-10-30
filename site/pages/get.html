@@ -1,0 +1,31 @@
+---
+title: Get RPCortex
+description: Choose a version and a board, then install RPCortex. v2 is a single file you drag onto the board; v1 installs over USB from the web installer.
+nav: get
+path: get.html
+scripts: js/get.js
+---
+<main>
+<section class="wrap page-head">
+  <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Get RPCortex</div>
+  <h1>Pick a board. Drop a file.</h1>
+  <p class="lede">v2 is a single file you drag onto the board. v1 installs over USB from the web installer.</p>
+</section>
+<section class="wrap" style="padding-bottom:48px">
+  <div class="steps">
+    <div class="step" id="stepVersion"><span class="n"></span><div>
+      <h3>Choose a version</h3>
+      <div class="get-grid" id="versionCards"><p class="dl-meta">Loading releases&hellip;</p></div>
+      <noscript><p class="warn" style="margin-top:14px">This page needs JavaScript to list the releases. The downloads are on <a href="https://github.com/dash1101/RPCortex/releases">GitHub</a>.</p></noscript>
+    </div></div>
+    <div class="step is-hidden" id="stepBoard"><span class="n"></span><div>
+      <h3>Choose your board</h3>
+      <div class="get-grid" id="boardCards"></div>
+    </div></div>
+    <div class="step is-hidden" id="stepResult"><span class="n"></span><div>
+      <h3>Install it</h3>
+      <div class="get-result" id="resultPanel" style="margin-top:10px"></div>
+    </div></div>
+  </div>
+</section>
+</main>

@@ -1,30 +1,5 @@
-<!-- SIDEBAR TOC -->
-    <nav class="docs-toc">
-      <h4>Contents</h4>
-      <a href="#getting-started">Getting Started</a>
-      <a href="#boot-sequence">Boot Sequence</a>
-      <a href="#the-shell">The Shell</a>
-      <a href="#filesystem">Filesystem Commands</a>
-      <a href="#text-commands">Text Processing</a>
-      <a href="#system-commands">System Commands</a>
-      <a href="#os-management">OS Management</a>
-      <a href="#user-management">User Management</a>
-      <a href="#networking">Networking</a>
-      <a href="#package-manager">Package Manager</a>
-      <a href="#web-tools">Web Tools</a>
-      <a href="#editor">Editor</a>
-      <a href="#settings-panel">Settings Panel</a>
-      <a href="#registry">Registry</a>
-      <a href="#post">POST</a>
-      <a href="#session-logging">Session Logging</a>
-      <a href="#hardware-performance">Hardware &amp; Performance</a>
-      <a href="#supported-hardware">Supported Hardware</a>
-      <a href="#security">Security</a>
-      <a href="#known-limitations">Known Limitations</a>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <article class="docs-article">
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>RPCortex v0.8.1 documentation | RPCortex</title><meta name="description" content="Nebula v0.8.1. Full reference for the shell, commands, registry and hardware."><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="../ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="../ds/ds.css"><link rel="stylesheet" href="../css/rpc.css"><link rel="stylesheet" href="../css/legacy.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="../"><img src="../logo.svg" alt="">RPCortex</a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="../get.html">Get</a><a href="../docs/v2.html" aria-current="page">Docs</a><a href="../packages.html">Packages</a><a href="../releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main"><section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Documentation</div><h1>RPCortex v0.8.1 documentation</h1><p class="lede">Nebula v0.8.1. Full reference for the shell, commands, registry and hardware.</p><div class="pills" role="navigation" aria-label="Documentation version"><a class="pill" href="v2.html">v2 Vela II <small>beta</small></a><a class="pill" href="v1.html">v1 Vela <small>stable</small></a><a class="pill" href="v0.9.1.html">v0.9.1 Pulsar</a><a class="pill on" href="v0.8.1.html">v0.8.1 Nebula</a></div></section><div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#getting-started">Getting Started</a><a href="#boot-sequence">Boot Sequence</a><a href="#the-shell">The Shell</a><a href="#filesystem">Filesystem Commands</a><a href="#text-commands">Text Processing</a><a href="#system-commands">System Commands</a><a href="#os-management">OS Management</a><a href="#user-management">User Management</a><a href="#networking">Networking</a><a href="#package-manager">Package Manager</a><a href="#web-tools">Web Tools</a><a href="#editor">Editor</a><a href="#settings-panel">Settings Panel</a><a href="#registry">Registry</a><a href="#post">POST</a><a href="#session-logging">Session Logging</a><a href="#hardware-performance">Hardware &amp; Performance</a><a href="#supported-hardware">Supported Hardware</a><a href="#security">Security</a><a href="#known-limitations">Known Limitations</a></nav><article class="docs-body prose legacy-prose">
 
       <!-- GETTING STARTED -->
       <h2 id="getting-started">Getting Started</h2>
@@ -247,7 +222,7 @@ reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</c
       <p>Use this when RPCortex is already installed but you want a <strong>completely fresh flash</strong> via the Web Installer &mdash; no full wipe required. After running <code>rawrepl</code>:</p>
       <ol>
         <li>The shell exits and the MicroPython REPL becomes active (<code>&gt;&gt;&gt;</code> prompt visible in your terminal).</li>
-        <li>Open <a href="install">rpc.novalabs.app/install</a> in Chrome or Edge.</li>
+        <li>Open <a href="../install.html">rpc.novalabs.app/install</a> in Chrome or Edge.</li>
         <li>Click <strong>Connect Device</strong> and flash normally.</li>
       </ol>
       <div class="note-box">
@@ -258,7 +233,7 @@ reinstall /path/to/os.rpc      # wipe and stage .rpc for auto-install on boot</c
       <table>
         <thead><tr><th>Scenario</th><th>Command / Tool</th></tr></thead>
         <tbody>
-          <tr><td>Update OS, keep all user data</td><td><code>update from-file /path/to/os.rpc</code> or <a href="update">browser update page</a></td></tr>
+          <tr><td>Update OS, keep all user data</td><td><code>update from-file /path/to/os.rpc</code> or <a href="../update.html">browser update page</a></td></tr>
           <tr><td>Reset to clean factory state</td><td><code>factoryreset</code></td></tr>
           <tr><td>Use Web Installer without rebooting</td><td><code>rawrepl</code></td></tr>
           <tr><td>Full wipe + re-flash</td><td><code>reinstall</code> or <code>rawrepl</code> + Web Installer</td></tr>
@@ -386,19 +361,19 @@ pkg install HelloWorld</code></pre>
       <p><code>repo/make_pkg.py</code> is a PC-side script that builds a <code>.pkg</code> from a source directory:</p>
       <pre><code>python make_pkg.py MyPackage/</code></pre>
       <p>Packages must use <code>ZIP_STORED</code> (no compression) &mdash; <code>make_pkg.py</code> handles this automatically. If you build with a standard ZIP tool using deflate, install will fail unless the target firmware has <code>zlib</code>.</p>
-      <p><a href="PackageDev">Full package development guide &rarr;</a></p>
+      <p><a href="../PackageDev.html">Full package development guide &rarr;</a></p>
 
       <!-- WEB TOOLS -->
       <h2 id="web-tools">Web Tools</h2>
       <p>Three browser-based tools let you interact with a connected device over USB &mdash; no WiFi, no raw REPL required. All use the Web Serial API (Chromium-based browsers: Chrome, Edge).</p>
 
-      <h3><a href="install">Web Installer</a></h3>
+      <h3><a href="../install.html">Web Installer</a></h3>
       <p>Flash MicroPython and copy RPCortex to the board directly from your browser. No software to install.</p>
 
-      <h3><a href="packages">Package Browser</a></h3>
+      <h3><a href="../packages.html">Package Browser</a></h3>
       <p>Browse and install packages while the device is running the shell. Files are pushed via the <code>_xfer</code> serial protocol. One-click install, no reboot needed, no WiFi required on the device. Each package card also has a <strong>Download .pkg</strong> button to save the package file to your computer.</p>
 
-      <h3><a href="update">OS Update</a></h3>
+      <h3><a href="../update.html">OS Update</a></h3>
       <p>Update RPCortex from a browser tab while the shell is running. Load a <code>.rpc</code> archive from your computer or pick a version from the server. The page reads the archive with JSZip, skips user data paths, pushes each file via <code>_xfer</code>, and sends <code>reboot</code> when done.</p>
 
       <!-- EDITOR -->
@@ -592,4 +567,4 @@ settings           # toggle via settings panel</code></pre>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Nebula v0.8.1-beta3 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a></p>
 
-    </article>
+    </article></div></main><footer class="foot"><div class="wrap foot-in"><a class="brand" href="../"><img src="../logo.svg" alt="">RPCortex</a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="../roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="../privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="../ds/ds.js"></script><script src="../js/releases.js"></script><script src="../js/spy.js"></script></body></html>
