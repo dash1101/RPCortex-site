@@ -45,9 +45,9 @@
       <h2 id="getting-started">Getting Started</h2>
       <p><strong>What you need:</strong></p>
       <ul>
-        <li>A <strong>Raspberry Pi Pico 2</strong> or <strong>Pico 2 W</strong> &mdash; read
+        <li>A <strong>Raspberry Pi Pico 2</strong> or <strong>Pico 2 W</strong>: read
             <a href="#boards">Which Boards Work</a> before reaching for an older Pico</li>
-        <li>A serial terminal at <strong>115200 baud</strong> &mdash; PuTTY on Windows,
+        <li>A serial terminal at <strong>115200 baud</strong>: PuTTY on Windows,
             <code>minicom</code> or <code>screen</code> on Linux and macOS</li>
       </ul>
       <p>That is the whole list. v2 is a single firmware image rather than a set of files
@@ -64,7 +64,7 @@
       </ol>
       <div class="note-box">
         <strong>After the first install you should not need that page again.</strong> The
-        device updates itself over the network &mdash; see <a href="#os-updates">Updates</a>.
+        device updates itself over the network: see <a href="#os-updates">Updates</a>.
       </div>
 
       <h3>First boot</h3>
@@ -78,10 +78,11 @@
          device is factory reset.</p>
 
       <div class="codeblock">
-        <div class="codeblock-label">serial &mdash; 115200 baud</div>
+        <div class="codeblock-label">serial: 115200 baud</div>
         <pre><code>root@vela:/&gt; ver
-  RPCortex v2.00-beta (build 486)  &mdash;  Vela II
-    pico2_w  RP2350  150 MHz  520 KB RAM
+RPCortex v2.00-beta (build 483)  &mdash;  Vela II
+Commit: bf33812c  (dev)  [C++ native]
+GCC 14.2.1   Platform: pico2_w (RP2350)
 
 root@vela:/&gt; help
   Type 'help &lt;category&gt;' for details, or 'help all' for every command.</code></pre>
@@ -110,7 +111,7 @@ root@vela:/&gt; help
       <div class="warn-box">
         <strong>Only the Pico 2 W has been booted.</strong> The other three images build, both image
         checks pass on them, and the flash layout was verified by reading the constant back out of
-        the compiled firmware &mdash; but no Pico, Pico W or Pico 2 has run one, and every hardware
+        the compiled firmware, but no Pico, Pico W or Pico 2 has run one, and every hardware
         number quoted in these docs came off a Pico 2 W. That is what a pre-release means.
         <br><br>
         <strong>What an RP2040 board does not get is the package sandbox.</strong> ARMv6-M
@@ -128,7 +129,7 @@ root@vela:/&gt; help
         <li><strong>A hardware stack limit.</strong> A task that runs past the end of its stack
             faults at the instruction that did it, instead of quietly corrupting whatever the
             heap put below it and being blamed on something else later.</li>
-        <li><strong>520 KB of RAM</strong> against 264 KB &mdash; the difference between
+        <li><strong>520 KB of RAM</strong> against 264 KB: the difference between
             multitasking comfortably and counting bytes.</li>
       </ul>
 
@@ -160,7 +161,7 @@ root@vela:/&gt; help
       <p>If the last run ended badly, the boot says so before anything else and names the
          command that was running. See <a href="#diagnostics">Diagnostics</a>.</p>
       <p>A boot counts as failed until the shell starts. Three failures in a row and the device
-         starts repairing itself, cheapest step first &mdash; see
+         starts repairing itself, cheapest step first: see
          <a href="#recovery">Recovery</a>.</p>
 
       <!-- THE SHELL -->
@@ -211,8 +212,8 @@ root@vela:/&gt; help
         </tbody>
       </table>
       <div class="note-box">
-        <strong>Only the data channel is piped or redirected.</strong> Status lines &mdash; the
-        <code>[@]</code> and <code>[!]</code> messages &mdash; still reach the console, so an
+        <strong>Only the data channel is piped or redirected.</strong> Status lines: the
+        <code>[@]</code> and <code>[!]</code> messages: still reach the console, so an
         error during <code>ls &gt; f</code> is not silently written into <code>f</code> where
         nobody will see it.
       </div>
@@ -253,8 +254,8 @@ rm -r /old              # a directory and everything under it
 rm "my notes.txt"       # a name with spaces</code></pre>
       </div>
       <p>A name with spaces also works unquoted when there is no ambiguity. When
-         <code>rm</code> refuses, it says which reason applies &mdash; the path does not exist,
-         the directory is not empty, the file is in use &mdash; rather than one generic
+         <code>rm</code> refuses, it says which reason applies: the path does not exist,
+         the directory is not empty, the file is in use, rather than one generic
          failure.</p>
 
       <h3>Layout</h3>
@@ -263,7 +264,7 @@ rm "my notes.txt"       # a name with spaces</code></pre>
         <tbody>
           <tr><td>/os</td><td>Registry, accounts, CA certificates, logs</td></tr>
           <tr><td>/apps</td><td>Installed packages, one <code>.app</code> each</td></tr>
-          <tr><td>/usb</td><td>The transfer area &mdash; see <a href="#usb-drive">USB Drive</a></td></tr>
+          <tr><td>/usb</td><td>The transfer area: see <a href="#usb-drive">USB Drive</a></td></tr>
           <tr><td>/</td><td>Everything else is yours</td></tr>
         </tbody>
       </table>
@@ -341,7 +342,7 @@ rm "my notes.txt"       # a name with spaces</code></pre>
       </table>
       <p>Two accounts exist after setup: <code>root</code>, an admin with the password you
          chose, and <code>guest</code>, which is not an admin and accepts any password. Admin
-         is what gates the commands that can lose data &mdash; account changes, factory reset,
+         is what gates the commands that can lose data: account changes, factory reset,
          firmware updates.</p>
 
       <h3>Running without a login</h3>
@@ -357,7 +358,7 @@ rm "my notes.txt"       # a name with spaces</code></pre>
       <table>
         <thead><tr><th>Command</th><th>Does</th></tr></thead>
         <tbody>
-          <tr><td>settings</td><td>A full-screen panel &mdash; the easy way</td></tr>
+          <tr><td>settings</td><td>A full-screen panel: the easy way</td></tr>
           <tr><td>env [section]</td><td>List settings, grouped by section</td></tr>
           <tr><td>reg get &lt;key&gt;</td><td>Read one key</td></tr>
           <tr><td>reg set &lt;key&gt; &lt;value&gt;</td><td>Write one key</td></tr>
@@ -369,13 +370,13 @@ rm "my notes.txt"       # a name with spaces</code></pre>
          same store, so it does not matter which you use.</p>
       <div class="note-box">
         <code>regreset</code> restores settings. It does <strong>not</strong> remove accounts,
-        files or packages &mdash; that is <a href="#recovery"><code>factoryreset</code></a>.
+        files or packages: that is <a href="#recovery"><code>factoryreset</code></a>.
       </div>
 
       <!-- MULTITASKING -->
       <h2 id="multitasking">Tasks &amp; Multitasking</h2>
       <p>v2 runs tasks on both cores. The scheduler is <strong>cooperative</strong>: a task
-         keeps the core until it yields, and it yields at defined points &mdash; printing,
+         keeps the core until it yields, and it yields at defined points: printing,
          sleeping, waiting on the network, reading a file.</p>
       <table>
         <thead><tr><th>Command</th><th>Does</th></tr></thead>
@@ -388,13 +389,13 @@ rm "my notes.txt"       # a name with spaces</code></pre>
       </table>
 
       <h3>What cooperative means in practice</h3>
-      <p>A <code>kill</code> takes effect at the task's next yield point &mdash; somewhere it
+      <p>A <code>kill</code> takes effect at the task's next yield point: somewhere it
          is not holding a lock or part-way through a write. That is a deliberate trade: a task
          that never yields cannot be killed, which is better than one that can be torn down in
          the middle of writing a file.</p>
       <p>There is a backstop. A task that stops yielding entirely is noticed by a timer
          interrupt, and if the stall is inside a package the OS takes the <em>call</em> back
-         without ending the task &mdash; a package command runs on the shell's task, so killing
+         without ending the task: a package command runs on the shell's task, so killing
          the task would take your session with it. From the shell's point of view the package
          simply returned. See <a href="#sandbox">The Sandbox</a>.</p>
 
@@ -418,8 +419,7 @@ rm "my notes.txt"       # a name with spaces</code></pre>
       </table>
       <p>The three persistent ones differ in shape rather than power. <strong>startup</strong>
          runs once at boot and finishes. <strong>task</strong> runs on a repeating timer.
-         <strong>service</strong> is for something that starts at boot and stays running
-         &mdash; a web server, a logger.</p>
+         <strong>service</strong> is for something that starts at boot and stays running: a web server, a logger.</p>
       <div class="note-box">
         A startup command that hangs will hang the boot.
         <a href="#recovery"><code>safeboot</code></a> exists for exactly that: it restarts with
@@ -433,7 +433,7 @@ rm "my notes.txt"       # a name with spaces</code></pre>
          them to make decisions. Run one with <code>script &lt;file&gt;</code> or
          <code>run &lt;file.rps&gt;</code>; <code>runurl &lt;url&gt;</code> fetches one and runs
          it.</p>
-      <p>Every line that is not a keyword is a shell line, run exactly as if typed &mdash;
+      <p>Every line that is not a keyword is a shell line, run exactly as if typed:
          pipes, chaining and redirection included.</p>
 
       <h3>Variables</h3>
@@ -541,8 +541,8 @@ echo hello $name</code></pre>
         the network of that name.
       </div>
       <p>Saved networks are stored with their passwords in the registry. <code>radio</code> is
-         a hard override that keeps every radio off regardless of other settings &mdash; the
-         equivalent of aeroplane mode &mdash; and it survives a reboot until released.</p>
+         a hard override that keeps every radio off regardless of other settings: the
+         equivalent of aeroplane mode, and it survives a reboot until released.</p>
 
       <h3>The clock</h3>
       <p>There is no battery-backed clock, so the time is wrong after every power cycle until
@@ -621,7 +621,7 @@ download report.txt      # or just these files</code></pre>
       <div class="note-box">
         Windows caches removable-media directory listings aggressively. If a file you deleted
         still shows after re-entering download mode, the device is right and the cache is
-        stale &mdash; the volume serial changes on each entry specifically to reduce this.
+        stale: the volume serial changes on each entry specifically to reduce this.
       </div>
 
       <!-- PACKAGES -->
@@ -652,7 +652,7 @@ download report.txt      # or just these files</code></pre>
       <h2 id="sandbox">The Sandbox</h2>
       <p>On RP2350 a package runs <strong>unprivileged</strong>, with the memory protection
          unit describing exactly five regions it may touch: its code, its data, its call
-         veneers, its stack and its heap. Everything else in the machine is denied &mdash; the
+         veneers, its stack and its heap. Everything else in the machine is denied: the
          OS's own tables, the peripherals, and flash.</p>
 
       <h3>What that buys</h3>
@@ -679,8 +679,7 @@ download report.txt      # or just these files</code></pre>
       </table>
       <div class="note-box">
         <strong>Even a stack overflow.</strong> That one took two things to survive. The
-        fault handler stands on a stack of its own, rather than the one that just ran out
-        &mdash; it has to release the stack guard to run at all, so anything it did on the
+        fault handler stands on a stack of its own, rather than the one that just ran out: it has to release the stack guard to run at all, so anything it did on the
         exhausted stack would be written past the bottom of it. And the guard sits a little
         above the bottom of the package's stack rather than at it, so the instruction that
         overflows is <em>refused</em> with the stack pointer intact and there is still room
@@ -711,8 +710,7 @@ int app_main(int arg) {
 }</code></pre>
       </div>
       <p><code>app_main</code> runs when the package loads and is where commands are
-         registered. Everything the OS offers is reached through <code>fw_*</code> functions
-         &mdash; around 166 of them, covering printing, memory, files, directories, tasks,
+         registered. Everything the OS offers is reached through <code>fw_*</code> functions: around 166 of them, covering printing, memory, files, directories, tasks,
          networking, TCP, HTTP, GPIO, I2C, SPI, PIO, ADC and a full-screen text interface.</p>
       <div class="note-box">
         A sandboxed package cannot branch into the firmware, because flash is not reachable
@@ -779,7 +777,7 @@ update rollback --forget  # delete it and free the space</code></pre>
       </div>
       <p>The copy is a plain file, read straight out of the running firmware's own flash and
          hashed on the way out. Restoring it stages it back into the update slot and applies it
-         exactly as an update does &mdash; same verification, same reboot. Files, settings and
+         exactly as an update does: same verification, same reboot. Files, settings and
          accounts are untouched; only the firmware changes.</p>
       <p>The device does this by itself if it has to. Three starts that never reach a shell and
          it walks the <a href="#recovery">recovery ladder</a>, of which restoring the saved
@@ -788,8 +786,8 @@ update rollback --forget  # delete it and free the space</code></pre>
          offering it and says why. A later release clears that by itself;
          <code>update install --force</code> installs it anyway if you want to try again.</p>
       <div class="note-box">
-        <strong>It needs room.</strong> The copy is the size of the firmware &mdash; around
-        900&nbsp;KB on a Pico 2&nbsp;W &mdash; and it lives in the filesystem beside everything
+        <strong>It needs room.</strong> The copy is the size of the firmware: around
+        900&nbsp;KB on a Pico 2&nbsp;W, and it lives in the filesystem beside everything
         else. On the Pico&nbsp;W, where the firmware is larger than the whole filesystem, no copy
         can be kept at all and <code>update rollback</code> says so. If an update cannot find the
         room it goes ahead without a copy and tells you, rather than refusing to update.
@@ -797,7 +795,7 @@ update rollback --forget  # delete it and free the space</code></pre>
       <div class="warn-box">
         <strong>Rollback cannot rescue an image that does not boot at all.</strong> The restore
         runs inside the firmware being replaced, so that firmware has to get as far as the boot
-        sequence. An image that faults before then still needs a BOOTSEL reflash &mdash; only a
+        sequence. An image that faults before then still needs a BOOTSEL reflash, only a
         bootloader that never changes could do better, and this device does not have one.
       </div>
 
@@ -809,7 +807,7 @@ update rollback --forget  # delete it and free the space</code></pre>
         <thead><tr><th>Command</th><th>Shows</th></tr></thead>
         <tbody>
           <tr><td>diag</td><td>System state, and whether the last run crashed</td></tr>
-          <tr><td>logdump</td><td>The log ring &mdash; survives a reboot</td></tr>
+          <tr><td>logdump</td><td>The log ring: survives a reboot</td></tr>
           <tr><td>logdump save &lt;file&gt;</td><td>Write it to a file</td></tr>
           <tr><td>meminfo</td><td>RAM, and how fragmented it is</td></tr>
           <tr><td>mpu</td><td>What the memory protection is enforcing</td></tr>
@@ -843,7 +841,7 @@ update rollback --forget  # delete it and free the space</code></pre>
 
       <h3>compat</h3>
       <p><code>compat</code> probes the board and reports what is actually present rather than
-         what the build assumed &mdash; radio, Bluetooth, the temperature sensor, the number of
+         what the build assumed: radio, Bluetooth, the temperature sensor, the number of
          protection regions, the clock range. It is the first thing to run when something is
          missing that you expected to be there.</p>
 
@@ -873,13 +871,13 @@ update rollback --forget  # delete it and free the space</code></pre>
       <table>
         <thead><tr><th>Failed starts</th><th>It tries</th><th>Costs</th></tr></thead>
         <tbody>
-          <tr><td>3</td><td>Starting with nothing loaded &mdash; no packages, services or startup items</td><td>Nothing; it undoes itself next boot</td></tr>
+          <tr><td>3</td><td>Starting with nothing loaded: no packages, services or startup items</td><td>Nothing; it undoes itself next boot</td></tr>
           <tr><td>4</td><td>Writing the saved firmware back</td><td>Nothing; files and settings are kept</td></tr>
           <tr><td>5</td><td>Rebuilding the filesystem</td><td>Everything on the device</td></tr>
         </tbody>
       </table>
-      <p>The order is the point. Something that was added to the device &mdash; a package, a
-         service, a startup command &mdash; is the most common reason a working device stops
+      <p>The order is the point. Something that was added to the device: a package, a
+         service, a startup command: is the most common reason a working device stops
          working, and skipping all of them costs nothing to try. Rebuilding the filesystem is
          the only step that loses anything, so it is last, and it only happens when a bare start
          failed too and there is no firmware left to restore.</p>
@@ -889,11 +887,11 @@ update rollback --forget  # delete it and free the space</code></pre>
 
       <h3>Damage it repairs on its own</h3>
       <p>Settings and accounts are written twice, to a file and a copy beside it. If the primary
-         will not read back, the copy is loaded and the primary rewritten from it &mdash; and the
+         will not read back, the copy is loaded and the primary rewritten from it, and the
          boot says so, out loud, because a device that heals silently teaches nobody that its
          flash is wearing out.</p>
       <p>Every file the OS owns is read at boot. littlefs checksums every block it writes, so a
-         block that has gone bad does not return wrong data &mdash; it returns a read error.
+         block that has gone bad does not return wrong data: it returns a read error.
          Anything that cannot be read is removed and rebuilt from the copy or from defaults.
          <code>fscheck --scan</code> reads the rest of the device the same way and only reports,
          because files in a home directory are yours and not the OS's to delete.</p>
@@ -943,7 +941,7 @@ update rollback --forget  # delete it and free the space</code></pre>
         <li><strong>Cooperative scheduling.</strong> A task that never yields cannot be killed
             from the shell. The timer backstop covers packages, not firmware.</li>
         <li><strong>Beta.</strong> Things move. If something here does not match the
-            device, the device is right &mdash; and it is worth
+            device, the device is right, and it is worth
             <a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">saying so</a>.</li>
       </ul>
 

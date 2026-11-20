@@ -89,7 +89,7 @@ head_scripts: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
               <p id="dataMsgBody">This installs or updates the OS and removes only the old OS code (<code>/Core</code>). Your accounts, WiFi networks, settings, and installed packages are preserved.</p>
               <label class="wipe-confirm-label">
                 <input type="checkbox" id="wipeConfirmCheck">
-                Clean install &mdash; erase <em>everything</em> first (accounts, settings, packages). Can't be undone.
+                Clean install: erase <em>everything</em> first (accounts, settings, packages). Can't be undone.
               </label>
             </div>
 
@@ -127,7 +127,7 @@ head_scripts: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
             <ol class="done-next">
               <li><strong>Disconnect and reconnect</strong> your device from USB.</li>
               <li>Open <strong>PuTTY</strong> (or any serial terminal) at <strong>115200 baud</strong>.</li>
-              <li><strong>Fresh or clean install:</strong> complete the first-run setup wizard (root password, WiFi, timezone, clock). <strong>Kept your data:</strong> just log in as usual &mdash; your accounts and settings are intact.</li>
+              <li><strong>Fresh or clean install:</strong> complete the first-run setup wizard (root password, WiFi, timezone, clock). <strong>Kept your data:</strong> just log in as usual. Your accounts and settings are intact.</li>
             </ol>
             <div style="margin-top:28px;">
               <button class="btn-secondary" id="installAgainBtn">Install Again</button>
@@ -147,7 +147,7 @@ head_scripts: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
         <!-- COPY A FILE (shown while connected; non-destructive) -->
         <div id="transferPanel" class="transfer-panel">
           <p class="panel-h">Copy a file to the device</p>
-          <p class="panel-sub">Push any file to the connected board over USB &mdash; nothing is wiped. Handy for staging a <code>.pkg</code>, a script, or a config file without dropping to the REPL.</p>
+          <p class="panel-sub">Push any file to the connected board over USB: nothing is wiped. Handy for staging a <code>.pkg</code>, a script, or a config file without dropping to the REPL.</p>
           <label class="transfer-pick">
             <span class="transfer-pick-btn">Choose file&hellip;</span>
             <input type="file" id="transferFileInput">
@@ -167,7 +167,7 @@ head_scripts: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
           <p>
             The installer establishes a serial connection to your device's MicroPython REPL,
             fetches the RPCortex <code>.rpc</code> release archive, extracts it in-browser,
-            and transfers each file using MicroPython's raw REPL mode &mdash; the same protocol
+            and transfers each file using MicroPython's raw REPL mode: the same protocol
             used by tools like <code>mpremote</code> and Thonny.
           </p>
           <p>
@@ -176,7 +176,7 @@ head_scripts: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
             No desktop software, drivers, or WiFi required.
           </p>
           <p>
-            <strong>Already running RPCortex?</strong> No need to do anything manually &mdash;
+            <strong>Already running RPCortex?</strong> No need to do anything manually:
             the installer automatically drops the device to the MicroPython REPL (via the
             built-in <code>rawrepl</code> escape) before flashing, whether it is sitting at the
             shell or the login screen.

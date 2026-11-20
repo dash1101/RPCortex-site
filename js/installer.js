@@ -119,10 +119,10 @@
           var got = await deviceFileSize(device, devicePath);
           if (got === content.length) return;            // verified OK
           if (onLog) onLog('[?] ' + devicePath + ' size ' + got + '/' +
-                           content.length + ' — retry ' + attempt + '/3');
+                           content.length + ', retry ' + attempt + '/3');
         } catch (e) {
           if (onLog) onLog('[?] write error on ' + devicePath + ': ' +
-                           (e.message || e) + ' — retry ' + attempt + '/3');
+                           (e.message || e) + ', retry ' + attempt + '/3');
         }
         await sleep(120);
       }
@@ -157,7 +157,7 @@
      fullWipe=true: erase the entire filesystem (factory clean install). */
   async function prepareDevice(device, onLog, fullWipe) {
     if (fullWipe) {
-      onLog('[:] Clean install — wiping entire filesystem...');
+      onLog('[:] Clean install: wiping the entire filesystem...');
       await device.execRaw(
         'import uos\n' +
         'def _d(p):\n' +
@@ -169,7 +169,7 @@
       );
       onLog('[@] Device filesystem cleared.');
     } else {
-      onLog('[:] Removing old OS code (/Core) — keeping your data...');
+      onLog('[:] Removing old OS code (/Core), keeping your data...');
       await device.execRaw(
         'import uos\n' +
         'def _d(p):\n' +
@@ -417,7 +417,7 @@
       // EVERYTHING, so the "your data is kept" promise no longer holds.
       if (fullWipe) {
         if (dataMsgTitle) dataMsgTitle.innerHTML = '⚠ Your data will be ERASED.';
-        if (dataMsgBody)  dataMsgBody.innerHTML  = 'Clean install wipes the entire filesystem first — accounts, WiFi networks, settings, and installed packages are <strong>all removed</strong>. The device runs first-run setup again afterwards.';
+        if (dataMsgBody)  dataMsgBody.innerHTML  = 'Clean install wipes the entire filesystem first: accounts, WiFi networks, settings, and installed packages are <strong>all removed</strong>. The device runs first-run setup again afterwards.';
         if (installInfoBox) installInfoBox.classList.add('danger');
       } else {
         if (dataMsgTitle) dataMsgTitle.innerHTML = '✓ Your data is kept.';
@@ -484,7 +484,7 @@
       var info  = port.getInfo();
       var label = 'Connected';
       if (info && (info.usbVendorId || info.usbProductId)) {
-        label = 'Connected &mdash; USB ' +
+        label = 'Connected: USB ' +
           (info.usbVendorId  ? '0x' + info.usbVendorId.toString(16).toUpperCase()  : '') +
           (info.usbProductId ? ':0x' + info.usbProductId.toString(16).toUpperCase() : '');
       }

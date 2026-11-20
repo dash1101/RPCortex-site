@@ -1,6 +1,6 @@
 ---
 title: v1.0.0 Vela Release Notes
-description: What's new in RPCortex v1.0 &quot;Vela&quot; &mdash; the multitasking release.
+description: What's new in RPCortex v1.0 &quot;Vela&quot;: the multitasking release.
 nav: releases
 path: release-vela.html
 legacy: 1
@@ -9,16 +9,16 @@ scripts: js/spy.js
 <main>
 <section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Release notes</div><h1>Vela Release Notes</h1><p class="lede">v1.0.0 &nbsp;&bull;&nbsp; Codenamed <strong>Vela</strong> &nbsp;&bull;&nbsp; Stable &nbsp;&bull;&nbsp; Succeeds v0.9.1 &ldquo;Pulsar&rdquo;</p></section>
 <div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#status">Status</a><a href="#hardware">Supported hardware</a><a href="#multitasking">Multitasking</a><a href="#shell">Shell &amp; terminal</a><a href="#networking">Networking</a><a href="#memory">Memory &amp; reliability</a><a href="#updates">Packages &amp; updates</a><a href="#storage">Storage</a><a href="#platform">Platform</a><a href="#novad1">Nova D1</a><a href="#installation">Installing</a><a href="#limitations">Known limitations</a></nav><article class="docs-body prose legacy-prose"><h2 id="status">Status</h2>
-      <p><strong>Stable.</strong> v1.0 is the current release on the default channel &mdash; the Install and Update default, superseding v0.9.1 &ldquo;Pulsar&rdquo;.</p>
+      <p><strong>Stable.</strong> v1.0 is the current release on the default channel: the Install and Update default, superseding v0.9.1 &ldquo;Pulsar&rdquo;.</p>
       <div class="note-box">
-        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>. For the full command reference see the <a href="docs?v=v1.0.0">v1.0.0 docs</a>. v1.0 is also the last MicroPython release &mdash; what comes next is a native rewrite, explained in <a href="switch">the switch to C++</a>.
+        These notes cover everything since <strong>v0.9.1 &ldquo;Pulsar&rdquo;</strong>. For the full command reference see the <a href="docs?v=v1.0.0">v1.0.0 docs</a>. v1.0 is also the last MicroPython release: what comes next is a native rewrite, explained in <a href="switch">the switch to C++</a>.
       </div>
-      <p>The data directory moves from <code>/Pulsar/</code> to <code>/Vela/</code>. Updating devices migrate automatically &mdash; accounts, WiFi profiles, settings and installed packages are all preserved.</p>
+      <p>The data directory moves from <code>/Pulsar/</code> to <code>/Vela/</code>. Updating devices migrate automatically: accounts, WiFi profiles, settings and installed packages are all preserved.</p>
 
       <h2 id="hardware">Supported hardware</h2>
       <p>v1.0 targets the <strong>Pico 2 W (RP2350)</strong> and the <strong>ESP32-S3</strong>.</p>
       <div class="note-box">
-        <p><strong>RP2040 boards are not supported by this release.</strong> The Pico 1 and Pico 1 W cannot run the v1.0 multitasking build in 264 KB of RAM &mdash; it idles near the ceiling and climbs until it fails. Those boards should stay on <strong>v0.9.1</strong>, which is fully supported. A separate optimised image for them is planned rather than cutting the portable base down to fit.</p>
+        <p><strong>RP2040 boards are not supported by this release.</strong> The Pico 1 and Pico 1 W cannot run the v1.0 multitasking build in 264 KB of RAM: it idles near the ceiling and climbs until it fails. Those boards should stay on <strong>v0.9.1</strong>, which is fully supported. A separate optimised image for them is planned rather than cutting the portable base down to fit.</p>
       </div>
 
       <h2 id="multitasking">Multitasking</h2>
@@ -32,9 +32,9 @@ scripts: js/spy.js
       <h2 id="shell">Shell &amp; terminal</h2>
       <ul>
         <li><strong>Typing is faster.</strong> Each keystroke repaints only what changed rather than redrawing the whole line, which is what makes input feel immediate over serial.</li>
-        <li><strong>Pasting a block works.</strong> A pasted block &mdash; and a held backspace, or a held printable key &mdash; is processed in batches instead of one character per loop turn.</li>
+        <li><strong>Pasting a block works.</strong> A pasted block (and a held backspace, or a held printable key) is processed in batches instead of one character per loop turn.</li>
         <li><strong>Backspace behaves everywhere.</strong> Terminals disagree about which byte plain Backspace sends; both are now treated as a single-character delete, with <kbd>Ctrl</kbd>+<kbd>W</kbd> as the terminal-independent delete-word-back.</li>
-        <li><strong>Word-wise keys work in PuTTY and mpremote</strong> &mdash; both the SS3 and CSI encodings &mdash; in the shell and in the editor.</li>
+        <li><strong>Word-wise keys work in PuTTY and mpremote</strong> (both the SS3 and CSI encodings) in the shell and in the editor.</li>
         <li><strong>Escape sequences no longer leak</strong> into the line as stray characters such as <code>;5A</code>.</li>
         <li><strong>An idle shell yields the CPU.</strong> The reader backs off when nothing is being typed, so it stops competing with background work.</li>
         <li><strong><code>grep -i</code></strong> for case-insensitive matching.</li>
@@ -42,9 +42,9 @@ scripts: js/spy.js
 
       <h2 id="networking">Networking</h2>
       <ul>
-        <li><strong>Async <code>ping</code>, <code>wget</code> and <code>curl</code></strong> &mdash; network commands yield on every socket wait, so a download no longer freezes the device and background services keep serving throughout.</li>
+        <li><strong>Async <code>ping</code>, <code>wget</code> and <code>curl</code></strong>: network commands yield on every socket wait, so a download no longer freezes the device and background services keep serving throughout.</li>
         <li><strong>HTTPS fixed on current firmware.</strong> TLS uses <code>SSLContext</code>, which MicroPython v1.29 and later require.</li>
-        <li><strong>Honest HTTPS failures.</strong> A TLS handshake needs one unbroken block of about 16.7 KB. Memory is now reclaimed <em>before</em> the handshake rather than after it fails, and when the block genuinely is not available the error says so &mdash; and reports how much contiguous memory there actually is &mdash; instead of a generic failure.</li>
+        <li><strong>Honest HTTPS failures.</strong> A TLS handshake needs one unbroken block of about 16.7 KB. Memory is now reclaimed <em>before</em> the handshake rather than after it fails, and when the block genuinely is not available the error says so (and reports how much contiguous memory there actually is) instead of a generic failure.</li>
         <li><strong>Downloads no longer slow down as they grow.</strong> The response body was being rebuilt on every chunk; it is assembled once at the end.</li>
         <li><strong>WiFi autoconnect</strong> and <strong>NTP time sync</strong> at boot.</li>
       </ul>
@@ -52,17 +52,17 @@ scripts: js/spy.js
       <h2 id="memory">Memory &amp; reliability</h2>
       <p>On a device this size the recurring failure is not running <em>out</em> of memory but running out of <em>contiguous</em> memory. MicroPython&rsquo;s heap does not compact, so it can report 200 KB free and still refuse a 16 KB allocation. Several changes target that directly.</p>
       <ul>
-        <li><strong><code>meminfo</code> reports the largest allocatable block</strong> and a fragmentation percentage, not just the free total &mdash; the number that actually decides whether an HTTPS request can succeed.</li>
+        <li><strong><code>meminfo</code> reports the largest allocatable block</strong> and a fragmentation percentage, not just the free total: the number that actually decides whether an HTTPS request can succeed.</li>
         <li><strong><code>defrag</code></strong> reclaims memory and reports what it recovered.</li>
-        <li><strong><code>freeup</code> now frees memory on compiled builds.</strong> Commands loaded from <code>.mpy</code> live on in the module table, so clearing the command cache released almost nothing. It now evicts the command modules themselves &mdash; measured on a Pico 2 W as a change from 2 KB recovered to 84 KB.</li>
+        <li><strong><code>freeup</code> now frees memory on compiled builds.</strong> Commands loaded from <code>.mpy</code> live on in the module table, so clearing the command cache released almost nothing. It now evicts the command modules themselves: measured on a Pico 2 W as a change from 2 KB recovered to 84 KB.</li>
         <li><strong>Automatic reclaim.</strong> The scheduler reclaims when free memory is low <em>or</em> when a contiguity check fails, rather than waiting for something to break.</li>
         <li><strong>Package installs stream to flash.</strong> A <code>.pkg</code> is extracted entry by entry instead of being read into memory whole, which is what made large packages fail to install.</li>
       </ul>
 
       <h2 id="updates">Packages &amp; updates</h2>
       <ul>
-        <li><strong><code>safeboot</code></strong> &mdash; reboot without background services so an update runs with the full heap available. It can also stage a command for the next boot, which is what lets an update started from a screen finish reliably.</li>
-        <li><strong>An opt-in beta channel</strong> &mdash; <code>update channel beta | stable</code>. With no channel chosen, a device follows the stage of the build it is running, so a pre-release device checks the pre-release manifest rather than comparing itself against something older.</li>
+        <li><strong><code>safeboot</code></strong>: reboot without background services so an update runs with the full heap available. It can also stage a command for the next boot, which is what lets an update started from a screen finish reliably.</li>
+        <li><strong>An opt-in beta channel</strong>: <code>update channel beta | stable</code>. With no channel chosen, a device follows the stage of the build it is running, so a pre-release device checks the pre-release manifest rather than comparing itself against something older.</li>
         <li><strong>Update checks never offer a downgrade.</strong> A differing build id is no longer enough on its own: the version must match and the build counter must be ahead.</li>
         <li><strong>Non-interactive updates</strong> (<code>-y</code>), so an update begun somewhere without a keyboard can complete.</li>
         <li><strong>Removing a package</strong> stops its services first and clears its autostart entries, instead of deleting files out from under a running service.</li>
@@ -71,14 +71,14 @@ scripts: js/spy.js
 
       <h2 id="storage">Storage</h2>
       <ul>
-        <li><strong>SD card support</strong> &mdash; <code>sdmgr</code>, the <code>sd</code> command, and optional auto-mount at boot.</li>
+        <li><strong>SD card support</strong>: <code>sdmgr</code>, the <code>sd</code> command, and optional auto-mount at boot.</li>
         <li><strong>A storage guard</strong> that warns at 95% full and blocks writes at 98%, rather than letting the filesystem fill and fail in the middle of a write.</li>
       </ul>
 
       <h2 id="platform">Platform</h2>
       <ul>
         <li><strong>One place for hardware differences.</strong> Die temperature, safe clock range and current frequency now come from a single platform module, so RP2040, RP2350 and ESP32-S3 differences are not scattered through the tree.</li>
-        <li><strong>A sensible boot clock.</strong> An unconfigured RP2350 runs at 200 MHz instead of the old flat 125 MHz default &mdash; which was <em>slower</em> than the chip&rsquo;s own default of 150.</li>
+        <li><strong>A sensible boot clock.</strong> An unconfigured RP2350 runs at 200 MHz instead of the old flat 125 MHz default, which was <em>slower</em> than the chip&rsquo;s own default of 150.</li>
         <li><strong>Command output is captured properly.</strong> Results printed as status lines are captured alongside ordinary output, so a command whose entire result is a single status line is no longer invisible to pipes, scripts and on-screen apps.</li>
         <li><strong><code>diag</code> and <code>sysinfo</code> report more</strong>, in plainer wording.</li>
       </ul>
@@ -87,7 +87,7 @@ scripts: js/spy.js
       <p>The <a href="https://novalabs.app/d1" target="_blank" rel="noopener">Nova D1</a> multi-tool runs on Vela as a package suite. It is developed alongside this release and has its own version line; see the <a href="packages">packages</a> page for the current build.</p>
 
       <h2 id="installation">Installing</h2>
-      <p><strong>Fresh install:</strong> pick <em>RPCortex Vela</em> in the <a href="install">Web Installer</a> &mdash; it is the default.</p>
+      <p><strong>Fresh install:</strong> pick <em>RPCortex Vela</em> in the <a href="install">Web Installer</a>: it is the default.</p>
       <p><strong>Updating from v0.9.1</strong> on a Pico 2 W or ESP32-S3:</p>
       <pre><code>update channel beta
 update check
@@ -96,11 +96,11 @@ safeboot update online -y</code></pre>
 
       <h2 id="limitations">Known limitations</h2>
       <ul>
-        <li><strong>RP2040 is not supported</strong> &mdash; see <a href="#hardware">supported hardware</a>. Stay on v0.9.1.</li>
-        <li><strong>Contiguous memory is still the binding constraint</strong> on a device that has been running a long time with a large package resident. Run <code>freeup</code> before an update, or reboot first &mdash; a fresh boot has the least fragmentation.</li>
+        <li><strong>RP2040 is not supported</strong>: see <a href="#hardware">supported hardware</a>. Stay on v0.9.1.</li>
+        <li><strong>Contiguous memory is still the binding constraint</strong> on a device that has been running a long time with a large package resident. Run <code>freeup</code> before an update, or reboot first: a fresh boot has the least fragmentation.</li>
         <li><strong>A firmware flash erases the filesystem.</strong> Applying an <code>.rpc</code> OS update does not; flashing MicroPython itself does.</li>
         <li><strong>Hardware-verified on the Pico 2 W and the ESP32-S3</strong>, which are the two boards this release targets. Please report anything rough.</li>
       </ul>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela &mdash; v1.0.0, stable &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome. The C++ rewrite, <a href="release-vela2">v2.0 Vela II</a>, is in beta; the older line is <a href="release">v0.9.1 Pulsar</a>.</p></article></div>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Vela: v1.0.0, stable &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome. The C++ rewrite, <a href="release-vela2">v2.0 Vela II</a>, is in beta; the older line is <a href="release">v0.9.1 Pulsar</a>.</p></article></div>
 </main>

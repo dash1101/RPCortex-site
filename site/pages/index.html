@@ -1,7 +1,7 @@
 ---
 title: RPCortex
 window_title: RPCortex: an operating system for microcontrollers
-description: RPCortex is a full operating system for the Raspberry Pi Pico family, written in C++: a shell, accounts, Wi-Fi, a package manager and over-the-air updates, with packages that cannot take the board down.
+description: RPCortex is a full operating system for the Raspberry Pi Pico family, written in C++: a shell, accounts, Wi-Fi, a package manager and over-the-air updates, with a package sandbox on the RP2350.
 nav: home
 path: index.html
 scripts: js/home.js
@@ -11,7 +11,7 @@ scripts: js/home.js
   <div>
     <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span><span data-rel="display">v2.00-beta</span>&nbsp;&middot; C++ &middot; RP2040 &amp; RP2350</div>
     <h1>An operating system for microcontrollers.</h1>
-    <p class="lede">RPCortex gives a Raspberry Pi Pico a shell, a filesystem, accounts, Wi-Fi, a package manager and over-the-air updates. The packages you write run without being able to take the board down.</p>
+    <p class="lede">RPCortex gives a Raspberry Pi Pico a shell, a filesystem, accounts, Wi-Fi, a package manager and over-the-air updates. On the RP2350 boards a package runs in a sandbox, so a bad one costs a command and not the board.</p>
     <div class="actions">
       <a class="btn btn-primary" href="{{root}}get.html">Get RPCortex</a>
       <a class="btn btn-ghost" href="{{root}}docs/v2.html">Read the docs</a>
@@ -22,7 +22,7 @@ scripts: js/home.js
     <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">pico2_w &middot; 115200 baud</span></div>
 <pre><span class="p">root@vela:/&gt;</span> ver
 RPCortex <span data-rel="display">v2.00-beta</span> (build <span data-rel="build">483</span>)  &mdash;  Vela II
-Commit: badbb459  (dev)  [C++ native]
+Commit: <span data-rel="commit">bf33812c</span>  (dev)  [C++ native]
 GCC 14.2.1   Platform: pico2_w (RP2350)
 
 <span class="p">root@vela:/&gt;</span> ps
@@ -43,7 +43,7 @@ PID  NAME       STATE  CORE  STACK       CPU
     <div class="fact"><b>190&times;</b><span>vs v1, same workload</span><p>RPCMark scores 1.05 million at 230 MHz, against v1's 5,000 to 6,000 at the same clock. At the 150 MHz it starts at, about 700,000.</p></div>
     <div class="fact"><b>2 cores</b><span>both in use</span><p>Tasks run on either core. <code>ps</code> shows every one with its stack and CPU time, and <code>kill</code> stops one.</p></div>
     <div class="fact"><b>5 regions</b><span>package sandbox</span><p>On RP2350 a package runs unprivileged. A bad pointer costs that command, not the board.</p></div>
-    <div class="fact"><b>OTA</b><span>and a way back</span><p>Update over Wi-Fi with a checksum. The old firmware is kept, and a device that fails to start restores it.</p></div>
+    <div class="fact"><b>OTA</b><span>and a way back</span><p>Update over Wi-Fi, checked against a checksum. The old firmware is kept, and <code>update rollback</code> puts it back.</p></div>
   </div>
 </section>
 
@@ -56,8 +56,8 @@ PID  NAME       STATE  CORE  STACK       CPU
     <div><h3>Filesystem</h3><p>littlefs in the format a v1 device already uses. <code>ls</code>, <code>cd</code>, <code>cp</code>, <code>tree</code>, <code>df</code>, and a USB drive to drag files on and off.</p></div>
     <div><h3>Accounts</h3><p>Salted SHA-256 passwords, roles, per-user home directories, and a guided first run.</p></div>
     <div><h3>Wi-Fi and the network</h3><p>Scan, connect, saved networks with sealed passwords, autoconnect. <code>wget</code>, <code>curl</code>, <code>ping</code>, <code>nslookup</code>, HTTPS.</p></div>
-    <div><h3>Packages</h3><p>Install by name from a repository, upgrade, remove. Compiled <code>.app</code> files that load at runtime and cannot take the device down.</p></div>
-    <div><h3>Recovery</h3><p>A black box that survives a reset. <code>safeboot</code> loads nothing. Three failed starts load nothing, then restore the saved firmware, and only then rebuild the filesystem.</p></div>
+    <div><h3>Packages</h3><p>Install by name from a repository, upgrade, remove. Compiled <code>.app</code> files that load at runtime, sandboxed on the RP2350.</p></div>
+    <div><h3>Recovery</h3><p>A black box that survives a reset. <code>safeboot</code> loads nothing. Three failed starts load nothing, then restore the saved firmware, and only then rebuild the filesystem. (v2.00-beta has a bug that stops this triggering; the next release fixes it.)</p></div>
   </div>
 </section>
 
@@ -99,7 +99,7 @@ logdump       <span class="m"># survives a reboot</span></pre></div>
     <tbody id="boardRows">
       <tr data-board="pico2_w"><td>Pico 2 W</td><td data-size>855 KB</td><td>1.75 MB</td><td>yes</td><td data-status>Run on hardware</td></tr>
       <tr data-board="pico2"><td>Pico 2</td><td data-size>352 KB</td><td>2.75 MB</td><td>yes</td><td data-status>Not booted yet</td></tr>
-      <tr data-board="pico_w"><td>Pico W</td><td data-size>805 KB</td><td>384 KB</td><td>no</td><td data-status>Not booted yet</td></tr>
+      <tr data-board="pico_w"><td>Pico W</td><td data-size>806 KB</td><td>384 KB</td><td>no</td><td data-status>Not booted yet</td></tr>
       <tr data-board="pico"><td>Pico</td><td data-size>297 KB</td><td>1.25 MB</td><td>no</td><td data-status>Not booted yet</td></tr>
     </tbody></table></div>
 </section>

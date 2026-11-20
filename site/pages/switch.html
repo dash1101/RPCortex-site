@@ -1,33 +1,33 @@
 ---
 title: The switch to C++
-description: Why RPCortex v2.0 is a native C++ rewrite, what stays the same, and what happens to v1.0.
+description: Why RPCortex v2 is a native C++ rewrite, what stays the same, and what happens to v1.0.
 nav: docs
 path: switch.html
 legacy: 1
 scripts: js/spy.js
 ---
 <main>
-<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Why</div><h1>The switch to C++</h1><p class="lede">v1.0 &ldquo;Vela&rdquo; is the last MicroPython release &nbsp;&bull;&nbsp; v2.0 is the same OS, written native</p></section>
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Why</div><h1>The switch to C++</h1><p class="lede">v1.0 &ldquo;Vela&rdquo; is the last MicroPython release. v2 is the same OS, written in C++.</p></section>
 <div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#short">The short version</a><a href="#why">Why</a><a href="#same">What stays the same</a><a href="#better">What gets better</a><a href="#packages">Packages still work</a><a href="#v1">What happens to v1.0</a><a href="#now">Where it stands</a><a href="#when">When</a></nav><article class="docs-body prose legacy-prose"><h2 id="short">The short version</h2>
-      <p>RPCortex is being rewritten in C++, running natively on the hardware with no interpreter underneath. It is the same operating system &mdash; the same shell, the same commands, the same accounts, the same package system. The goal is that you open PuTTY and cannot tell the codebase changed, except that everything is faster and the memory ceiling you kept running into is gone.</p>
+      <p>RPCortex is being rewritten in C++, running natively on the hardware with no interpreter underneath. It is the same operating system: the same shell, the same commands, the same accounts, the same package system. The goal is that you open PuTTY and cannot tell the codebase changed, except that everything is faster and the memory ceiling you kept running into is gone.</p>
       <div class="note-box">
-        There is no v1.1. The work that would have gone into it goes into v2.0 instead. <strong>v1.0 keeps working, stays installable, and stays supported</strong> &mdash; nothing is being taken away from anyone.
+        There is no v1.1. The work that would have gone into it goes into v2 instead. <strong>v1.0 keeps working, stays installable, and stays supported</strong>: nothing is being taken away from anyone.
       </div>
 
       <h2 id="why">Why</h2>
       <p>Most of the hard bugs in the last year were the same bug wearing different hats: not enough memory, in a way that was difficult to see and harder to fix.</p>
-      <p>The clearest example shipped in v1.0. HTTPS would stop working on a device that had been running a while, and the reason was not that memory had run out &mdash; a board would report 52 KB free and still fail. A TLS handshake needs one unbroken block of about 16.9 KB, and MicroPython's collector never moves anything, so once the heap is carved up there is no way to make a run that large again. The fix works, and it is a good fix, but it is a fix for a problem that only exists because of how the runtime manages memory.</p>
-      <p>The same shape turned up everywhere. Package installs that failed on large archives. Commands that could not be loaded when the heap was fragmented. A whole board &mdash; the original Pico and Pico W, with 264 KB of RAM &mdash; that had to be dropped from v1.0 because the multitasking build simply would not fit.</p>
+      <p>The clearest example shipped in v1.0. HTTPS would stop working on a device that had been running a while, and the reason was not that memory had run out: a board would report 52 KB free and still fail. A TLS handshake needs one unbroken block of about 16.9 KB, and MicroPython's collector never moves anything, so once the heap is carved up there is no way to make a run that large again. The fix works, and it is a good fix, but it is a fix for a problem that only exists because of how the runtime manages memory.</p>
+      <p>The same shape turned up everywhere. Package installs that failed on large archives. Commands that could not be loaded when the heap was fragmented. A whole board (the original Pico and Pico W, with 264 KB of RAM) that had to be dropped from v1.0 because the multitasking build simply would not fit.</p>
       <p>Underneath all of it, an interpreter was doing work that a microcontroller cannot really spare: parsing, allocating, tracing, collecting. Removing it removes the category.</p>
 
       <h2 id="same">What stays the same</h2>
       <p>This is a rewrite of the implementation, not a redesign of the product. Deliberately:</p>
       <ul>
-        <li>The <strong>shell</strong> &mdash; the same prompt, the same commands, the same second spellings (<code>ll</code>, <code>dir</code>, <code>more</code>, <code>del</code>, <code>free</code>), the same pipes and <code>&amp;&amp;</code>&thinsp;/&thinsp;<code>||</code> chaining and redirection.</li>
-        <li>The <strong>look</strong> &mdash; the boot banner, the colours, the <code>[@]</code> and <code>[!]</code> status lines, the column layout of <code>ls</code>. These were reproduced against the v1 source rather than rebuilt from memory.</li>
-        <li>The <strong>accounts system</strong> &mdash; salted hashes, admin roles, the protected root and guest accounts, the guided first-run setup.</li>
-        <li>The <strong>filesystem</strong> &mdash; the same littlefs version and on-disk format a v1 device already uses.</li>
-        <li>The <strong>package system</strong> &mdash; see below, because this was the part that had to be proven before anything else could start.</li>
+        <li>The <strong>shell</strong>: the same prompt, the same commands, the same second spellings (<code>ll</code>, <code>dir</code>, <code>more</code>, <code>del</code>, <code>free</code>), the same pipes and <code>&amp;&amp;</code>&thinsp;/&thinsp;<code>||</code> chaining and redirection.</li>
+        <li>The <strong>look</strong>: the boot banner, the colours, the <code>[@]</code> and <code>[!]</code> status lines, the column layout of <code>ls</code>. These were reproduced against the v1 source rather than rebuilt from memory.</li>
+        <li>The <strong>accounts system</strong>: salted hashes, admin roles, the protected root and guest accounts, the guided first-run setup.</li>
+        <li>The <strong>filesystem</strong>: the same littlefs version and on-disk format a v1 device already uses.</li>
+        <li>The <strong>package system</strong>: see below, because this was the part that had to be proven before anything else could start.</li>
       </ul>
 
       <h2 id="better">What gets better</h2>
@@ -35,35 +35,35 @@ scripts: js/spy.js
         <li><strong>Speed.</strong> Native code, direct hardware access, no bytecode in between.</li>
         <li><strong>Memory.</strong> No garbage collector, so no collector pauses and no fragmentation problem of the kind that broke HTTPS. Memory that is free is memory you can actually use.</li>
         <li><strong>The Pico 1 and 1 W come back.</strong> Without an interpreter, 264 KB stops being the wall it was.</li>
-        <li><strong>Real OTA updates, with a way back.</strong> An update saves the version it replaces, so <code>update rollback</code> puts it back without losing files or settings &mdash; and a device that fails to start three times restores it on its own.</li>
+        <li><strong>Real OTA updates, with a way back.</strong> An update saves the version it replaces, so <code>update rollback</code> puts it back without losing files or settings, and a device that fails to start three times restores it on its own. (In v2.00-beta a bug stops that last part from triggering; the next release fixes it.)</li>
         <li><strong>USB.</strong> HID, BadUSB and U2F need native USB device support, which was never reachable before.</li>
         <li><strong>Installing is simpler.</strong> Hold BOOTSEL, plug in, drag one file across. No firmware step, no file-pasting step.</li>
       </ul>
 
-      <h2 id="packages">Packages still work &mdash; this was the deciding question</h2>
+      <h2 id="packages">Packages still work, and that was the deciding question</h2>
       <p>The obvious objection to dropping an interpreter is that you lose the thing an interpreter gives you: the ability to load and run code that was not compiled into the firmware. An OS without a package system is a much smaller idea, and it was genuinely unclear whether this was possible.</p>
-      <p>It is. A package is a compiled object file, loaded from the filesystem at runtime, relocated in RAM, resolved against a firmware symbol table, and run &mdash; then unloaded cleanly, with its commands removed from the shell and its memory returned. It costs about 3.3 KB of flash and no static RAM. This was built and proven first, before any of the rest, because a "no" there would have ended the whole idea.</p>
+      <p>It is. A package is a compiled object file, loaded from the filesystem at runtime, relocated in RAM, resolved against a firmware symbol table, and run, then unloaded cleanly, with its commands removed from the shell and its memory returned. It costs about 3.3 KB of flash and no static RAM. This was built and proven first, before any of the rest, because a "no" there would have ended the whole idea.</p>
       <p>So packages still install, still register shell commands, still update independently of the OS. They are compiled ahead of time instead of shipped as source.</p>
       <div class="note-box">
-        <strong>Existing packages will need rebuilding.</strong> A <code>.py</code> package cannot run on a machine with no Python on it. Support for running Python apps under v2 is wanted and is being looked at, but it is not promised and it is not what v2.0 will ship with.
+        <strong>Existing packages will need rebuilding.</strong> A <code>.py</code> package cannot run on a machine with no Python on it. Support for running Python apps under v2 is wanted and is being looked at, but it is not promised, and v2 does not have it.
       </div>
 
       <h2 id="v1">What happens to v1.0</h2>
       <p>It stays. v1.0 is the current stable release, it is what the installer gives you, and it is what <code>update online</code> moves you to. It will keep working on the devices it works on today.</p>
-      <p>What ends is new feature development on the MicroPython line. The v1 source is not going anywhere &mdash; it is archived and readable, and the packages in the repository continue to work with it.</p>
+      <p>What ends is new feature development on the MicroPython line. The v1 source is not going anywhere: it is archived and readable, and the packages in the repository continue to work with it.</p>
 
       <h2 id="now">Where it stands</h2>
-      <p>Out. <a href="release-vela2">v2.0.0 &ldquo;Vela II&rdquo;</a> is published as a beta pre-release &mdash; you can install it today, on the understanding that it is a beta and v1.0 is the finished one. Working, tested on the host and building for both the RP2350 and the RP2040:</p>
+      <p>Out. <a href="release-vela2">v2.00-beta &ldquo;Vela II&rdquo;</a> is published as a beta pre-release. You can install it today, on the understanding that it is a beta and v1.0 is the finished one. Working, tested on the host and building for both the RP2350 and the RP2040:</p>
       <ul>
         <li>The package loader, with clean load / run / unload.</li>
-        <li>The shell &mdash; more commands than v1 had, plus its aliases, with pipes, chaining, redirection and quoting.</li>
-        <li>Line editing &mdash; cursor and word movement, history, Tab completion over commands and paths.</li>
+        <li>The shell: more commands than v1 had, plus its aliases, with pipes, chaining, redirection and quoting.</li>
+        <li>Line editing: cursor and word movement, history, Tab completion over commands and paths.</li>
         <li>Accounts, the registry, the filesystem, WiFi.</li>
         <li>The console: v1's output layer, checked byte for byte against the original escape sequences.</li>
       </ul>
       <p>The package repository, the rest of the command set, over-the-air updates and the Nova D1 port have all landed since. Still to come: USB HID, the ESP32 port, and meeting an SD card and an RP2040 board with real hardware rather than a host test. The <a href="roadmap">roadmap</a> tracks it.</p>
 
       <h2 id="when">When</h2>
-      <p>The beta is here now. A <em>stable</em> 2.0 arrives when it is genuinely better than v1.0, and not before &mdash; shipping a rewrite that is merely equivalent would be asking people to take a risk for nothing.</p>
+      <p>The beta is here now. A <em>stable</em> v2 release, one without the beta label, arrives when it is genuinely better than v1.0, and not before. Shipping a rewrite that is merely equivalent would be asking people to take a risk for nothing.</p>
       <p>If you want to follow along or argue with any of this, the <a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a> is the place.</p></article></div>
 </main>

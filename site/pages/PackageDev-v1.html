@@ -1,22 +1,22 @@
 ---
-title: RPCortex v1 &mdash; Package Development
+title: RPCortex v1: Package Development
 nav: docs
 path: PackageDev-v1.html
 legacy: 1
 scripts: js/spy.js
 ---
 <main>
-<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Guide</div><h1>Build a Package &mdash; v1</h1><p class="lede">Write a command, bundle it, host a repo, and get it running on any RPCortex device.</p></section>
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Guide</div><h1>Build a Package: v1</h1><p class="lede">Write a command, bundle it, host a repo, and get it running on any RPCortex device.</p></section>
 <div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#overview">Overview</a><a href="#package-structure">Package Structure</a><a href="#package-cfg">package.cfg Reference</a><a href="#writing-commands">Writing Commands</a><a href="#building">Building a .pkg</a><a href="#testing">Testing Locally</a><a href="#hosting-a-repo">Hosting a Repo</a><a href="#getting-listed">Getting Listed</a><a href="#full-example">Full Example</a></nav><article class="docs-body prose legacy-prose"><!-- OVERVIEW -->
       <div class="warn-box">
         <strong>This is the v1 guide.</strong> A v1 package is Python source in a ZIP renamed
         <code>.pkg</code>. RPCortex v2 has no interpreter, and its packages are compiled
-        <code>.app</code> files &mdash; a different thing entirely.
+        <code>.app</code> files: a different thing entirely.
         <a href="PackageDev">The v2 guide is here</a>.
       </div>
 
       <h2 id="overview">Overview</h2>
-      <p>RPCortex packages are standard ZIP archives renamed to <code>.pkg</code>. Each package contains your Python source files and a <code>package.cfg</code> metadata file. The package manager handles installation, command registration, and removal — no reboot needed.</p>
+      <p>RPCortex packages are standard ZIP archives renamed to <code>.pkg</code>. Each package contains your Python source files and a <code>package.cfg</code> metadata file. The package manager handles installation, command registration, and removal: no reboot needed.</p>
 
       <p><strong>What you need:</strong></p>
       <ul>
@@ -43,7 +43,7 @@ scripts: js/spy.js
       <p>The directory name becomes the archive prefix. <code>make_pkg.py</code> walks the entire directory tree, so subdirectories work too.</p>
 
       <div class="note-box">
-        <strong>ZIP STORED only.</strong> MicroPython on Pico W does not always have <code>zlib</code> available. Packages must be built with no compression. <code>make_pkg.py</code> handles this automatically &mdash; do not use a standard ZIP tool or your package will fail to install on many devices.
+        <strong>ZIP STORED only.</strong> MicroPython on Pico W does not always have <code>zlib</code> available. Packages must be built with no compression. <code>make_pkg.py</code> handles this automatically: do not use a standard ZIP tool or your package will fail to install on many devices.
       </div>
 
       <!-- PACKAGE.CFG -->
@@ -75,9 +75,9 @@ pkg.cmd:  mycommand:/Packages/MyPackage/main.py:run</code></pre>
 pkg.cmd: hello-verbose:/Packages/HelloWorld/main.py:hello_verbose</code></pre>
       <p>Format: <code>&lt;shell-command&gt;:&lt;/absolute/path/to/file.py&gt;:&lt;function_name&gt;</code></p>
       <ul>
-        <li><strong>shell-command</strong> &mdash; what the user types at the prompt</li>
-        <li><strong>path</strong> &mdash; absolute path to the Python file on the device</li>
-        <li><strong>function_name</strong> &mdash; the function called when the command runs</li>
+        <li><strong>shell-command</strong>: what the user types at the prompt</li>
+        <li><strong>path</strong>: absolute path to the Python file on the device</li>
+        <li><strong>function_name</strong>: the function called when the command runs</li>
       </ul>
 
       <!-- WRITING COMMANDS -->
@@ -116,7 +116,7 @@ from RPCortex import ok, info, warn, error, multi, inpt</code></pre>
       <ul>
         <li>Use <code>"{}".format(...)</code> instead of f-strings if you want to support older firmware</li>
         <li>Use <code>str.split(None, N)</code> positional form, not <code>split(maxsplit=N)</code></li>
-        <li>Keep imports inside functions where possible &mdash; the exec scope is loaded fresh each call and imports inside functions stay local, saving RAM</li>
+        <li>Keep imports inside functions where possible: the exec scope is loaded fresh each call and imports inside functions stay local, saving RAM</li>
         <li>Avoid large module imports at the top of the file; the exec scope must fit in available heap</li>
       </ul>
 
@@ -132,10 +132,10 @@ python make_pkg.py packages/ -o dist/</code></pre>
       <p>The output file is named after <code>pkg.name</code> from your <code>package.cfg</code> (lowercased).</p>
 
       <h3>Source vs. compiled (.mpy)</h3>
-      <p>By default <code>make_pkg.py</code> <strong>compiles your <code>.py</code> modules to <code>.mpy</code></strong> bytecode with <code>mpy-cross</code> &mdash; smaller on flash and faster to import, which matters on a 264&nbsp;KB Pico. The device's command loader imports a package's <code>.mpy</code> transparently when the <code>.py</code> is absent, so your <code>pkg.cmd</code> path in <code>package.cfg</code> stays the same (point it at the <code>.py</code> name either way).</p>
+      <p>By default <code>make_pkg.py</code> <strong>compiles your <code>.py</code> modules to <code>.mpy</code></strong> bytecode with <code>mpy-cross</code>: smaller on flash and faster to import, which matters on a 264&nbsp;KB Pico. The device's command loader imports a package's <code>.mpy</code> transparently when the <code>.py</code> is absent, so your <code>pkg.cmd</code> path in <code>package.cfg</code> stays the same (point it at the <code>.py</code> name either way).</p>
       <ul>
-        <li><strong>Compiled (default):</strong> needs <code>mpy-cross</code> &mdash; <code>pip install mpy-cross</code>. The compiler is run without <code>-march</code>, so the bytecode is architecture-neutral and runs on RP2040, RP2350, and ESP32 from one build.</li>
-        <li><strong>Source:</strong> pass <code>--raw</code> to ship the <code>.py</code> files unchanged. Needs only the Python 3 standard library &mdash; no <code>mpy-cross</code>.</li>
+        <li><strong>Compiled (default):</strong> needs <code>mpy-cross</code> (<code>pip install mpy-cross</code>). The compiler is run without <code>-march</code>, so the bytecode is architecture-neutral and runs on RP2040, RP2350, and ESP32 from one build.</li>
+        <li><strong>Source:</strong> pass <code>--raw</code> to ship the <code>.py</code> files unchanged. Needs only the Python 3 standard library: no <code>mpy-cross</code>.</li>
       </ul>
       <pre><code># ship readable source instead of compiled bytecode:
 python make_pkg.py packages/MyPackage --raw</code></pre>
@@ -149,7 +149,7 @@ Compression: ZIP_STORED (Pico-compatible, no zlib needed)
 Install on device: pkg install /path/to/mypackage.pkg</code></pre>
 
       <div class="note-box">
-        Compiled builds need <code>mpy-cross</code> (<code>pip install mpy-cross</code>). With <code>--raw</code>, <code>make_pkg.py</code> needs only the Python 3 standard library. Either way the archive is always <strong>ZIP_STORED</strong> &mdash; never deflate-compressed.
+        Compiled builds need <code>mpy-cross</code> (<code>pip install mpy-cross</code>). With <code>--raw</code>, <code>make_pkg.py</code> needs only the Python 3 standard library. Either way the archive is always <strong>ZIP_STORED</strong>: never deflate-compressed.
       </div>
 
       <!-- TESTING -->
@@ -164,7 +164,7 @@ mycommand some arguments here</code></pre>
 pkg info MyPackage</code></pre>
       <p>To remove it:</p>
       <pre><code>pkg remove MyPackage</code></pre>
-      <p>The command disappears from the shell immediately &mdash; no reboot needed.</p>
+      <p>The command disappears from the shell immediately: no reboot needed.</p>
 
       <h3>Common issues</h3>
       <table>

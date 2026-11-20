@@ -6,7 +6,7 @@ legacy: 1
 scripts: js/serial-device.js,js/packages.js
 ---
 <main>
-<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Packages</div><h1>Package Repository</h1><p class="lede">Browse available packages for RPCortex. Install directly to a connected device over USB &mdash; no WiFi, no REPL, no reboot required.</p></section>
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Packages</div><h1>Package Repository</h1><p class="lede">Browse available packages for RPCortex. Install directly to a connected device over USB: no WiFi, no REPL, no reboot required.</p></section>
 <!-- MAIN -->
   <section class="section">
     <div class="inner">
@@ -51,8 +51,8 @@ connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for 
       <div class="os-picker">
         <label for="osSelect">Packages for</label>
         <select id="osSelect">
-          <option value="v2">RPCortex v2 &mdash; compiled .app</option>
-          <option value="v1">RPCortex v1 &mdash; MicroPython .pkg</option>
+          <option value="v2">RPCortex v2: compiled .app</option>
+          <option value="v1">RPCortex v1: MicroPython .pkg</option>
         </select>
         <span id="osNote" class="os-note">Showing the v2 catalogue. Connect a device to match it automatically.</span>
       </div>
@@ -85,7 +85,7 @@ connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for 
       <!-- CLI REFERENCE -->
       <div style="margin-top:40px;">
         <div class="codeblock">
-          <div class="codeblock-label">v2 &mdash; or from the shell</div>
+          <div class="codeblock-label">v2, or from the shell</div>
           <pre>pkg update               <span class="dim"># refresh the list</span>
 pkg search web           <span class="dim"># or bare, to list everything</span>
 pkg install httpd
@@ -96,14 +96,14 @@ pkg remove httpd</pre>
         <p class="note" style="margin-top:14px;">The official repository is configured out of the
           box, so <code>pkg update</code> works on a device that has never been told where to look.
           Packages are native <code>.app</code> objects built for ARMv6-M, which is why one binary
-          runs on both the RP2040 and RP2350 parts &mdash; and on RP2350 they run
+          runs on both the RP2040 and RP2350 parts, and on RP2350 they run
           <strong>unprivileged</strong>, on a stack and a heap of their own, unable to reach the
           rest of the system.</p>
       </div>
 
       <div style="margin-top:28px;">
         <div class="codeblock">
-          <div class="codeblock-label">v1 &mdash; the MicroPython line</div>
+          <div class="codeblock-label">v1: the MicroPython line</div>
           <pre>pkg repo add https://raw.githubusercontent.com/dash1101/RPCortex-repo/main/repo/index.json
 pkg update
 pkg available
@@ -115,7 +115,7 @@ pkg install &lt;name&gt;</pre>
       <div class="pkgdev-cta">
         <div class="pkgdev-cta-text">
           <h3>Build your own package</h3>
-          <p>A v2 package is C compiled against the firmware ABI &mdash; about twenty lines for one
+          <p>A v2 package is C compiled against the firmware ABI: about twenty lines for one
              that registers a working shell command. The guide walks through writing it, building
              it, the three ways to get it onto a device, what the sandbox means while you are
              developing, and publishing it here.</p>

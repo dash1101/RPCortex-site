@@ -110,7 +110,7 @@
     var note = document.getElementById('osNote');
     if (note) {
       note.textContent = osDetected
-        ? 'Detected ' + osLabel + ' \u2014 showing packages for it.'
+        ? 'Detected ' + osLabel + '. Showing packages for it.'
         : 'Showing the v2 catalogue. Connect a device to match it automatically.';
     }
   }
@@ -352,7 +352,7 @@
     });
     if (!ready) {
       xferLogLine('[-] The device did not offer to receive. `put` needs an admin ' +
-                  'session \u2014 log in as root on the terminal first.', 'xfer-log-err');
+                  'session: log in as root on the terminal first.', 'xfer-log-err');
       xferTitle.textContent = 'Not logged in';
       xferSub.textContent   = 'Log in as an admin on the device, then try again.';
       return false;
@@ -390,7 +390,7 @@
     if (ok) {
       xferLogLine('[@] \'' + pkgName + '\' installed.', 'xfer-log-ok');
       xferTitle.textContent = pkgName + ' installed';
-      xferSub.textContent   = 'Its commands are live now \u2014 no reboot.';
+      xferSub.textContent   = 'Its commands are live now, with no reboot.';
     } else {
       xferLogLine('[?] The device did not confirm the install. Its output:',
                   'xfer-log-warn');
@@ -512,7 +512,7 @@
                title: 'Update from v' + inst + ' to v' + p.ver };
     }
     return { label: 'Re-install', disabled: false,
-             title: 'Already installed (v' + inst + ') — re-install' };
+             title: 'Already installed (v' + inst + '), re-install' };
   }
 
   function updateInstallButtons() {

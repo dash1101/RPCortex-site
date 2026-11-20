@@ -110,7 +110,8 @@
     var r = newest(d);
     if (!r) return;
     var vals = { display: r.display, build: r.build, long: longName(r), date: fmtDate(r.date),
-                 summary: r.summary, codename: r.codename, url: r.url, tag: r.tag };
+                 summary: r.summary, codename: r.codename, url: r.url, tag: r.tag,
+                 commit: r.commit ? String(r.commit).slice(0, 8) : null };
     Array.prototype.forEach.call(document.querySelectorAll('[data-rel]'), function (el) {
       var v = vals[el.getAttribute('data-rel')];
       if (v == null) return;

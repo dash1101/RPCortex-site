@@ -185,7 +185,7 @@
 
       var buf = activeDevice.rxBuffer;
       if (buf.indexOf('>') === -1) {
-        connectLabel.textContent = 'Connected — make sure the shell is at a prompt';
+        connectLabel.textContent = 'Connected. Make sure the shell is at a prompt.';
         connectLabel.style.color = 'var(--yellow)';
       }
       activeDevice.clearBuffer();

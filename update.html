@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>OS Update | RPCortex</title><meta name="description" content=""><meta name="theme-color" content="#090f1d"><link rel="canonical" href="https://rpc.novalabs.app/update.html"><meta property="og:site_name" content="RPCortex"><meta property="og:type" content="website"><meta property="og:title" content="OS Update | RPCortex"><meta property="og:description" content=""><meta property="og:url" content="https://rpc.novalabs.app/update.html"><meta property="og:image" content="https://rpc.novalabs.app/img/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"><link rel="stylesheet" href="./css/legacy.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img class="wordmark" src="./img/rpcortex-wordmark-sm.png" alt="RPCortex"></a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html">Get</a><a href="./docs/v2.html">Docs</a><a href="./packages.html">Packages</a><a href="./releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
-<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Update</div><h1>OS Update</h1><p class="lede">Update RPCortex from the browser while your device is running &mdash; no WiFi required on the device, no raw REPL, no full reflash.</p></section>
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Update</div><h1>OS Update</h1><p class="lede">Update RPCortex from the browser while your device is running: no WiFi required on the device, no raw REPL, no full reflash.</p></section>
 <section class="wrap" style="padding-bottom:6px"><div class="info"><strong>Running RPCortex v2?</strong> A v2 device updates itself: run <code>update check</code> and <code>update install</code> on the board, which verifies a checksum and keeps the old firmware to go back to. This page updates the older MicroPython release (v1) over USB.</div></section>
 <!-- MAIN -->
   <section class="section">
@@ -118,7 +118,7 @@
             <ol class="done-next" style="margin-top:12px;">
               <li>Wait for the device to finish rebooting (a few seconds).</li>
               <li>Reconnect with PuTTY at <strong>115200 baud</strong>.</li>
-              <li>Log in &mdash; the update is live immediately.</li>
+              <li>Log in. The update is live straight away.</li>
             </ol>
           </div>
 
@@ -134,12 +134,12 @@
       <div style="margin-top:40px;">
         <div class="codeblock">
           <div class="codeblock-label">Or update from the shell (device needs WiFi or a staged .rpc file)</div>
-          <pre><span style="color:var(--text-muted)"># Option A — download and apply directly (WiFi required)</span>
+          <pre><span style="color:var(--text-muted)"># Option A: download and apply directly (WiFi required)</span>
 update online
-<span style="color:var(--text-muted)"># — or manually specify a file:</span>
+<span style="color:var(--text-muted)"># or name a file yourself:</span>
 update from-file /path/to/RPC-Vela-v1.0-dev.rpc
 
-<span style="color:var(--text-muted)"># Option B — full wipe and reinstall from a staged .rpc</span>
+<span style="color:var(--text-muted)"># Option B: full wipe and reinstall from a staged .rpc</span>
 update reinstall /path/to/os.rpc</pre>
         </div>
       </div>
@@ -161,7 +161,7 @@ update reinstall /path/to/os.rpc</pre>
         </p>
         <p>
           For a <strong>fresh install</strong> on a board running bare MicroPython,
-          use the <a href="./install.html">Web Installer</a> instead &mdash; it uses raw
+          use the <a href="./install.html">Web Installer</a> instead: it uses raw
           REPL mode which does not require RPCortex to be running.
         </p>
       </div>
@@ -169,4 +169,4 @@ update reinstall /path/to/os.rpc</pre>
     </div><!-- /.inner -->
   </section>
 </main>
-<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img src="./logo.svg" alt="RPCortex"></a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &mdash; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/serial-device.js"></script><script src="./js/update.js"></script></body></html>
+<footer class="foot"><div class="wrap foot-in"><a class="brand" href="./"><img src="./logo.svg" alt="RPCortex"></a><div class="foot-links"><a href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs</a><a href="https://github.com/dash1101/RPCortex" target="_blank" rel="noopener">GitHub</a><a href="https://discord.gg/hcEWwSNDBa" target="_blank" rel="noopener">Discord</a><a href="./roadmap.html">Roadmap</a><a href="https://github.com/dash1101/RPCortex/issues" target="_blank" rel="noopener">Issues</a><a href="./privacy.html">Privacy</a></div><small>Built by dash1101 &middot; &copy; 2026 &middot; all rights reserved</small></div></footer><script src="./ds/ds.js"></script><script src="./js/releases.js"></script><script src="./js/serial-device.js"></script><script src="./js/update.js"></script></body></html>

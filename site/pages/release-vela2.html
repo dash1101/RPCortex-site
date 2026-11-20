@@ -8,14 +8,14 @@ scripts: js/spy.js
 ---
 <main>
 <section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Release notes</div><h1>Vela II Release Notes</h1><p class="lede">v2.00-beta &nbsp;&bull;&nbsp; Codenamed <strong>Vela&nbsp;II</strong> &nbsp;&bull;&nbsp; The C++ rewrite &nbsp;&bull;&nbsp; <strong>Beta pre-release</strong>; v1.0 &ldquo;Vela&rdquo; is still the stable one</p></section>
-<div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#headline">The headline</a><a href="#sandbox">Packages cannot kill it</a><a href="#new">New in v2</a><a href="#matches">What matches v1</a><a href="#hardware">Boards</a><a href="#installing">Installing</a><a href="#upgrading">Upgrading from v1</a><a href="#limitations">Known limitations</a></nav><article class="docs-body prose legacy-prose"><p>The rewrite. RPCortex was MicroPython for four versions; this one is C++, and almost
+<div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#headline">The headline</a><a href="#sandbox">The package sandbox</a><a href="#new">New in v2</a><a href="#matches">What matches v1</a><a href="#hardware">Boards</a><a href="#installing">Installing</a><a href="#upgrading">Upgrading from v1</a><a href="#limitations">Known limitations</a></nav><article class="docs-body prose legacy-prose"><p>The rewrite. RPCortex was MicroPython for four versions; this one is C++, and almost
          everything underneath is different even though the shell is deliberately familiar.</p>
 
       <h2 id="headline">The headline</h2>
 
       <h3>No interpreter</h3>
-      <p>At 230&nbsp;MHz &mdash; the clock v1's score was taken at &mdash; a Pico 2&nbsp;W scores
-         about <strong>1.05 million</strong> on RPCMark against a v1 device's 5,000&ndash;6,000:
+      <p>At 230&nbsp;MHz (the clock v1's score was taken at) a Pico 2&nbsp;W scores
+         about <strong>1.05 million</strong> on RPCMark against a v1 device's 5,000 to 6,000:
          roughly <strong>190&times;</strong>. That is not a projection: <code>bench</code>
          runs the same workload as <code>tools/bench.py</code> does on v1, same iteration counts,
          so the two numbers are the same measurement taken twice. At the 150&nbsp;MHz v2 starts
@@ -23,9 +23,9 @@ scripts: js/spy.js
 
       <h3>One image, drag and drop</h3>
       <p>No firmware to flash and then files to paste on top of it. Hold BOOTSEL, drop a
-         <code>.uf2</code>, done &mdash; and after that the device updates itself over the air.</p>
+         <code>.uf2</code> and that is it. After that the device updates itself over the air.</p>
 
-      <h2 id="sandbox">Packages cannot take the device down</h2>
+      <h2 id="sandbox">On RP2350, a package cannot take the device down</h2>
       <p>The part with no equivalent in v1 at all. On RP2350 a package runs
          <strong>unprivileged</strong>, with the memory protection unit describing exactly five
          regions it may touch, and every pointer it hands the firmware range-checked against
@@ -41,8 +41,8 @@ scripts: js/spy.js
       </table>
       <div class="note-box">
         That last row sounds trivial and is not. <code>havoc</code> is a package built to attack
-        the ABI from inside the sandbox &mdash; null pointers, pointers into flash, lengths that
-        overflow, unterminated strings, handles that were never opened &mdash; and all 62 of its
+        the ABI from inside the sandbox: null pointers, pointers into flash, lengths that
+        overflow, unterminated strings, handles that were never opened, and all 62 of its
         checks have to come back as clean refusals.
       </div>
 
@@ -59,7 +59,7 @@ scripts: js/spy.js
         <li><strong>A USB drive.</strong> <code>download</code> presents a real FAT volume, so
             files move by drag and drop in both directions instead of over the serial line.</li>
         <li><strong>Bluetooth.</strong> The same chip does both radios. v1 could not reach
-            Classic at all &mdash; MicroPython's module is BLE only &mdash; so anything that plays
+            Classic at all (MicroPython's module is BLE only), so anything that plays
             audio was out of reach.</li>
         <li><strong>Real background work.</strong> v1's <code>task run</code> entered a foreground
             scheduler: you got scheduled tasks or an interactive shell, not both. Here the timer
@@ -77,7 +77,7 @@ scripts: js/spy.js
          thirty aliases. <code>wifi</code> with all its subcommands, <code>ping</code>,
          <code>nslookup</code>, <code>ntp</code>. <code>startup</code>, <code>task</code>,
          <code>service</code>, <code>watch</code>. The <code>.rps</code> scripting language,
-         unchanged &mdash; scripts carry over as they are.</p>
+         unchanged: scripts carry over as they are.</p>
       <p>And the console itself: v1's tagged output, colours and boot banner, checked byte for
          byte against the original escape sequences.</p>
 
@@ -94,7 +94,7 @@ scripts: js/spy.js
       <div class="warn-box">
         <strong>The RP2040 images have not been booted.</strong> They build, both image checks
         pass on them, and the flash layout was verified by reading the constant back out of the
-        compiled firmware &mdash; but no Pico or Pico W has run one. Every hardware result quoted
+        compiled firmware, but no Pico or Pico W has run one. Every hardware result quoted
         here is from a Pico 2 W. That is what pre-release means, and it is the first thing worth
         confirming if you have one of those boards.
       </div>
@@ -102,7 +102,7 @@ scripts: js/spy.js
       <p><strong>The RP2040 boards are back.</strong> v1.0 had to drop them because the
          multitasking build did not fit in 264 KB of RAM; without an interpreter it does. They
          hold 2 MB of flash against the RP2350's 4, so the firmware is built for size there and
-         the filesystem is smaller &mdash; with wireless, Bluetooth, TLS and over-the-air updates
+         the filesystem is smaller, with wireless, Bluetooth, TLS and over-the-air updates
          all still in. What they do not get is the package sandbox: ARMv6-M protection regions are
          power-of-two sized and aligned to their own size, so the five a package needs cost more
          RAM than those boards have.</p>
@@ -132,7 +132,7 @@ scripts: js/spy.js
       <h2 id="limitations">Known limitations</h2>
       <ul>
         <li><strong>Fewer packages than v1.</strong> Porting the rest is the main distance left to
-            parity &mdash; the <a href="packages">Packages</a> page lists what is in the v2 index
+            parity: the <a href="packages">Packages</a> page lists what is in the v2 index
             today.</li>
         <li><strong>SD cards are built but unproven.</strong> The card driver, a read-only FAT
             reader and the <code>sd</code> command are in the RP2350 images, and <code>/sd</code>
@@ -148,7 +148,7 @@ scripts: js/spy.js
       </ul>
 
       <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">
-        RPCortex Vela II &mdash; v2.00-beta &nbsp;&bull;&nbsp; by
+        RPCortex Vela II: v2.00-beta &nbsp;&bull;&nbsp; by
         <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.
         Earlier releases: <a href="release-vela">v1.0 Vela</a> &middot;
         <a href="release">v0.9.1 Pulsar</a>.

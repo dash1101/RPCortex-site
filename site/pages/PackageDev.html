@@ -1,15 +1,15 @@
 ---
 title: Package Development Guide
-description: Write, build and publish a package for RPCortex v2 — compiled .app files that register their own shell commands.
+description: Write, build and publish a package for RPCortex v2: compiled .app files that register their own shell commands.
 nav: docs
 path: PackageDev.html
 legacy: 1
 scripts: js/spy.js
 ---
 <main>
-<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Guide</div><h1>Build a Package</h1><p class="lede">RPCortex v2 &mdash; a package is C, compiled, loaded at runtime</p></section>
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Guide</div><h1>Build a Package</h1><p class="lede">RPCortex v2: a package is C, compiled, loaded at runtime</p></section>
 <div class="wrap docs"><nav class="docs-nav" aria-label="On this page"><div class="tag">On this page</div><a href="#shortest">The shortest one</a><a href="#build">Building it</a><a href="#push">Getting it onto a device</a><a href="#abi">What a package can call</a><a href="#rules">The four rules</a><a href="#sandbox">What the sandbox does</a><a href="#tui">Full-screen packages</a><a href="#publish">Getting it listed</a><a href="#v1">Coming from v1</a></nav><article class="docs-body prose legacy-prose"><p>A package is a compiled <code>.app</code> file. The OS loads it, relocates it, runs its
-         <code>app_main</code>, and the commands it registers are live immediately &mdash; no
+         <code>app_main</code>, and the commands it registers are live immediately: no
          reboot. It is real machine code, not a script, and on RP2350 it runs
          <strong>unprivileged</strong>.</p>
 
@@ -42,7 +42,7 @@ extern "C" int app_main(int arg) {
         <li><code>RPC_APP_VER(name, version)</code> stamps a header the loader checks. Without it
             the file is not a package.</li>
         <li><code>app_main</code> runs once, when the package loads. Register commands here and
-            return &mdash; it is not a place to loop.</li>
+            return: it is not a place to loop.</li>
         <li><code>rpc_register_command(name, help, fn)</code> is what puts a word in the shell. The
             help string is what <code>help all</code> shows.</li>
       </ul>
@@ -73,7 +73,7 @@ extern "C" int app_main(int arg) {
         <pre><code>tools/rpc-push.sh os/build_pico2_w/apps/greet.app /dev/ttyACM0</code></pre>
       </div>
       <p>Then <code>pkg install /greet.app</code> on the device. The script uses the device's own
-         <code>put</code> command, so nothing else needs installing &mdash; but it does need a
+         <code>put</code> command, so nothing else needs installing, but it does need a
          logged-in admin session, because writing files does.</p>
 
       <h3>Over USB, by dragging it</h3>
@@ -97,20 +97,20 @@ extern "C" int app_main(int arg) {
           <tr><td>Tasks</td><td><code>fw_task_spawn</code>, <code>fw_task_sleep_ms</code>, <code>fw_task_should_stop</code></td></tr>
           <tr><td>Network</td><td><code>fw_net_connected</code>, <code>fw_net_resolve</code>, <code>fw_http_get</code>, <code>fw_tcp_listen</code></td></tr>
           <tr><td>Hardware</td><td><code>fw_gpio_*</code>, <code>fw_i2c_*</code>, <code>fw_spi_*</code>, <code>fw_pio_*</code>, <code>fw_adc_read</code></td></tr>
-          <tr><td>Screen</td><td><code>fw_tui_*</code> &mdash; a full-screen drawing surface</td></tr>
-          <tr><td>The shell</td><td><code>fw_shell_run</code> &mdash; run a command line and capture its output</td></tr>
+          <tr><td>Screen</td><td><code>fw_tui_*</code>: a full-screen drawing surface</td></tr>
+          <tr><td>The shell</td><td><code>fw_shell_run</code>: run a command line and capture its output</td></tr>
         </tbody>
       </table>
       <div class="note-box">
-        <strong>An ABI call is not free.</strong> A package cannot branch into the firmware &mdash;
-        flash is unreachable from unprivileged code &mdash; so every <code>fw_*</code> call is a
+        <strong>An ABI call is not free.</strong> A package cannot branch into the firmware:
+        flash is unreachable from unprivileged code, so every <code>fw_*</code> call is a
         supervisor call underneath, measured at about <strong>300 cycles</strong>. The SDK builds
         that for you and it never needs thinking about, except in a tight loop, where hoisting the
         call out is worth it.
       </div>
 
       <h3>Running a shell command</h3>
-      <p>A package can run anything the shell can and read back what it printed &mdash; pipes,
+      <p>A package can run anything the shell can and read back what it printed: pipes,
          chaining and redirection included, because it is the same runner that handles a typed
          line:</p>
       <div class="codeblock">
@@ -124,7 +124,7 @@ fw_shell_run("ntp sync", NULL, 0);   // for its effect, output ignored</code></p
       </div>
       <div class="note-box">
         It runs with the <strong>session's</strong> privileges, exactly as if the logged-in user
-        had typed it &mdash; not the package's. A guest session cannot use a package to reach
+        had typed it, not the package's. A guest session cannot use a package to reach
         admin-only commands.
       </div>
 
@@ -134,7 +134,7 @@ fw_shell_run("ntp sync", NULL, 0);   // for its effect, output ignored</code></p
             no <code>&lt;string.h&gt;</code>. Use the <code>fw_*</code> equivalents. This is what
             keeps a package a few kilobytes.</li>
         <li><strong>Keep big buffers off the stack.</strong> A package gets its own stack, and
-            firmware called through the ABI runs on it &mdash; so a large local competes with
+            firmware called through the ABI runs on it, so a large local competes with
             whatever the firmware needs underneath. File-scope <code>static</code> is the answer.</li>
         <li><strong>Yield in long loops.</strong> Anything that runs for a while should call an ABI
             function periodically; that is what feeds the watchdog and lets Ctrl+C through.
@@ -147,7 +147,7 @@ fw_shell_run("ntp sync", NULL, 0);   // for its effect, output ignored</code></p
       <h2 id="sandbox">What the sandbox does</h2>
       <p>On RP2350 a package runs unprivileged, with the memory protection unit describing exactly
          five regions it may touch: its code, its data, its call veneers, its stack and its heap.
-         Everything else is denied &mdash; the OS's tables, the peripherals, and flash.</p>
+         Everything else is denied: the OS's tables, the peripherals, and flash.</p>
       <p>Every pointer a package hands the firmware is range-checked against those regions. A
          package cannot ask the OS to read or write memory on its behalf that it could not touch
          itself.</p>
@@ -155,7 +155,7 @@ fw_shell_run("ntp sync", NULL, 0);   // for its effect, output ignored</code></p
          device.</strong> A bad pointer produces a report naming the package and the offset, and
          the shell carries on. So does a loop that never returns, and so does running out of stack.
          On RP2040 there are not enough protection regions to spare, so packages run with the OS's
-         privileges &mdash; test on a Pico 2 if you can.</p>
+         privileges: test on a Pico 2 if you can.</p>
       <div class="note-box">
         <code>pkg install havoc</code> then <code>havoc</code> runs 62 checks that the sandbox
         refuses everything it should. It is worth reading its source if you are writing something
@@ -165,8 +165,7 @@ fw_shell_run("ntp sync", NULL, 0);   // for its effect, output ignored</code></p
       <h2 id="tui">Full-screen packages</h2>
       <p><code>fw_tui_*</code> gives a package the same drawing surface the built-in apps use: a
          character grid with attributes, a diffing renderer that only sends what changed, and key
-         events including the arrows. <code>tuidemo</code> in the repository is the worked example
-         &mdash; lists, panels and input handling in about two hundred lines.</p>
+         events including the arrows. <code>tuidemo</code> in the repository is the worked example: lists, panels and input handling in about two hundred lines.</p>
       <p>The grid lives in the firmware rather than the package, so a package that crashes
          mid-draw cannot leave the terminal in a state nothing can recover.</p>
 
@@ -192,14 +191,14 @@ fw_shell_run("ntp sync", NULL, 0);   // for its effect, output ignored</code></p
       </div>
       <p><strong>The size and hash have to match the file.</strong> A device refuses anything whose
          hash disagrees, and that presents as a corrupt download rather than as a wrong manifest.</p>
-      <p><code>arch</code> is <code>armv6m</code> for a package built to run on every board &mdash;
+      <p><code>arch</code> is <code>armv6m</code> for a package built to run on every board:
          ARMv6-M code runs on RP2350 too, and the SDK builds packages that way by default, so one
          file serves all four.</p>
 
       <h2 id="v1">Coming from v1</h2>
       <p>A v1 package is Python source in a ZIP renamed <code>.pkg</code>. There is no Python in
-         v2, so it needs rewriting rather than converting. The shape carries over &mdash; register
-         a command, do a thing, return &mdash; and the <code>fw_*</code> calls line up closely with
+         v2, so it needs rewriting rather than converting. The shape carries over: register
+         a command, do a thing, return, and the <code>fw_*</code> calls line up closely with
          what the v1 API offered.</p>
       <p>The <a href="PackageDev-v1">v1 guide</a> is still here for devices still running it.</p>
 

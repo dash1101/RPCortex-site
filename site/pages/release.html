@@ -14,9 +14,9 @@ scripts: js/spy.js
       </div>
 
       <h2 id="whats-new">What&rsquo;s New in Pulsar</h2>
-      <p>The β8 &ldquo;Nebula&rdquo; line graduates to <strong>Pulsar</strong> — a major step that ships stability improvements, large-file safety, OTA updates, <em>and</em> the shell-power features (pipes, scripting, automation) all in one release. The data directory is now <code>/Pulsar/</code>; updating devices migrate automatically.</p>
+      <p>The β8 &ldquo;Nebula&rdquo; line graduates to <strong>Pulsar</strong>: a major step that ships stability improvements, large-file safety, OTA updates, <em>and</em> the shell-power features (pipes, scripting, automation) all in one release. The data directory is now <code>/Pulsar/</code>; updating devices migrate automatically.</p>
 
-      <h2 id="shell">Shell &mdash; Quality of Life</h2>
+      <h2 id="shell">Shell: Quality of Life</h2>
 
       <h3>Persistent aliases</h3>
       <p><code>alias ll=ls -l</code> now <em>survives reboots</em>. Aliases are stored in <code>/Pulsar/Registry/aliases.cfg</code>, loaded at shell start, and saved immediately on every <code>alias</code> or <code>unalias</code>. Critical built-ins can never be shadowed by an alias.</p>
@@ -39,9 +39,9 @@ watch meminfo</code></pre>
       <h3>date set</h3>
       <p>Set the real-time clock from the shell so session-log timestamps are correct:</p>
       <pre><code>date set 2026-06-10 14:30:00</code></pre>
-      <p>Bare <code>date</code> still prints the current time. The RTC is not battery-backed on a bare Pico — it resets on power loss.</p>
+      <p>Bare <code>date</code> still prints the current time. The RTC is not battery-backed on a bare Pico: it resets on power loss.</p>
 
-      <h2 id="filesystem">Filesystem &mdash; Safer &amp; Friendlier</h2>
+      <h2 id="filesystem">Filesystem: Safer &amp; Friendlier</h2>
 
       <h3>Large-file cp / mv no longer OOM</h3>
       <p>Copies now stream in 1&nbsp;KB chunks instead of loading the entire file into RAM at once. On a 264&nbsp;KB Pico 1 this was the difference between success and a <code>MemoryError</code> on files larger than ~100&nbsp;KB. <code>mv</code> uses an instant same-filesystem rename when possible and only falls back to streamed copy-then-delete across filesystems.</p>
@@ -67,12 +67,12 @@ ls /Core | sort | head -10</code></pre>
       <pre><code>wifi connect &amp;&amp; pkg update
 update online || echo "Update failed"
 ntp sync -s &amp;&amp; startup add task run</code></pre>
-      <p>Exit status is derived from whether a command called <code>RPCortex.error()</code> or <code>fatal()</code> &mdash; no per-command changes needed; every existing built-in participates automatically.</p>
+      <p>Exit status is derived from whether a command called <code>RPCortex.error()</code> or <code>fatal()</code>: no per-command changes needed; every existing built-in participates automatically.</p>
 
       <h3>.rps scripting</h3>
       <p>Write and run scripts from the shell:</p>
       <pre><code>script myscript.rps</code></pre>
-      <p>Supported constructs: <code>set</code>, <code>$var</code> expansion, <code>inc</code>/<code>dec</code>, <code>prompt</code> (read input), <code>capture</code> (store a command&rsquo;s output), <code>if</code>/<code>else</code>/<code>end</code>, <code>while</code>/<code>end</code>, <code>break</code>/<code>continue</code>, and <code>stop</code>. Conditions: <code>eq</code>, <code>ne</code>, <code>gt</code>, <code>lt</code>, <code>ge</code>, <code>le</code>, <code>contains</code>, <code>exists</code>, <code>empty</code>, and <code>not</code> &mdash; or any shell command (non-zero exit = false). Scripts execute through the live shell engine, so all commands, pipes, and aliases work. See the <a href="docs?v=v0.9.1#automation">scripting reference</a> for examples.</p>
+      <p>Supported constructs: <code>set</code>, <code>$var</code> expansion, <code>inc</code>/<code>dec</code>, <code>prompt</code> (read input), <code>capture</code> (store a command&rsquo;s output), <code>if</code>/<code>else</code>/<code>end</code>, <code>while</code>/<code>end</code>, <code>break</code>/<code>continue</code>, and <code>stop</code>. Conditions: <code>eq</code>, <code>ne</code>, <code>gt</code>, <code>lt</code>, <code>ge</code>, <code>le</code>, <code>contains</code>, <code>exists</code>, <code>empty</code>, and <code>not</code>, or any shell command (non-zero exit = false). Scripts execute through the live shell engine, so all commands, pipes, and aliases work. See the <a href="docs?v=v0.9.1#automation">scripting reference</a> for examples.</p>
 
       <h3>Startup tasks</h3>
       <p>Commands run automatically after login from <code>/Pulsar/Registry/startup.cfg</code>:</p>
@@ -86,42 +86,42 @@ startup remove 1</code></pre>
       <pre><code>task add 300 fetch           # run fetch every 5 minutes
 task run                     # foreground scheduler (q / Ctrl+C to stop)
 startup add task run         # make device headless/autonomous</code></pre>
-      <p>The scheduler stays responsive via <code>select()</code> — keyboard input is checked between ticks.</p>
+      <p>The scheduler stays responsive via <code>select()</code>: keyboard input is checked between ticks.</p>
 
       <h2 id="packages">Packages &amp; Updates</h2>
 
       <h3>Over-the-air updates</h3>
       <p>RPCortex can check for and install updates entirely from the shell over WiFi:</p>
       <ul>
-        <li><strong><code>update check</code></strong> &mdash; asks the update server whether a newer release exists.</li>
-        <li><strong><code>update online</code></strong> &mdash; downloads and installs the latest release, then reboots. Accounts, WiFi profiles, settings, and installed packages are preserved.</li>
-        <li><strong><code>update online --force</code></strong> &mdash; reinstalls even if already current.</li>
-        <li><strong><code>update from-file &lt;path.rpc&gt;</code></strong> &mdash; apply a local archive.</li>
+        <li><strong><code>update check</code></strong>: asks the update server whether a newer release exists.</li>
+        <li><strong><code>update online</code></strong>: downloads and installs the latest release, then reboots. Accounts, WiFi profiles, settings, and installed packages are preserved.</li>
+        <li><strong><code>update online --force</code></strong>: reinstalls even if already current.</li>
+        <li><strong><code>update from-file &lt;path.rpc&gt;</code></strong>: apply a local archive.</li>
       </ul>
 
       <h3>New built-in: NTP</h3>
       <p>The NTP package ships built-in and syncs the hardware RTC over UDP:</p>
       <pre><code>ntp sync              # sync and print result
-ntp sync -s           # silent — no output unless error (ideal for startup tasks)</code></pre>
+ntp sync -s           # silent: no output unless error (ideal for startup tasks)</code></pre>
       <p>Handles the MicroPython year-2000 epoch offset automatically.</p>
 
       <h3>New packages</h3>
       <ul>
-        <li><strong><code>calc</code></strong> &mdash; evaluate math expressions: <code>calc 3 * (4 + 2) / 1.5</code>, <code>calc sqrt(2)</code>, <code>calc pi * r**2</code>. Full <code>math</code> module available.</li>
-        <li><strong><code>gpio</code></strong> &mdash; <code>gpio read/set/toggle/pwm/adc</code> from the shell. Named pins (<code>LED</code>) supported on all boards.</li>
-        <li><strong><code>i2cscan</code></strong> &mdash; scan I&sup2;C buses and display discovered device addresses.</li>
-        <li><strong><code>dht</code></strong> &mdash; read temperature &amp; humidity from a DHT11/DHT22 sensor: <code>dht read 15</code>.</li>
-        <li><strong><code>speedtest</code></strong> &mdash; measure WiFi latency and download throughput.</li>
-        <li><strong><code>backup</code></strong> &mdash; snapshot and restore the registry, accounts, WiFi, aliases, and tasks.</li>
-        <li><strong><code>sysmon</code></strong> &mdash; a live htop-style dashboard with a configurable refresh rate (default 750&nbsp;ms, adjustable with <code>+</code>/<code>-</code>) and a rough CPU-load estimate alongside the RAM/flash bars.</li>
-        <li><strong><code>ask</code></strong> &mdash; ask an AI from the shell (Ollama, Groq, Claude, OpenAI).</li>
+        <li><strong><code>calc</code></strong>: evaluate math expressions: <code>calc 3 * (4 + 2) / 1.5</code>, <code>calc sqrt(2)</code>, <code>calc pi * r**2</code>. Full <code>math</code> module available.</li>
+        <li><strong><code>gpio</code></strong>: <code>gpio read/set/toggle/pwm/adc</code> from the shell. Named pins (<code>LED</code>) supported on all boards.</li>
+        <li><strong><code>i2cscan</code></strong>: scan I&sup2;C buses and display discovered device addresses.</li>
+        <li><strong><code>dht</code></strong>: read temperature &amp; humidity from a DHT11/DHT22 sensor: <code>dht read 15</code>.</li>
+        <li><strong><code>speedtest</code></strong>: measure WiFi latency and download throughput.</li>
+        <li><strong><code>backup</code></strong>: snapshot and restore the registry, accounts, WiFi, aliases, and tasks.</li>
+        <li><strong><code>sysmon</code></strong>: a live htop-style dashboard with a configurable refresh rate (default 750&nbsp;ms, adjustable with <code>+</code>/<code>-</code>) and a rough CPU-load estimate alongside the RAM/flash bars.</li>
+        <li><strong><code>ask</code></strong>: ask an AI from the shell (Ollama, Groq, Claude, OpenAI).</li>
       </ul>
 
       <h3>fetch and bench are packages</h3>
-      <p><code>fetch</code> (PicoFetch) and <code>bench</code> (RPCMark &mdash; now its permanent name, formerly NebulaMark/PulseMark) have moved from <code>Core/</code> into proper packages under <code>/Packages/</code>. They are now updatable independently with <code>pkg upgrade PicoFetch</code> &mdash; no full OS flash needed.</p>
+      <p><code>fetch</code> (PicoFetch) and <code>bench</code> (RPCMark: now its permanent name, formerly NebulaMark/PulseMark) have moved from <code>Core/</code> into proper packages under <code>/Packages/</code>. They are now updatable independently with <code>pkg upgrade PicoFetch</code>: no full OS flash needed.</p>
 
       <h3>One-click install state on the web</h3>
-      <p>The <a href="packages">Packages page</a> now reads what&rsquo;s already installed on a connected device and labels each card accordingly &mdash; <strong>Install</strong>, <strong>Update</strong> (when the repo has a newer version), or <strong>Re-install</strong>. The check works whether the device is at the shell prompt or the login screen, so it never assumes a logged-in session.</p>
+      <p>The <a href="packages">Packages page</a> now reads what&rsquo;s already installed on a connected device and labels each card accordingly: <strong>Install</strong>, <strong>Update</strong> (when the repo has a newer version), or <strong>Re-install</strong>. The check works whether the device is at the shell prompt or the login screen, so it never assumes a logged-in session.</p>
 
       <h3>Web installer works on a running device</h3>
       <p>The <a href="install">Web Installer</a> no longer requires the device to be sitting at a bare MicroPython REPL. If RPCortex is already running, it automatically drops to the REPL (via the built-in <code>rawrepl</code> escape, which now works at the login prompt too) before flashing.</p>
@@ -139,8 +139,8 @@ ntp sync -s           # silent — no output unless error (ideal for startup tas
       <p><code>curl</code> now accepts: <code>-X &lt;method&gt;</code>, <code>-d &lt;body&gt;</code>, <code>-H &lt;header&gt;</code>, <code>-o &lt;file&gt;</code>, <code>-s</code> (silent), <code>-I</code> (headers only), <code>--timeout &lt;secs&gt;</code>.</p>
 
       <h3>wifi autoconnect and silent flags</h3>
-      <p><code>wifi autoconnect</code> (or <code>wifi auto</code>) scans nearby networks and connects to the saved one with the strongest signal — no prompts, no SSID argument required. Ideal for startup tasks.</p>
-      <p><code>wifi connect -s</code> and <code>ntp sync -s</code> suppress output unless an error occurs — designed for use in startup scripts.</p>
+      <p><code>wifi autoconnect</code> (or <code>wifi auto</code>) scans nearby networks and connects to the saved one with the strongest signal: no prompts, no SSID argument required. Ideal for startup tasks.</p>
+      <p><code>wifi connect -s</code> and <code>ntp sync -s</code> suppress output unless an error occurs: designed for use in startup scripts.</p>
 
       <h3>Owner and timezone personalisation</h3>
       <pre><code>reg set System.Owner "dash"
@@ -148,10 +148,10 @@ reg set System.TZ_Offset -5</code></pre>
       <p>Owner name appears in <code>fetch</code> next to the device ID. Timezone offset (whole hours from UTC) is applied to the <code>date</code> display. <code>ntp sync</code> now prints the computed local time directly, so you don&rsquo;t have to run <code>date</code> afterwards.</p>
 
       <h3>Everything in the settings app</h3>
-      <p>The <code>settings</code> panel was rebuilt to match the SysMon look and now edits the personalisation keys directly &mdash; no more reaching for <code>reg set</code>. Press <code>o</code> / <code>t</code> / <code>d</code> / <code>i</code> to set the owner, timezone, device ID, and idle-logout timeout. The panel also redraws efficiently: toggling a setting repaints just that row instead of clearing the whole screen.</p>
+      <p>The <code>settings</code> panel was rebuilt to match the SysMon look and now edits the personalisation keys directly: no more reaching for <code>reg set</code>. Press <code>o</code> / <code>t</code> / <code>d</code> / <code>i</code> to set the owner, timezone, device ID, and idle-logout timeout. The panel also redraws efficiently: toggling a setting repaints just that row instead of clearing the whole screen.</p>
 
       <h3>Idle auto-logout</h3>
-      <p>Set <code>Settings.Idle_Logout</code> (minutes, in the settings app or registry) and the shell logs out automatically after that long with no input &mdash; a small safety feature for shared or exposed devices. <code>0</code> disables it; recovery mode is never logged out.</p>
+      <p>Set <code>Settings.Idle_Logout</code> (minutes, in the settings app or registry) and the shell logs out automatically after that long with no input: a small safety feature for shared or exposed devices. <code>0</code> disables it; recovery mode is never logged out.</p>
 
       <h3>users command</h3>
       <p><code>users</code> lists every account on the device with <code>active</code> / <code>admin</code> / <code>nopass</code> tags, alongside its home directory.</p>
@@ -159,23 +159,23 @@ reg set System.TZ_Offset -5</code></pre>
       <h2 id="recovery">Recovery Tools</h2>
       <p>A new set of recovery commands live in <code>recovery.lp</code> (loaded separately from <code>system.lp</code> so they work even if system commands are damaged):</p>
       <ul>
-        <li><strong><code>fscheck</code></strong> &mdash; walk the filesystem, report missing files and stat errors.</li>
-        <li><strong><code>diag</code></strong> &mdash; hardware diagnostics: CPU, RAM, flash, clock, WiFi status.</li>
-        <li><strong><code>logdump [n]</code></strong> &mdash; print the last <em>n</em> lines of <code>/Pulsar/Logs/latest.log</code>.</li>
-        <li><strong><code>regreset</code></strong> &mdash; delete <code>registry.cfg</code> (POST rebuilds from template); keeps <code>user.cfg</code> and <code>networks.cfg</code>.</li>
-        <li><strong><code>pkgdisable</code> / <code>pkgenable</code></strong> &mdash; comment/uncomment a package entry in <code>programs.lp</code> without uninstalling.</li>
+        <li><strong><code>fscheck</code></strong>: walk the filesystem, report missing files and stat errors.</li>
+        <li><strong><code>diag</code></strong>: hardware diagnostics: CPU, RAM, flash, clock, WiFi status.</li>
+        <li><strong><code>logdump [n]</code></strong>: print the last <em>n</em> lines of <code>/Pulsar/Logs/latest.log</code>.</li>
+        <li><strong><code>regreset</code></strong>: delete <code>registry.cfg</code> (POST rebuilds from template); keeps <code>user.cfg</code> and <code>networks.cfg</code>.</li>
+        <li><strong><code>pkgdisable</code> / <code>pkgenable</code></strong>: comment/uncomment a package entry in <code>programs.lp</code> without uninstalling.</li>
       </ul>
 
       <h2 id="performance">Performance</h2>
 
       <h3>No more typing lag at 115200 baud</h3>
-      <p>Inline ghost-text completion (the suggestion that appears as you type) now does a zero-I/O command-name dict scan per keystroke. The filesystem is only touched when you actually press Tab for path completion. At 115200 baud, each <code>uos.listdir()</code> call added noticeable lag &mdash; gone.</p>
+      <p>Inline ghost-text completion (the suggestion that appears as you type) now does a zero-I/O command-name dict scan per keystroke. The filesystem is only touched when you actually press Tab for path completion. At 115200 baud, each <code>uos.listdir()</code> call added noticeable lag: gone.</p>
 
       <h3>No more output lag</h3>
       <p>Log writes are batched: flushed every 8 lines, or immediately on a WARNING or ERROR. Previously every log write flushed to LittleFS (<em>~10&nbsp;ms each</em>), causing bursts of output to stall visibly. Warnings and errors still flush immediately for crash-log safety.</p>
 
       <h3>Portable compiled image</h3>
-      <p>A precompiled <code>.mpy</code> image now ships alongside the source build. It&rsquo;s architecture-neutral &mdash; one image for RP2040, RP2350, and ESP32 (RPCortex uses no <code>@native</code>/<code>@viper</code> code). About 44% smaller than source and imports faster. Deploy with <code>mpremote</code> or <code>python deploy.py --compiled</code>.</p>
+      <p>A precompiled <code>.mpy</code> image now ships alongside the source build. It&rsquo;s architecture-neutral: one image for RP2040, RP2350, and ESP32 (RPCortex uses no <code>@native</code>/<code>@viper</code> code). About 44% smaller than source and imports faster. Deploy with <code>mpremote</code> or <code>python deploy.py --compiled</code>.</p>
 
       <h2 id="bugfixes">Bug Fixes (since v0.8.1)</h2>
 
@@ -183,7 +183,7 @@ reg set System.TZ_Offset -5</code></pre>
       <p><code>wifi connect &lt;ssid&gt;</code> was reading the old removed 2-slot registry keys (<code>Networks.WiFi_SSID_1/2</code>) and therefore never found any saved passwords, re-prompting every time. It now reads <code>networks.cfg</code> via the same path as autoconnect and connects silently when a saved profile exists.</p>
 
       <h3>No more false &ldquo;previous session ended unexpectedly&rdquo; on every boot</h3>
-      <p>POST arms <code>Settings.Startup</code> to <code>"1"</code> at the end of its run. <code>initialization.py</code> was reading that key for the startup banner &mdash; so it always saw <code>"1"</code> (session active) and displayed the crash warning. Fixed: POST captures the pre-arm value into <code>post.boot_startup_mode</code>; initialization reads that instead. The OTA-update-success banner and other startup modes now appear correctly too.</p>
+      <p>POST arms <code>Settings.Startup</code> to <code>"1"</code> at the end of its run. <code>initialization.py</code> was reading that key for the startup banner, so it always saw <code>"1"</code> (session active) and displayed the crash warning. Fixed: POST captures the pre-arm value into <code>post.boot_startup_mode</code>; initialization reads that instead. The OTA-update-success banner and other startup modes now appear correctly too.</p>
 
       <h3>Built-in packages show in pkg list on fresh installs</h3>
       <p>The <code>Packages/Launchpad/package.cfg</code> and <code>Packages/Editor/package.cfg</code> stubs were missing from the image (deleted in an old wipe commit). Fresh installs showed no built-in packages in <code>pkg list</code>. Restored.</p>
@@ -192,10 +192,10 @@ reg set System.TZ_Offset -5</code></pre>
       <p>Account creation (<code>mkacct</code>), password change (<code>chpswd</code>), account removal (<code>rmuser</code>), and <code>wifi add</code> all now echo <code>&bull;</code> bullets. Login always did; the rest didn&rsquo;t.</p>
 
       <h3>compile.py ships the full OS</h3>
-      <p>The PicoFetch and NebulaMark package directories were silently omitted from compiled builds. Fixed &mdash; the compiled image now matches the source image.</p>
+      <p>The PicoFetch and NebulaMark package directories were silently omitted from compiled builds. Fixed: the compiled image now matches the source image.</p>
 
       <h2 id="installation">Installation</h2>
-      <p><strong>Fresh install:</strong> Use the <a href="install">Web Installer</a> &mdash; flash from your browser over USB, no desktop software required (Chrome or Edge).</p>
+      <p><strong>Fresh install:</strong> Use the <a href="install">Web Installer</a>: flash from your browser over USB, no desktop software required (Chrome or Edge).</p>
       <p><strong>Updating from v0.8.x:</strong> Run <code>update check</code> then <code>update online</code> from the shell, or use the <a href="update">OS Update page</a>, or <code>update from-file /path/to/RPC-Pulsar-b9-Final.rpc</code>. User accounts, WiFi profiles, settings, and installed packages are all preserved.</p>
       <p><strong>Manual:</strong> Flash MicroPython v1.25+ (v1.28 recommended), copy all files from the release to the board&rsquo;s filesystem, connect a serial terminal at <strong>115200 baud</strong>, and reboot.</p>
       <div class="note-box">
@@ -204,36 +204,36 @@ reg set System.TZ_Offset -5</code></pre>
 
       <h2 id="limitations">Known Limitations</h2>
       <ul>
-        <li><strong>MemoryError after heavy use</strong> &mdash; the heap fragments over time. Run <code>freeup</code> to compact; <code>reboot</code> clears it completely. (The shell says &ldquo;heap fragmented&rdquo;, not &ldquo;low memory&rdquo; &mdash; <code>gc.mem_free()</code> can show 90&nbsp;KB free while still raising this.)</li>
-        <li><strong>RTC not battery-backed on bare Pico</strong> &mdash; the clock resets on power loss. Set it after each boot with <code>date set</code>, or accept boot-epoch timestamps.</li>
-        <li><strong>ESP32-S3 temperature reads ~300&ndash;450&thinsp;&deg;C</strong> &mdash; a hardware calibration difference, not an RPCortex bug.</li>
-        <li><strong>HTTPS on Pico 1&nbsp;W needs ~9.5&nbsp;KB contiguous heap</strong> &mdash; run <code>freeup</code> first if a TLS request fails with <code>MemoryError</code>.</li>
-        <li><strong>WiFi passwords stored plaintext</strong> in <code>networks.cfg</code> &mdash; this hardware has no secure enclave.</li>
-        <li><strong>Text editor needs a real terminal</strong> (PuTTY) &mdash; Thonny&rsquo;s REPL won&rsquo;t render it.</li>
+        <li><strong>MemoryError after heavy use</strong>: the heap fragments over time. Run <code>freeup</code> to compact; <code>reboot</code> clears it completely. (The shell says &ldquo;heap fragmented&rdquo;, not &ldquo;low memory&rdquo;: <code>gc.mem_free()</code> can show 90&nbsp;KB free while still raising this.)</li>
+        <li><strong>RTC not battery-backed on bare Pico</strong>: the clock resets on power loss. Set it after each boot with <code>date set</code>, or accept boot-epoch timestamps.</li>
+        <li><strong>ESP32-S3 temperature reads ~300 to 450&thinsp;&deg;C</strong>: a hardware calibration difference, not an RPCortex bug.</li>
+        <li><strong>HTTPS on Pico 1&nbsp;W needs ~9.5&nbsp;KB contiguous heap</strong>: run <code>freeup</code> first if a TLS request fails with <code>MemoryError</code>.</li>
+        <li><strong>WiFi passwords stored plaintext</strong> in <code>networks.cfg</code>: this hardware has no secure enclave.</li>
+        <li><strong>Text editor needs a real terminal</strong> (PuTTY): Thonny&rsquo;s REPL won&rsquo;t render it.</li>
       </ul>
 
       <h2 id="whats-next">What&rsquo;s Next</h2>
-      <p><strong>v1.0 &ldquo;Vela&rdquo;</strong> shipped after this one and delivers true multitasking as the default experience &mdash; v0.9.5 was folded in rather than shipped separately. The async shell is the primary shell there:</p>
+      <p><strong>v1.0 &ldquo;Vela&rdquo;</strong> shipped after this one and delivers true multitasking as the default experience: v0.9.5 was folded in rather than shipped separately. The async shell is the primary shell there:</p>
       <ul>
-        <li><strong>Multitasking shell is the default</strong> &mdash; background services (e.g. <code>httpd --bg</code>) keep running while you work at the prompt</li>
-        <li><strong>Cooperative app framework (<code>appkit</code>)</strong> &mdash; any foreground TUI app (e.g. <code>sysmon</code>) yields so it runs alongside background services</li>
-        <li><strong>Async <code>ping</code> / <code>wget</code> / <code>curl</code></strong> &mdash; network commands yield to the loop, so the httpd dashboard stays responsive during a download</li>
-        <li><strong>Async httpd streaming</strong> &mdash; large file downloads from the device no longer freeze the event loop</li>
-        <li><strong>Full async line editor</strong> &mdash; history, Tab completion, cursor navigation, word-wise editing; parity with the classic shell</li>
+        <li><strong>Multitasking shell is the default</strong>: background services (e.g. <code>httpd --bg</code>) keep running while you work at the prompt</li>
+        <li><strong>Cooperative app framework (<code>appkit</code>)</strong>: any foreground TUI app (e.g. <code>sysmon</code>) yields so it runs alongside background services</li>
+        <li><strong>Async <code>ping</code> / <code>wget</code> / <code>curl</code></strong>: network commands yield to the loop, so the httpd dashboard stays responsive during a download</li>
+        <li><strong>Async httpd streaming</strong>: large file downloads from the device no longer freeze the event loop</li>
+        <li><strong>Full async line editor</strong>: history, Tab completion, cursor navigation, word-wise editing; parity with the classic shell</li>
       </ul>
 
       <h3>Trying the v1.0 pre-release</h3>
       <p>v1.0 &ldquo;Vela&rdquo; is available as an <strong>opt-in pre-release</strong>, on its own channel separate from the stable v0.9.1 line. Stable devices are never auto-updated to it. Its own notes are on the <a href="release-vela">Vela release page</a>, kept up to date as pre-release builds ship.</p>
       <ul>
-        <li><strong>Fresh install:</strong> pick <em>RPCortex Vela &mdash; Pre-release</em> in the <a href="install">Web Installer</a>.</li>
+        <li><strong>Fresh install:</strong> pick <em>RPCortex Vela: Pre-release</em> in the <a href="install">Web Installer</a>.</li>
         <li><strong>On-device OTA:</strong> run <code>update channel beta</code> (the pre-release channel), then <code>update check</code> / <code>update online</code>. Switch back any time with <code>update channel stable</code> (it won&rsquo;t downgrade an existing install).</li>
       </ul>
 
       <div class="note-box">
-        <p><strong>Note</strong> &mdash; this is a pre-release. The core is hardware-verified (boots, multitasking, async networking, and the editor all work on the Pico 2W), but it's still pre-1.0 and may change &mdash; please report anything rough. If you ever want the classic synchronous shell, <code>asyncmode off</code> switches to it (it's also the automatic crash fallback).</p>
+        <p><strong>Note</strong>: this is a pre-release. The core is hardware-verified (boots, multitasking, async networking, and the editor all work on the Pico 2W), but it's still pre-1.0 and may change: please report anything rough. If you ever want the classic synchronous shell, <code>asyncmode off</code> switches to it (it's also the automatic crash fallback).</p>
       </div>
 
-      <p>v1.0 was the last MicroPython release, and it is the stable one. <strong>v2.0 &ldquo;Vela II&rdquo;</strong> is the same OS rewritten in C++, with no interpreter underneath, around 200&times; the speed and packages that cannot take the device down &mdash; published as a beta pre-release. Its notes are <a href="release-vela2">here</a>; <a href="switch">why the rewrite happened</a> is here.</p>
+      <p>v1.0 was the last MicroPython release, and it is the stable one. <strong>v2.0 &ldquo;Vela II&rdquo;</strong> is the same OS rewritten in C++, with no interpreter underneath, around 200&times; the speed and packages that cannot take the device down: published as a beta pre-release. Its notes are <a href="release-vela2">here</a>; <a href="switch">why the rewrite happened</a> is here.</p>
 
-      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9 &mdash; v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p></article></div>
+      <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.82rem;">RPCortex Pulsar &beta;9: v0.9.1 &nbsp;&bull;&nbsp; by <a href="https://github.com/dash1101" target="_blank">dash1101</a>. Issues and PRs welcome.</p></article></div>
 </main>

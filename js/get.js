@@ -66,7 +66,7 @@
       cards.push({ id: 'v2', el: card(
         '<b>RPCortex ' + esc(label) + '</b><small>&ldquo;Vela II&rdquo; &middot; C++ &middot; one file</small>' +
         '<span class="badge ' + (v2.prerelease ? 'b-part' : 'b-done') + '">' + (v2.prerelease ? 'beta pre-release' : 'stable') + '</span>' +
-        '<small>' + esc(v2.summary || 'Rewritten in C++: no interpreter, both cores, and packages that cannot take the device down.') + '</small>',
+        '<small>' + esc(v2.summary || 'Rewritten in C++: no interpreter, both cores, and a package sandbox on the RP2350.') + '</small>',
         function (b) { pick('v2', b); }) });
     }
     if (v1) {
