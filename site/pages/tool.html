@@ -1,0 +1,54 @@
+---
+title: The RPCortex tool
+window_title: The RPCortex tool: a v2 board in your browser
+description: A browser tool for boards running RPCortex v2: a terminal, the board's files, commands, packages from the repository and device details, over USB.
+nav: tool
+path: tool.html
+scripts: js/tool.js
+---
+<main>
+<section class="wrap page-head">
+  <div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>For v2 and later</div>
+  <h1>Your board, in the browser.</h1>
+  <p class="lede">Plug in a board running RPCortex v2 and work with it from a web page: a terminal, its files, commands, packages from the repository, and what the device is and runs. Nothing to install on the computer.</p>
+</section>
+<section class="wrap" style="padding-bottom:48px">
+  <!-- The tool itself is RPCortex-v2/tools/web, copied into vela-tool/ by tools/sync-vela-tool.sh.
+       js/tool.js shows .tool-ready once vela-tool/SOURCE.json names a commit, and .tool-pending until then. -->
+  <div class="tool-launch" id="toolLaunch" data-tool-state="checking">
+    <div class="tool-ready">
+      <a class="btn btn-primary" id="toolOpen" data-tool="vela-tool/">Open the tool</a>
+      <p class="dl-meta" id="toolStamp"></p>
+    </div>
+    <div class="tool-pending info"><strong>The tool is not here yet.</strong> Until it is, a v2 board is used from a serial terminal at 115200 baud: <code>pkg install &lt;name&gt;</code> installs a package from the repository, and <code>download</code> turns the board into a USB drive for moving files on and off.</div>
+    <noscript><p class="warn">The tool needs JavaScript, and a browser that can open a serial port.</p></noscript>
+  </div>
+  <p class="warn is-hidden" id="noSerial"><strong>This browser cannot open a serial port.</strong> Use Chrome, Edge or Opera on a desktop computer. Firefox and Safari do not support Web Serial.</p>
+
+  <div class="sec-head" style="margin-top:36px"><h2>What it does</h2></div>
+  <div class="inside tool-what">
+    <div><h3>Terminal</h3><p>The board's own shell, as a serial terminal would show it.</p></div>
+    <div><h3>Files</h3><p>Browse the filesystem, and copy files to the board and back, each one checked with SHA-256.</p></div>
+    <div><h3>Commands</h3><p>Run a command line and get its output and whether it succeeded.</p></div>
+    <div><h3>Packages</h3><p>Install anything in the v2 repository by name, without typing the commands.</p></div>
+    <div><h3>Device</h3><p>The version and build, the board, and who is logged in.</p></div>
+  </div>
+
+  <div class="steps" style="margin-top:36px">
+    <div class="step"><span class="n"></span><div>
+      <h3>A desktop browser that can open a serial port</h3>
+      <p>Chrome, Edge or Opera. Close PuTTY, <code>screen</code> or anything else holding the port first: only one program can have it.</p>
+    </div></div>
+    <div class="step"><span class="n"></span><div>
+      <h3>A board on a release newer than v2.00-beta</h3>
+      <p>The tool talks to the board through link mode, which arrived after v2.00-beta. <code>update check</code> and <code>update install</code> on the board bring it up to date.</p>
+    </div></div>
+    <div class="step"><span class="n"></span><div>
+      <h3>Logged in on the board</h3>
+      <p>The tool acts as whoever is logged in, with the same permissions, as if each command were typed at the prompt.</p>
+    </div></div>
+  </div>
+
+  <div class="info" style="margin-top:26px"><strong>Running v1, the MicroPython line?</strong> Its tools are the <a href="{{root}}install.html">web installer</a>, the <a href="{{root}}update.html">updater</a> and the <a href="{{root}}packages.html">package page</a>.</div>
+</section>
+</main>

@@ -34,7 +34,7 @@ needs_releases: 1
       <pre class="log is-hidden" id="log"></pre>
     </div></div>
   </div>
-  <div class="info" style="margin-top:26px"><strong>What this does.</strong> It downloads the same <code>.uf2</code> as the Get page, checks it against the published SHA-256, and writes it to the board through the boot ROM, the way <code>picotool</code> does: erase, write, read back, restart. Your files and settings are not touched; only the firmware area is written. When it finishes the board restarts; open a serial terminal at <strong>115200 baud</strong>.</div>
+  <div class="info" style="margin-top:26px"><strong>What this does.</strong> It downloads the same <code>.uf2</code> as the Get page, checks it against the published SHA-256, and writes it to the board through the boot ROM, the way <code>picotool</code> does: erase, write, read back, restart. Your files and settings are not touched; only the firmware area is written. When it finishes the board restarts; open a serial terminal at <strong>115200 baud</strong>, or use the <a href="{{root}}tool.html">RPCortex tool</a> from the browser.</div>
   <div class="info" style="margin-top:14px"><strong>If the board cannot be opened.</strong> Another program may be using it (close picotool, other tabs or serial tools). On Windows the browser can only open the board when a WinUSB driver is bound to its boot interface; if it cannot, the drag-and-drop install is the way. On Linux the board needs a udev rule that lets your user open it.</div>
 </section>
 </main>

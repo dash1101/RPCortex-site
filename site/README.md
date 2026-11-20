@@ -49,6 +49,7 @@ To change which boards show as run on hardware, edit `releases/boards.json` in t
 | The nav, the footer, a one-line notice on every page | `site/data/site.json` (`status.text`; empty hides it) |
 | Releases older than the OS repository's history | `data/legacy.json` |
 | Look and feel | `ds/` (shared with novalabs.app, see `ds/README.md`) and `css/rpc.css` |
+| The browser tool | nothing here: `tools/web` in the OS repository, then `tools/sync-vela-tool.sh` |
 
 ## Carried pages
 
@@ -77,6 +78,28 @@ page with a 1200-baud serial touch. It is optional: the drag-and-drop install on
 (it needs Playwright) and flashes the real images if the OS repository is checked out beside this one.
 **It has not been run against a real board.** The first run on hardware is the test that matters; see the
 DEVICE-UNCONFIRMED notes at the top of `js/picoboot.js` for what is most likely to need a change.
+
+## The browser tool (v2 and later)
+
+`tool.html` is the page for the RPCortex tool: a terminal, a file manager, a command runner, a package
+installer and device details for v2 boards, over Web Serial, speaking the link protocol (`LINK.md` in the OS
+repository). The tool itself is `tools/web` in the OS repository. It is copied, not written, here:
+
+```
+tools/sync-vela-tool.sh                 # from ../RPCortex-v2, beside this repository
+tools/sync-vela-tool.sh path/to/RPCortex-v2
+python3 site/build.py && python3 site/build.py --check
+git add vela-tool && git commit -m "Tool: <what changed>"
+```
+
+The script replaces `vela-tool/` whole (tests, notes and version-control files left out) and writes
+`vela-tool/SOURCE.json` with the commit it came from. Nothing in `vela-tool/` is edited by hand. `js/tool.js`
+reads that file: while it names no commit (the placeholder) the page says the tool is not here yet and what
+to use instead; once it does, the page links to `vela-tool/` and shows the commit. `--check` also checks the
+links in `vela-tool/index.html`.
+
+For v2, installing a package goes through the tool: the v2 cards on the Packages page link to it. The v1
+installer, updater and package installs are unchanged.
 
 ## Why release images are committed to the OS repository
 

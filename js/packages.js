@@ -2,8 +2,11 @@
  * RPCortex — Package browser + serial installer for packages.html.
  * Depends on: serial-device.js (window.RPC).
  *
- * Downloads .pkg files from the repo and pushes them to a connected
- * device via the _xfer shell command — no raw REPL, no reboot.
+ * v1: downloads .pkg files from the repo and pushes them to a connected
+ * device via the _xfer shell command, with no raw REPL and no reboot.
+ * v2: installing goes through the RPCortex tool (tool.html), which speaks the
+ * device's link protocol. This page still lists the v2 catalogue, reads what a
+ * connected board has installed, and offers each .app as a download.
  */
 (function () {
   'use strict';
@@ -329,84 +332,17 @@
     return installOk;
   }
 
-  /* ── put protocol: how a file reaches a v2 device ──────────────── */
+  /* ── v2: the RPCortex tool installs ─────────────────────────────── */
   //
-  // v2 has no `_xfer`. It has `put <path> <len>`, which reads that many RAW
-  // bytes from the serial line and writes them to a file — no base64, no
-  // chunking protocol, nothing to keep in step. Then `pkg install <path>`
-  // validates and installs it, and the temporary file is removed.
-  //
-  // `put` is admin-only, so this needs a logged-in root session rather than the
-  // login prompt v1's escape worked from. That is worth saying plainly when it
-  // fails, because "nothing happened" is the failure it otherwise looks like.
-  async function _doPut(data, pkgName) {
-    var tmp = '/_web_' + pkgName.toLowerCase() + '.app';
-
-    xferLogLine('[:] Asking the device to receive ' + data.length + ' bytes\u2026',
-                'xfer-log-info');
-    activeDevice.clearBuffer();
-    await activeDevice.write('put ' + tmp + ' ' + data.length + '\r');
-
-    var ready = await activeDevice.waitFor('raw bytes now', 8000).catch(function () {
-      return '';
-    });
-    if (!ready) {
-      xferLogLine('[-] The device did not offer to receive. `put` needs an admin ' +
-                  'session: log in as root on the terminal first.', 'xfer-log-err');
-      xferTitle.textContent = 'Not logged in';
-      xferSub.textContent   = 'Log in as an admin on the device, then try again.';
-      return false;
-    }
-    xferProgress.style.width = '20%';
-
-    // In pieces so the progress bar means something, and with a breath between
-    // them: the device writes each block to flash as it arrives.
-    var CHUNK = 512;
-    for (var i = 0; i < data.length; i += CHUNK) {
-      await activeDevice.write(data.slice(i, i + CHUNK));
-      xferProgress.style.width =
-        (20 + Math.round(((i + CHUNK) / data.length) * 50)) + '%';
-      await sleep(8);
-    }
-    xferLogLine('[@] Sent. Writing to flash\u2026', 'xfer-log-ok');
-    await sleep(400);
-    xferProgress.style.width = '75%';
-
-    xferLogLine('[:] Installing\u2026', 'xfer-log-info');
-    xferSub.textContent = 'Installing on device\u2026';
-    activeDevice.clearBuffer();
-    await activeDevice.write('pkg install ' + tmp + '\r');
-    await sleep(2500);
-    var out = activeDevice.rxBuffer || '';
-    xferProgress.style.width = '95%';
-
-    // Tidy up whatever happened. A temporary file left in the root of somebody
-    // else's filesystem is rude.
-    await activeDevice.write('rm ' + tmp + '\r');
-    await sleep(400);
-    xferProgress.style.width = '100%';
-
-    var ok = /installed|Installed/.test(out) && !/\[!\]/.test(out);
-    if (ok) {
-      xferLogLine('[@] \'' + pkgName + '\' installed.', 'xfer-log-ok');
-      xferTitle.textContent = pkgName + ' installed';
-      xferSub.textContent   = 'Its commands are live now, with no reboot.';
-    } else {
-      xferLogLine('[?] The device did not confirm the install. Its output:',
-                  'xfer-log-warn');
-      xferTitle.textContent = 'Install did not confirm';
-      xferSub.textContent   = 'Check the device shell.';
-    }
-    var rl = out.split('\n');
-    for (var k = 0; k < rl.length; k++) {
-      var t = rl[k].trim();
-      if (t && t.length > 1) xferLogLine('  ' + t, 'xfer-log-dim');
-    }
-    return ok;
-  }
+  // A v2 board is sent files over its link protocol (RPCortex-v2/LINK.md), with
+  // a checksum and an acknowledgement per chunk; that lives in the RPCortex tool,
+  // so this page hands v2 installs to it rather than keeping a second copy. The
+  // port this page holds is released when the page is left, so the tool can open it.
+  var TOOL_URL = 'tool.html';
 
   /* ── Install from repo URL ─────────────────────────────────────── */
   async function installToDevice(pkg) {
+    if (osKind === 'v2') { location.href = TOOL_URL; return; }
     if (!activeDevice) { alert('Connect a device first.'); return; }
     var pkgName = pkg.name;
     showOverlay(pkgName);
@@ -417,13 +353,8 @@
       var data = new Uint8Array(await resp.arrayBuffer());
       xferLogLine('[@] Downloaded ' + data.length + ' bytes.', 'xfer-log-ok');
       xferProgress.style.width = '10%';
-      var ok;
-      if (osKind === 'v2') {
-        ok = await _doPut(data, pkgName);
-      } else {
-        var destPath = '/Vela/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
-        ok = await _doXfer(data, destPath, pkgName);
-      }
+      var destPath = '/Vela/pkg/tmp_' + pkgName.toLowerCase() + '.pkg';
+      var ok = await _doXfer(data, destPath, pkgName);
       if (ok) await refreshInstalledAfterInstall();
     } catch (e) {
       xferLogLine('[-] Error: ' + (e.message || String(e)), 'xfer-log-err');
@@ -498,6 +429,11 @@
   }
 
   function installState(p) {
+    if (osKind === 'v2') {
+      var had = installedMap[p.name.toLowerCase()];
+      return { label: had !== undefined && cmpVer(p.ver, had) > 0 ? 'Update with the tool' : 'Install with the tool',
+               disabled: false, title: 'v2 packages install through the RPCortex tool' };
+    }
     if (!activeDevice) {
       return { label: 'Install to Device', disabled: true,
                title: 'Connect a device first' };
@@ -658,7 +594,16 @@
      with the wrong extension, which the device then refuses. */
   var PKG_EXT = { v1: '.pkg', v2: '.app' };
 
+  /* The local .pkg drop zone is v1's; on v2 a note points at the tool instead. */
+  function reflectCatalogue() {
+    var local = document.querySelector('.local-pkg-section');
+    var note = document.getElementById('toolNote');
+    if (local) local.style.display = osKind === 'v2' ? 'none' : '';
+    if (note) note.style.display = osKind === 'v2' ? '' : 'none';
+  }
+
   async function loadPackages() {
+    reflectCatalogue();
     pkgContainer.innerHTML = '<div class="pkg-empty">Loading the ' + esc(osKind) +
                              ' catalogue\u2026</div>';
     try {

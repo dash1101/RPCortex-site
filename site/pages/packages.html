@@ -6,7 +6,7 @@ legacy: 1
 scripts: js/serial-device.js,js/packages.js
 ---
 <main>
-<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Packages</div><h1>Package Repository</h1><p class="lede">Browse available packages for RPCortex. Install directly to a connected device over USB: no WiFi, no REPL, no reboot required.</p></section>
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Packages</div><h1>Package Repository</h1><p class="lede">The packages in the RPCortex repository. On v2, install them with the <a href="tool">RPCortex tool</a> or with <code>pkg install</code> on the board. On v1, this page installs them over USB.</p></section>
 <!-- MAIN -->
   <section class="section">
     <div class="inner">
@@ -14,10 +14,11 @@ scripts: js/serial-device.js,js/packages.js
       <!-- WHICH CATALOGUE THIS PAGE SHOWS -->
       <div class="codeblock" style="margin-bottom:24px;">
         <div class="codeblock-label">Packages for RPCortex v2</div>
-        <pre style="white-space:pre-wrap;">A v2 package is a compiled <strong>.app</strong> file. Install one on the device with
-<strong>pkg install &lt;name&gt;</strong>, or from this page over USB (that needs an admin session on the board).
-The page reads which OS the connected device runs and shows the matching catalogue; with nothing
-connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for MicroPython, is one menu away.</pre>
+        <pre style="white-space:pre-wrap;">A v2 package is a compiled <strong>.app</strong> file. Install one on the board with
+<strong>pkg install &lt;name&gt;</strong>, or from the browser with the RPCortex tool.
+Connecting a board here shows what it already has, and which catalogue matches it;
+with nothing connected the page shows v2. The v1 catalogue, Python <strong>.pkg</strong>
+files for MicroPython, is one menu away, and v1 packages install from this page.</pre>
       </div>
 
       <!-- CONNECT BAR -->
@@ -42,9 +43,9 @@ connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for 
         <div id="installedList" style="font-family:var(--mono);font-size:0.83rem;color:var(--text-muted);line-height:1.7;white-space:pre-wrap;"></div>
       </div>
       <p class="serial-note" id="serialNote">
-        Requires Chrome 89+ or Edge 89+. Close PuTTY or any other terminal before connecting.
-        Reading what is installed works from the shell or the login prompt; installing to a v2
-        device needs an admin session, because writing files does.
+        Needs Chrome, Edge or Opera on a desktop. Close PuTTY or any other terminal before
+        connecting. Reading what is installed works from the shell or the login prompt. On v1
+        this page installs too; on v2 installing goes through the RPCortex tool.
       </p>
 
       <!-- WHICH CATALOGUE -->
@@ -56,6 +57,8 @@ connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for 
         </select>
         <span id="osNote" class="os-note">Showing the v2 catalogue. Connect a device to match it automatically.</span>
       </div>
+
+      <div class="info" id="toolNote" style="margin:0 0 8px"><strong>Installing on a v2 board?</strong> The <a href="tool">RPCortex tool</a> does it from the browser: it connects, sends the package with a checksum and installs it. Or type <code>pkg install &lt;name&gt;</code> on the board.</div>
 
       <!-- PACKAGE GRID -->
       <div id="pkgContainer">
@@ -85,7 +88,7 @@ connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for 
       <!-- CLI REFERENCE -->
       <div style="margin-top:40px;">
         <div class="codeblock">
-          <div class="codeblock-label">v2, or from the shell</div>
+          <div class="codeblock-label">v2, from the shell</div>
           <pre>pkg update               <span class="dim"># refresh the list</span>
 pkg search web           <span class="dim"># or bare, to list everything</span>
 pkg install httpd

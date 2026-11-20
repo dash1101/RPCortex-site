@@ -7,3 +7,6 @@ Thumbs.db
 *.swp
 # Python bytecode from the build
 __pycache__/
+
+# tools/sync-vela-tool.sh stages its copy here and removes it when done
+.vela-tool.new/

@@ -81,8 +81,9 @@ extern "C" int app_main(int arg) {
          appears, press a key, then <code>pkg install /usb/greet.app</code>.</p>
 
       <h3>From the browser</h3>
-      <p>The <a href="packages">Packages</a> page connects over Web Serial and installs with one
-         click, including packages you drag onto it from your own machine.</p>
+      <p>The <a href="tool">RPCortex tool</a> connects over Web Serial and copies the
+         <code>.app</code> across with a checksum; then <code>pkg install</code> it from the
+         tool's terminal. It needs a release newer than v2.00-beta on the board.</p>
 
       <h2 id="abi">What a package can call</h2>
       <p>Everything comes through <code>fw_*</code> functions declared in

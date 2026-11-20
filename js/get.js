@@ -129,6 +129,7 @@
       '<div class="info"><strong>After the first install</strong> the device updates itself. <code>update check</code> looks for a newer release and ' +
       '<code>update install</code> applies it, checked against a checksum before anything is written, with a copy of the old firmware kept to go back to. ' +
       'You should not need this page again. The raw image, for your own flashing tools, is <a href="' + esc(binUrl) + '">the .bin</a>.</div>' +
+      '<p class="dl-meta">Once it is running, <a href="tool.html">the RPCortex tool</a> works with the board from the browser: a terminal, its files, commands and packages.</p>' +
       '<p class="warn"><strong>Coming from v1?</strong> v2 replaces the firmware entirely, so installing it removes MicroPython and everything stored under it. Save anything worth keeping first.</p>';
   }
 

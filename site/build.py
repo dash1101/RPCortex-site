@@ -36,7 +36,7 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
-ASSETS = ("ds", "js", "css", "img", "data", "releases", "logo.svg", "favicon.svg", "CNAME", ".nojekyll")
+ASSETS = ("ds", "js", "css", "img", "data", "releases", "vela-tool", "logo.svg", "favicon.svg", "CNAME", ".nojekyll")
 
 
 def load(name):
@@ -363,7 +363,9 @@ def main():
     for f in ds_drift():
         print("  ~ %s differs from the other site's copy (see ds/README.md)" % f)
     written = build(out, a.status, a.releases_base)
-    problems = check(out, written)
+    # the browser tool is copied in by tools/sync-vela-tool.sh, not generated; its links are checked too
+    tool = [p for p in ("vela-tool/index.html",) if os.path.exists(os.path.join(out, p))]
+    problems = check(out, written + tool)
     for p in problems:
         print("  ! " + p)
     print("%d pages%s" % (len(written), "" if not problems else ", %d problem(s)" % len(problems)))

@@ -58,3 +58,10 @@
 .bar-fill { height: 100%; width: 0; background: var(--accent); transition: width .15s linear; }
 .log { margin: 14px 0 0; padding: 14px 16px; background: var(--ink-0); border: 1px solid var(--line); border-radius: 12px; max-width: 74ch; max-height: 240px; overflow: auto; font: 400 12.5px/1.6 var(--mono); color: var(--dim); white-space: pre-wrap; }
 .log .ok { color: var(--ok); } .log .bad { color: #f87171; }
+
+/* the tool page: the launch box shows one state at a time. js/tool.js sets data-tool-state to
+   "ready" once vela-tool/ holds the tool, or "pending" while it does not; "checking" shows neither */
+.tool-launch .tool-ready, .tool-launch .tool-pending { display: none; }
+.tool-launch[data-tool-state="ready"] .tool-ready { display: grid; gap: 10px; justify-items: start; }
+.tool-launch[data-tool-state="pending"] .tool-pending { display: block; max-width: 74ch; }
+.tool-what { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }

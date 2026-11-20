@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Package Repository | RPCortex</title><meta name="description" content=""><meta name="theme-color" content="#090f1d"><link rel="canonical" href="https://rpc.novalabs.app/packages.html"><meta property="og:site_name" content="RPCortex"><meta property="og:type" content="website"><meta property="og:title" content="Package Repository | RPCortex"><meta property="og:description" content=""><meta property="og:url" content="https://rpc.novalabs.app/packages.html"><meta property="og:image" content="https://rpc.novalabs.app/img/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"><link rel="stylesheet" href="./css/legacy.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img class="wordmark" src="./img/rpcortex-wordmark-sm.png" alt="RPCortex"></a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html">Get</a><a href="./docs/v2.html">Docs</a><a href="./packages.html" aria-current="page">Packages</a><a href="./releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
-<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Packages</div><h1>Package Repository</h1><p class="lede">Browse available packages for RPCortex. Install directly to a connected device over USB: no WiFi, no REPL, no reboot required.</p></section>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Package Repository | RPCortex</title><meta name="description" content=""><meta name="theme-color" content="#090f1d"><link rel="canonical" href="https://rpc.novalabs.app/packages.html"><meta property="og:site_name" content="RPCortex"><meta property="og:type" content="website"><meta property="og:title" content="Package Repository | RPCortex"><meta property="og:description" content=""><meta property="og:url" content="https://rpc.novalabs.app/packages.html"><meta property="og:image" content="https://rpc.novalabs.app/img/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="releases-base" content="https://raw.githubusercontent.com/dash1101/RPCortex/main/releases/"><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/BricolageGrotesque-latin.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./ds/fonts/InstrumentSans-latin.woff2"><link rel="stylesheet" href="./ds/ds.css"><link rel="stylesheet" href="./css/rpc.css"><link rel="stylesheet" href="./css/legacy.css"></head><body><a class="skip" href="#main">Skip to content</a><div class="statusbar" id="relbar" data-tone="ok" hidden></div><header class="nav"><div class="wrap nav-in"><a class="brand" href="./"><img class="wordmark" src="./img/rpcortex-wordmark-sm.png" alt="RPCortex"></a><button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span></button><nav id="menu" class="menu" aria-label="Main"><a href="./get.html">Get</a><a href="./docs/v2.html">Docs</a><a href="./packages.html" aria-current="page">Packages</a><a href="./tool.html">Tool</a><a href="./releases.html">Releases</a><a class="ext" href="https://novalabs.app" target="_blank" rel="noopener">NovaLabs &#8599;</a></nav></div></header><main id="main">
+<section class="wrap page-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Packages</div><h1>Package Repository</h1><p class="lede">The packages in the RPCortex repository. On v2, install them with the <a href="./tool.html">RPCortex tool</a> or with <code>pkg install</code> on the board. On v1, this page installs them over USB.</p></section>
 <!-- MAIN -->
   <section class="section">
     <div class="inner">
@@ -8,10 +8,11 @@
       <!-- WHICH CATALOGUE THIS PAGE SHOWS -->
       <div class="codeblock" style="margin-bottom:24px;">
         <div class="codeblock-label">Packages for RPCortex v2</div>
-        <pre style="white-space:pre-wrap;">A v2 package is a compiled <strong>.app</strong> file. Install one on the device with
-<strong>pkg install &lt;name&gt;</strong>, or from this page over USB (that needs an admin session on the board).
-The page reads which OS the connected device runs and shows the matching catalogue; with nothing
-connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for MicroPython, is one menu away.</pre>
+        <pre style="white-space:pre-wrap;">A v2 package is a compiled <strong>.app</strong> file. Install one on the board with
+<strong>pkg install &lt;name&gt;</strong>, or from the browser with the RPCortex tool.
+Connecting a board here shows what it already has, and which catalogue matches it;
+with nothing connected the page shows v2. The v1 catalogue, Python <strong>.pkg</strong>
+files for MicroPython, is one menu away, and v1 packages install from this page.</pre>
       </div>
 
       <!-- CONNECT BAR -->
@@ -36,9 +37,9 @@ connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for 
         <div id="installedList" style="font-family:var(--mono);font-size:0.83rem;color:var(--text-muted);line-height:1.7;white-space:pre-wrap;"></div>
       </div>
       <p class="serial-note" id="serialNote">
-        Requires Chrome 89+ or Edge 89+. Close PuTTY or any other terminal before connecting.
-        Reading what is installed works from the shell or the login prompt; installing to a v2
-        device needs an admin session, because writing files does.
+        Needs Chrome, Edge or Opera on a desktop. Close PuTTY or any other terminal before
+        connecting. Reading what is installed works from the shell or the login prompt. On v1
+        this page installs too; on v2 installing goes through the RPCortex tool.
       </p>
 
       <!-- WHICH CATALOGUE -->
@@ -50,6 +51,8 @@ connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for 
         </select>
         <span id="osNote" class="os-note">Showing the v2 catalogue. Connect a device to match it automatically.</span>
       </div>
+
+      <div class="info" id="toolNote" style="margin:0 0 8px"><strong>Installing on a v2 board?</strong> The <a href="./tool.html">RPCortex tool</a> does it from the browser: it connects, sends the package with a checksum and installs it. Or type <code>pkg install &lt;name&gt;</code> on the board.</div>
 
       <!-- PACKAGE GRID -->
       <div id="pkgContainer">
@@ -79,7 +82,7 @@ connected it shows v2. The v1 catalogue, Python <strong>.pkg</strong> files for 
       <!-- CLI REFERENCE -->
       <div style="margin-top:40px;">
         <div class="codeblock">
-          <div class="codeblock-label">v2, or from the shell</div>
+          <div class="codeblock-label">v2, from the shell</div>
           <pre>pkg update               <span class="dim"># refresh the list</span>
 pkg search web           <span class="dim"># or bare, to list everything</span>
 pkg install httpd
