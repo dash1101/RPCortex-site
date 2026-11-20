@@ -9,7 +9,9 @@
   --bg: var(--ink-1); --bg-alt: var(--ink-2); --bg-card: var(--ink-2); --bg-card-solid: var(--ink-2);
   --border: var(--line); --border-hi: var(--line-hi);
   --text-muted: var(--dim);
-  --cyan: var(--accent); --cyan-dim: var(--accent);
+  /* not --cyan: ds.css derives --accent from --cyan, so remapping --cyan to --accent here is a cycle,
+     and a cycle makes both invalid: every .btn-primary on these pages lost its background. */
+  --cyan-dim: var(--accent);
   --green: var(--ok); --yellow: var(--warn); --red: #f87171;
   --radius: var(--r); --radius-sm: 10px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -96,7 +98,7 @@
 .source-option:hover { border-color: rgba(56,189,248,0.22); }
 .source-option.selected { border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.05); }
 .source-option input[type="radio"] { margin-top: 2px; accent-color: var(--cyan); flex-shrink: 0; }
-.source-option-body { flex: 1; }
+.source-option-body { flex: 1; min-width: 0; }
 .source-option-body strong { display: block; font-size: 0.93rem; color: var(--text); margin-bottom: 2px; }
 .source-option-body span { font-size: 0.82rem; color: var(--text-muted); }
 .install-info-box { background: rgba(56,189,248,0.04); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); font-size: 0.86rem; padding: 14px 18px; margin: 20px 0 12px; line-height: 1.55; }
@@ -137,9 +139,9 @@
 .transfer-file-label { flex: 1; min-width: 160px; background: rgba(6,14,30,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-muted); padding: 8px 12px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; transition: border-color 0.15s; }
 .transfer-file-label:hover { border-color: rgba(56,189,248,0.22); }
 .transfer-file-label input { display: none; }
-.version-picker-wrap { max-width: 680px; margin: 0 auto 20px; display: flex; align-items: center; gap: 14px; }
+.version-picker-wrap { max-width: 680px; margin: 0 auto 20px; display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
 .version-label { font-size: 0.82rem; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
-.version-select { flex: 1; background: rgba(6,14,30,0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); padding: 9px 32px 9px 12px; font-size: 0.875rem; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7a98'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; transition: border-color 0.15s; }
+.version-select { flex: 1 1 200px; min-width: 0; max-width: 100%; background: rgba(6,14,30,0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); padding: 9px 32px 9px 12px; font-size: 0.875rem; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7a98'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; transition: border-color 0.15s; }
 .version-select:focus { outline: none; border-color: rgba(56,189,248,0.35); }
 .version-select option, .version-select optgroup { background: #0a1120; color: var(--text); }
 .pkg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 28px; }

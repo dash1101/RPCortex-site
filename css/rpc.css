@@ -22,14 +22,16 @@
 .get-card b { font: 700 1.1rem/1.2 var(--display); }
 .get-card small { color: var(--dim); font-size: .88rem; }
 .get-card .badge { justify-self: start; }
-.get-result { display: grid; gap: 16px; }
+.get-result { display: grid; gap: 16px; min-width: 0; }
 .get-result ol { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; color: var(--dim); max-width: 66ch; }
 .get-result ol strong { color: var(--text); font-weight: 600; }
 .is-hidden { display: none !important; }
-.dl-meta { font: 400 12.5px/1.6 var(--mono); color: var(--faint); }
+.dl-meta { font: 400 12.5px/1.6 var(--mono); color: var(--faint); overflow-wrap: anywhere; }
 
 /* stat line, hardware table and commands on the home page */
-.cmds { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+/* two across at most: the comments in the samples need about 40 columns of mono to show whole */
+.cmds { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+@media (min-width: 760px) { .cmds { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .cmds .panel h3 { font-size: 1rem; margin-bottom: 10px; color: var(--accent); font-family: var(--mono); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; font-size: 12px; }
 .cmds pre { margin: 0; font: 400 13px/1.8 var(--mono); color: var(--text); overflow-x: auto; }
 .cmds pre .m { color: var(--faint); }

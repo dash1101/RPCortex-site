@@ -62,7 +62,7 @@
     elVersions.innerHTML = '';
     var cards = [];
     if (v2) {
-      var label = data.live ? R.longName(v2) : 'v2.0-beta';
+      var label = data.live ? R.longName(v2) : 'v2.00-beta';
       cards.push({ id: 'v2', el: card(
         '<b>RPCortex ' + esc(label) + '</b><small>&ldquo;Vela II&rdquo; &middot; C++ &middot; one file</small>' +
         '<span class="badge ' + (v2.prerelease ? 'b-part' : 'b-done') + '">' + (v2.prerelease ? 'beta pre-release' : 'stable') + '</span>' +

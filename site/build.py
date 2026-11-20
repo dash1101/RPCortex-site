@@ -36,7 +36,7 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
-ASSETS = ("ds", "js", "css", "img", "data", "releases", "logo.svg", "favicon.svg", "CNAME")
+ASSETS = ("ds", "js", "css", "img", "data", "releases", "logo.svg", "favicon.svg", "CNAME", ".nojekyll")
 
 
 def load(name):
