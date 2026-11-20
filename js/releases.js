@@ -57,6 +57,37 @@
 
   function newest(d) { return d.releases[0] || null; }
 
+  /* The headings a release's notes are filed under, in the order they are shown. Releases from
+     v2.01-beta on use the first set. v2.00-beta was published with the second, and keeps it. */
+  var NOTE_KEYS = [['new', 'New'], ['improved', 'Improved'], ['fixed', 'Fixed'], ['security', 'Security'],
+                   ['changed', 'Changed'], ['issues', 'Known issues']];
+  var OLD_NOTE_KEYS = [['added', 'Added'], ['changed', 'Changed'], ['fixed', 'Fixed'], ['limitations', 'Known limitations']];
+
+  /* [{key, title, items}] for the sections a release has, in display order, empty ones left out.
+     A release using either of the old-only keys is shown in the old order. A key neither set
+     knows is still shown, after the others, rather than dropped. */
+  function noteSections(notes) {
+    notes = notes || {};
+    var old = notes.hasOwnProperty('added') || notes.hasOwnProperty('limitations');
+    var order = old ? OLD_NOTE_KEYS : NOTE_KEYS;
+    var titles = {}, done = {}, out = [];
+    NOTE_KEYS.concat(OLD_NOTE_KEYS).forEach(function (k) { titles[k[0]] = k[1]; });
+    function add(key) {
+      var items = notes[key];
+      done[key] = true;
+      if (!items || !items.length) return;
+      out.push({ key: key, title: titles[key] || key.charAt(0).toUpperCase() + key.slice(1), items: [].concat(items) });
+    }
+    order.forEach(function (k) { add(k[0]); });
+    Object.keys(notes).forEach(function (k) { if (!done[k]) add(k); });
+    return out;
+  }
+
+  /* A note line as HTML: escaped, with `backticks` shown as code, the way the notes are written. */
+  function noteHTML(s) {
+    return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+  }
+
   function longName(r) { return r.display + ' (build ' + r.build + ')'; }
 
   function fmtDate(iso) {
@@ -88,7 +119,7 @@
   }
 
   window.RPCReleases = { load: load, esc: esc, fmtDate: fmtDate, longName: longName, newest: newest,
-                         ROOT: ROOT, BASE: BASE };
+                         noteSections: noteSections, noteHTML: noteHTML, ROOT: ROOT, BASE: BASE };
 
   function ready() { load().then(function (d) { bar(d); bind(d); }); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();

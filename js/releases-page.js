@@ -6,9 +6,10 @@
   var esc = R.esc;
   var mount = document.getElementById('releaseList');
 
-  function list(title, items) {
-    if (!items || !items.length) return '';
-    return '<h4>' + title + '</h4><ul>' + items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>';
+  function sections(notes) {
+    return R.noteSections(notes).map(function (s) {
+      return '<h4>' + esc(s.title) + '</h4><ul>' + s.items.map(function (i) { return '<li>' + R.noteHTML(i) + '</li>'; }).join('') + '</ul>';
+    }).join('');
   }
 
   function badge(r) {
@@ -18,8 +19,7 @@
   }
 
   function row(r, isLegacy) {
-    var n = r.notes || {};
-    var notes = list('Added', n.added) + list('Changed', n.changed) + list('Fixed', n.fixed) + list('Known limitations', n.limitations);
+    var notes = sections(r.notes);
     var name = isLegacy ? esc(r.display + ' ' + r.codename) : esc(r.display);
     var meta = isLegacy ? badge(r) : badge(r) + '<br>build ' + esc(r.build);
     var links = [];

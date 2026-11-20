@@ -31,6 +31,11 @@ It does without anyone editing this repository.
 If the data cannot be read, every page keeps the static text it was built with, and the Get page falls
 back to the images the update channel always points at. Nothing breaks.
 
+Release notes are shown under whichever headings a release has, in a fixed order: New, Improved,
+Fixed, Security, Changed, Known issues for v2.01-beta on; Added, Changed, Fixed, Known limitations for
+v2.00-beta, which was published with those. Empty ones are left out (`noteSections` in
+`js/releases.js`; `python3 site/test_releases.py` checks both kinds, and needs Playwright).
+
 To change what a release says, change the notes in the OS repository's `CHANGELOG.md` before cutting it.
 To change which boards show as run on hardware, edit `releases/boards.json` in the OS repository.
 
