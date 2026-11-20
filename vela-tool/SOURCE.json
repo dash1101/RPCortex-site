@@ -1,6 +1,6 @@
 {
   "note": "Copied from tools/web in the RPCortex repository by tools/sync-vela-tool.sh. Change it there, not here.",
-  "commit": "2e583f004d7472263a4970e32e7d71bb74347f0d",
+  "commit": "106dedd418afef89d921706e3784b67f483a895a",
   "date": "2026-11-20",
   "dirty": false
 }
