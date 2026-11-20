@@ -312,7 +312,7 @@
        "done": true
       },
       {
-       "html": "Recovery and rollback: a device that fails to start three times loads nothing, a fourth start restores the saved firmware, and <code>update rollback</code> writes it back by hand. Confirmed on a Pico 2 W in builds after v2.00-beta, where a bug stopped it triggering; it ships with the next release",
+       "html": "Recovery and rollback: a device that fails to start three times loads nothing, a fourth start restores the saved firmware, and <code>update rollback</code> writes it back by hand. Confirmed on a Pico 2 W; shipped in v2.01-beta (a bug stopped it triggering in v2.00-beta)",
        "done": true
       }
      ]
