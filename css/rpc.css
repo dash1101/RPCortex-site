@@ -64,4 +64,4 @@
 .tool-launch .tool-ready, .tool-launch .tool-pending { display: none; }
 .tool-launch[data-tool-state="ready"] .tool-ready { display: grid; gap: 10px; justify-items: start; }
 .tool-launch[data-tool-state="pending"] .tool-pending { display: block; max-width: 74ch; }
-.tool-what { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.tool-what { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
