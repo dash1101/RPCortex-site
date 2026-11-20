@@ -341,7 +341,7 @@
        "done": false
       },
       {
-       "html": "<strong>USB HID</strong>: BadUSB, U2F, and the composite-device work that needs native USB",
+       "html": "<strong>The rest of USB HID</strong>: the keyboard and BadUSB scripts (<code>hid</code>) are in the firmware; U2F is still to come",
        "done": false
       }
      ]
