@@ -19,10 +19,11 @@ needs_releases: 1
 <section class="wrap sec" id="how">
   <div class="sec-head"><div class="eyebrow"><span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>Versions</div><h2>How versions work</h2></div>
   <ul class="rules">
-    <li><strong>Every release takes the next number.</strong> v2.00-beta was the first, v2.01-beta the next. A number is never reused, and a later number is always newer. There is no patch number, and the count does not stop at nine: v2.09 is followed by v2.10.</li>
-    <li><strong>A label says how finished it is.</strong> <code>-beta</code>, then <code>-rc</code> and <code>-rc2</code> for release candidates, and no label once it is final, as in v2.06.</li>
+    <li><strong>A version is three numbers.</strong> <code>v2.0.640-beta</code> is generation 2, line 0, build 640. The build is the count of changes made so far, so every release has a number of its own and a later number is always newer.</li>
+    <li><strong>The middle number is a step in what it runs on.</strong> v2.0 is the Raspberry Pi Pico family; v2.1 will be the ESP32 port. It does not move for every release.</li>
+    <li><strong>A label says how finished it is.</strong> <code>-beta</code>, then <code>-rc</code> and <code>-rc2</code> for release candidates, and no label once it is final.</li>
     <li><strong>Only a generation has a name.</strong> Vela, Vela II, and whatever comes after. A change that breaks packages is a new generation, which is what lets any release in a generation be installed without reading the notes first.</li>
-    <li><strong>The build number is separate.</strong> <code>ver</code> shows <code>v2.01-beta (build 520)</code>; the device uses it to decide what is newer. Builds between two releases are not published.</li>
+    <li><strong>The first releases counted differently.</strong> v2.00-beta to v2.05-beta used a plain release count. A device on one of those moves to the new numbers once, with <code>sudo update online --force</code>; after that, updates are offered as usual.</li>
   </ul>
 </section>
 </main>
