@@ -324,7 +324,11 @@
               "done": true
             },
             {
-              "html": "<strong>Tools for your computer</strong>: the <code>rpc</code> command (files, commands, installs and flashing over USB) and a browser tool on this site",
+              "html": "<strong>Tools for your computer</strong>: <a href=\"https://github.com/dash1101/rpcortex-studio\">RPCortex Studio</a> (a full-screen app and the <code>rpc</code> command, for Linux, macOS and Windows) and a browser tool on this site, both able to update the firmware and packages",
+              "done": true
+            },
+            {
+              "html": "<strong>A network for boards without one</strong>: with Studio or the browser tool attached, a Pico or a Pico 2 installs packages and updates through the computer's connection",
               "done": true
             },
             {
