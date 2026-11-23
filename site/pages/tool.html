@@ -30,8 +30,8 @@ scripts: js/tool.js
     <div><h3>Terminal</h3><p>The board's own shell, as a serial terminal would show it.</p></div>
     <div><h3>Files</h3><p>Browse the filesystem, and copy files to the board and back, each one checked with SHA-256.</p></div>
     <div><h3>Commands</h3><p>Run a command line and get its output and whether it succeeded.</p></div>
-    <div><h3>Packages</h3><p>Install anything in the v2 repository by name, even on a board with no network.</p></div>
-    <div><h3>Firmware</h3><p>Put a new firmware image on the board.</p></div>
+    <div><h3>Packages</h3><p>What is installed against the repository, with updates and installs by name, even on a board with no network.</p></div>
+    <div><h3>Firmware</h3><p>The board's version against the latest release and its notes, and the update: over the board's Wi-Fi, through this page, or onto the BOOTSEL drive.</p></div>
     <div><h3>Device</h3><p>The version and build, the board, and who is logged in.</p></div>
   </div>
 
@@ -49,6 +49,10 @@ scripts: js/tool.js
       <p>The tool acts as whoever is logged in, with the same permissions, as if each command were typed at the prompt.</p>
     </div></div>
   </div>
+
+  <div class="sec-head" style="margin-top:36px"><h2>On the computer instead: RPCortex Studio</h2></div>
+  <p>The same connection as a program for Linux, macOS and Windows, for any browser or none. Run on its own, it is a full-screen app for the board: its details and health, files side by side with the computer's, packages, firmware, logs and running tasks, and a terminal. Given a command, it is <code>rpc</code>, for scripts: <code>rpc exec</code>, <code>put</code>, <code>get</code>, <code>backup</code>, <code>flash</code>. While it is attached, a board with no network of its own can use the computer's, so <code>pkg install</code> works on a plain Pico.</p>
+  <p style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn-ghost" href="https://github.com/dash1101/rpcortex-studio/releases/latest" target="_blank" rel="noopener">Download RPCortex Studio</a> <a class="btn btn-ghost" href="https://github.com/dash1101/rpcortex-studio" target="_blank" rel="noopener">Source and instructions</a></p>
 
   <div class="info" style="margin-top:26px"><strong>Running v1, the MicroPython line?</strong> Its tools are the <a href="{{root}}install.html">web installer</a>, the <a href="{{root}}update.html">updater</a> and the <a href="{{root}}packages.html">package page</a>.</div>
 </section>
